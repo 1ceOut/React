@@ -1,10 +1,12 @@
-import React from 'react';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import LoginPage from "./Pages/LoginPage.jsx";
 import HomePage from './Pages/HomePage.jsx';
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import LoginAccess from "./components/Login/LoginAccess.jsx";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
+import HabitPage from './Pages/AddInfo/HabitPage';
+import FavoritePage from './Pages/AddInfo/FavoritePage';
+import AllergicPage from './Pages/AddInfo/AllergicPage';
 
 const queryClient = new QueryClient();
 
@@ -15,6 +17,9 @@ const Router = () => {
                 <Routes>
                     <Route path="/login" element={<LoginPage/>} />
                     <Route path="/login/oauth2/code/:provider" element={<LoginAccess/>} />
+                    <Route path='/addinfo/habit' element={<HabitPage/>}/>
+                    <Route path='/addinfo/favorite' element={<FavoritePage/>}/>
+                    <Route path='/addinfo/allergic' element={<AllergicPage/>}/>
 
                     <Route path='/' element={<HomePage/>}/>
                 </Routes>

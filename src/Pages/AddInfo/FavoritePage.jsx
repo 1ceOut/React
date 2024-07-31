@@ -1,5 +1,4 @@
 import Navigation from "../../components/AddInfo/Favorite/Navigation";
-import Next from './../../components/AddInfo/Common/Next';
 import Header from './../../components/AddInfo/Favorite/Header';
 import InputForm from './../../components/AddInfo/Favorite/InputForm';
 
@@ -10,7 +9,6 @@ const FavoritePage = () => {
             <Navigation/>
             <Header/>
             <InputForm/>
-            <Next/>
         </main>
     );
 };

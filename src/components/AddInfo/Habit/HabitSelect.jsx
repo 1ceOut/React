@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const HabbitSelect = () => {
   const [selectedOption, setSelectedOption] = useState(null);
+  const navigate = useNavigate();
 
   const handleSelection = (option) => {
     setSelectedOption(option);
@@ -9,7 +11,7 @@ const HabbitSelect = () => {
 
   const handleSubmit = () => {
     if (selectedOption) {
-      alert('Next clicked!');
+      navigate('/addinfo/favorite');
     }
   };
 

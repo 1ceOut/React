@@ -1,6 +1,5 @@
 
 import Header from '../../components/AddInfo/Allergic/Header';
-import Next from './../../components/AddInfo/Common/Next';
 import InputForm from './../../components/AddInfo/Allergic/InputForm';
 import Navigation from '../../components/AddInfo/Allergic/Navigation';
 
@@ -10,7 +9,6 @@ const AllergicPage = () => {
             <Navigation/>
             <Header/>
             <InputForm/>
-            <Next/>
         </main>
     );
 };
