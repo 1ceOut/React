@@ -5,7 +5,7 @@ const Navigation = () => {
     const navigate = useNavigate();
     
     const nextPage = () => {
-            navigate('/addinfo/allergic')
+            navigate('/addinfo/favorite')
     };
 
 

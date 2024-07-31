@@ -7,7 +7,7 @@ const InputForm = () => {
 
   const handleSubmit = () => {
     if (inputValue) {
-      navigate('/addinfo/allergic');
+      navigate('/addinfo/habit');
     }
   };
 
