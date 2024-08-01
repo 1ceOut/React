@@ -10,9 +10,9 @@ const CreateButton = ({ option, nextPath }) => {
     };
 
     return (
-        <div className="self-stretch w-[480px]">
-            <div className="self-stretch flex items-center border rounded-xl w-[342px] my-4">
-                <div className="flex items-center justify-center px-5 w-full h-14 text-gray-900 cursor-pointer" onClick={nextPage}>
+        <div className="self-stretch w-[480px] h-14">
+            <div className="self-stretch flex items-center border rounded-xl w-[342px]">
+                <div className="flex items-center justify-center w-full h-14 text-gray-900 cursor-pointer" onClick={nextPage}>
                     {option}
                 </div>
             </div>

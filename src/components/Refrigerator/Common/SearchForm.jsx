@@ -8,8 +8,8 @@ const SearchForm = () => {
   };
 
   return (
-    <div className="self-stretch w-[480px]">
-      <div className="self-stretch flex items-center border rounded-xl w-[342px] my-4">
+    <div className="self-stretch w-[480px] h-14">
+      <div className="self-stretch flex items-center border rounded-xl w-[342px]">
         <input
           type="text"
           value={inputValue}

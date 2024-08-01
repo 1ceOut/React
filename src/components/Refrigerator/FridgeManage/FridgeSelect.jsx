@@ -9,14 +9,14 @@ const FridgeSelect = () => {
   };
 
   return (
-    <div className="self-stretch max-w-[342px] border rounded-xl overflow-x-auto">
-      <div className="flex bg-[#F3F3F3]">
+    <div className="self-stretch w-[342px] h-[60px] border rounded-xl bg-[#F3F3F3]">
+      <div className="flex my-1 mx-[10px] overflow-x-auto">
         {options.map((option, index) => (
           <div
             key={index}
             onClick={() => handleSelection(option)}
-            className={`flex items-center justify-center h-14 text-gray-900 cursor-pointer border-r ${
-              selectedOption === option ? 'bg-white' : 'bg-[#F3F3F3]'
+            className={`flex items-center justify-center h-[46px] text-gray-900 cursor-pointer ${
+              selectedOption === option ? 'bg-white border-0 rounded-xl' : 'bg-[#F3F3F3] rounded-xl'
             }`}
             style={{ minWidth: '161px', padding: '4px 10px' }}
           >
