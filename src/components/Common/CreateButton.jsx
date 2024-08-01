@@ -2,7 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
 
-const NavigateButton = ({ option, nextPath }) => {
+const CreateButton = ({ option, nextPath }) => {
     const navigate = useNavigate();
 
     const nextPage = () => {
@@ -20,9 +20,9 @@ const NavigateButton = ({ option, nextPath }) => {
     );
 };
 
-NavigateButton.propTypes = {
+CreateButton.propTypes = {
     option : PropTypes.string.isRequired,
     nextPath : PropTypes.string.isRequired,
 }; 
 
-export default NavigateButton;
+export default CreateButton;

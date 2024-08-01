@@ -44,7 +44,7 @@ const DetailButton = ({ foodCategory, expireDate, option }) => {
   };
 
   return (
-    <div className="self-stretch w-[342px] h-[60px] flex items-center justify-between px-4 cursor-pointer" onClick={handleNavigation}>
+    <div className="self-stretch w-[342px] h-[60px] flex items-center justify-between cursor-pointer" onClick={handleNavigation}>
       <div className="flex items-center">
         <div className="flex items-center justify-center mr-3 w-10 h-10 rounded-lg bg-[#F5F5F5]">
             <img src={getCategoryImage(foodCategory)} alt={foodCategory} className="w-[28px] h-[28px]"/>
