@@ -21,11 +21,11 @@ const HabbitSelect = () => {
           <div
             key={index}
             onClick={() => handleSelection(option)}
-            className={`flex font-['Pretendard'] text-[#191F28] text-base font-semibold items-center justify-center w-[342px] h-14 border rounded-[12px] cursor-pointer ${
+            className={`flex font-['Pretendard'] text-[#191F28] text-base font-semibold items-center justify-center w-[342px] h-14 border rounded-xl cursor-pointer ${
               selectedOption === option ? 'border-blue-500' : 'border-[#E1E1E1]'
             }`}
           >
-            <div className="flex items-center justify-center w-[302px] h-[19px]">
+            <div className="flex items-center justify-center w-full px-5 h-[19px]">
               {option}
             </div>
             {selectedOption === option && (

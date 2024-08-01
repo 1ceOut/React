@@ -8,6 +8,7 @@ import FavoritePage from './Pages/AddInfo/FavoritePage';
 import AllergicPage from './Pages/AddInfo/AllergicPage';
 import SignUpCompletePage from './Pages/SignUpCompletePage';
 import LoginAccess from './components/Login/LoginAccess';
+import FridgeManagePage from './Pages/Refrigerator/FridgeManagePage.jsx';
 
 const queryClient = new QueryClient();
 
@@ -18,10 +19,13 @@ const Router = () => {
                 <Routes>
                     <Route path="/login" element={<LoginPage/>} />
                     <Route path="/login/oauth2/code/:provider" element={<LoginAccess/>} />
+
                     <Route path="/addinfo/habit" element={<HabitPage/>}/>
                     <Route path="/addinfo/favorite" element={<FavoritePage/>}/>
                     <Route path="/addinfo/allergic" element={<AllergicPage/>}/>
                     <Route path="/login/signupcomplete" element={<SignUpCompletePage/>}/>
+
+                    <Route path="/fridge/fridgemanage" element={<FridgeManagePage/>}/>
 
                     <Route path='/' element={<HomePage/>}/>
                 </Routes>
