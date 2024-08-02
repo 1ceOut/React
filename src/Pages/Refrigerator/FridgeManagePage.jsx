@@ -25,4 +25,4 @@ const FridgeManagePage = () => {
     );
 };
 
-export default FridgeManagePage; 
+export default FridgeManagePage;
