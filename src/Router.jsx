@@ -9,6 +9,8 @@ import AllergicPage from './Pages/AddInfo/AllergicPage';
 import SignUpCompletePage from './Pages/SignUpCompletePage';
 import LoginAccess from './components/Login/LoginAccess';
 import FridgeManagePage from './Pages/Refrigerator/FridgeManagePage.jsx';
+import AlertPage from './Pages/Alert/AlertPage';
+import NoAlertPage from './Pages/Alert/NoAlertPage';
 
 const queryClient = new QueryClient();
 
@@ -17,17 +19,25 @@ const Router = () => {
         <QueryClientProvider client={queryClient}>
             <BrowserRouter>
                 <Routes>
+                    {/* 로그인  */}
                     <Route path="/login" element={<LoginPage/>} />
                     <Route path="/login/oauth2/code/:provider" element={<LoginAccess/>} />
 
+                    {/* 회원가입 */}
                     <Route path="/addinfo/habit" element={<HabitPage/>}/>
                     <Route path="/addinfo/favorite" element={<FavoritePage/>}/>
                     <Route path="/addinfo/allergic" element={<AllergicPage/>}/>
                     <Route path="/login/signupcomplete" element={<SignUpCompletePage/>}/>
 
+                    {/* 메인 페이지 */}
+                    <Route path='/' element={<HomePage/>}/>
+
+                    {/* 냉장고 관리 */}
                     <Route path="/fridge/fridgemanage" element={<FridgeManagePage/>}/>
 
-                    <Route path='/' element={<HomePage/>}/>
+                    {/* 알림 */}
+                    <Route path="alert/alert" element={<AlertPage/>}/>
+                    <Route path="alert/noalert" element={<NoAlertPage/>}/>
                 </Routes>
             </BrowserRouter>
             <ReactQueryDevtools />
