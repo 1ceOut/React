@@ -7,7 +7,9 @@ import HabitPage from './Pages/AddInfo/HabitPage';
 import FavoritePage from './Pages/AddInfo/FavoritePage';
 import AllergicPage from './Pages/AddInfo/AllergicPage';
 import SignUpCompletePage from './Pages/SignUpCompletePage';
-import LoginAccess from './components/Login/LoginAccess';
+import KakaoLoginAccess from './components/Login/KakaoLoginAccess.jsx';
+import NaverLoginAccess from "./components/Login/NaverLoginAccess.jsx";
+import GoogleLoginAccess from "./components/Login/GoogleLoginAccess.jsx";
 
 const queryClient = new QueryClient();
 
@@ -17,7 +19,9 @@ const Router = () => {
             <BrowserRouter>
                 <Routes>
                     <Route path="/login" element={<LoginPage/>} />
-                    <Route path="/login/oauth2/code/:provider" element={<LoginAccess/>} />
+                    <Route path="/login/oauth2/code/kakao" element={<KakaoLoginAccess/>} />
+                    <Route path="/login/oauth2/code/naver" element={<NaverLoginAccess/>}/>
+                    <Route path="/login/oauth2/code/google" element={<GoogleLoginAccess/>}/>
                     <Route path="/addinfo/habit" element={<HabitPage/>}/>
                     <Route path="/addinfo/favorite" element={<FavoritePage/>}/>
                     <Route path="/addinfo/allergic" element={<AllergicPage/>}/>
