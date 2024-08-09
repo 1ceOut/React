@@ -1,13 +1,11 @@
 import axios from "axios";
 
-const kakao_key = import.meta.env.VITE_API_KEY;
-const kakao_redirect = import.meta.env.VITE_REDIRECT_URL;
+const server_ip = import.meta.env.VITE_API_IP;
 
-const kakao_loin = async () => await axios.get(`https://kauth.kakao.com/oauth/authorize?client_id=${kakao_key}&redirect_uri=${kakao_redirect}&response_type=code`).then(res => res.data);
-
-const get_jwt = async (provider, accesstoken) => {
+const Kakao_GetAccessToken = async (provider, accesstoken) => {
     try {
-        const response = await axios.get(`http://localhost:8090/api/login/kakao`, {
+        const response = await axios.get(`${server_ip}/api/login/kakao`, {
+            withCredentials: true,
             params: {
                 accesstoken: accesstoken
             }
@@ -19,5 +17,36 @@ const get_jwt = async (provider, accesstoken) => {
     }
 };
 
-export {kakao_loin,get_jwt};
+const Naver_GetAccessToken = async (accesstoken,state) => {
+    try {
+        const response = await axios.get(`${server_ip}/api/login/naver`, {
+            withCredentials: true,
+            params: {
+                accesstoken: accesstoken,
+                state: state
+            }
+        });
+        return response.data; // Return the data from the response
+    } catch (error) {
+        console.error('Error fetching JWT:', error);
+        throw error; // Rethrow the error for useQuery to handle
+    }
+};
+
+const Google_GetAccessToken = async (accesstoken) => {
+    try {
+        const response = await axios.get(`${server_ip}/api/login/google`, {
+            withCredentials: true,
+            params: {
+                accesstoken: accesstoken,
+            }
+        });
+        return response.data; // Return the data from the response
+    } catch (error) {
+        console.error('Error fetching JWT:', error);
+        throw error; // Rethrow the error for useQuery to handle
+    }
+}
+
+export {Kakao_GetAccessToken,Naver_GetAccessToken,Google_GetAccessToken};
 

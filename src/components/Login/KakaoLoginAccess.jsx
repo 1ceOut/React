@@ -1,18 +1,17 @@
 import React, {useEffect} from 'react';
-import {useLocation, useNavigate, useParams} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
-import {get_jwt} from "../../query/LoginQuery.jsx";
+import {Kakao_GetAccessToken} from "../../query/LoginQuery.jsx";
 
-const LoginAccess = () => {
-    const param = useParams(); //kakao,naver,google
+const KakaoLoginAccess = () => {
     const code = new URLSearchParams(useLocation().search).get("code"); //return code 값
 
     const navigate = useNavigate();
 
     const { data, isLoading, isError, error } = useQuery({
-        queryKey: ["user", code, param], // Include code and param in the query key for caching
-        queryFn: () => get_jwt(param, code), // Call get_jwt with the parameters
-        enabled: !!code && !!param, // Only run the query if code and param are truthy
+        queryKey: ["user", code], // Include code and param in the query key for caching
+        queryFn: () => Kakao_GetAccessToken("kakao", code), // Call get_jwt with the parameters
+        enabled: !!code, // Only run the query if code and param are truthy
         retry: false,
         refetchOnWindowFocus : false,
     });
@@ -37,7 +36,6 @@ const LoginAccess = () => {
 
     return null; // Fallback return
 
-    return null;
 };
 
-export default LoginAccess;
+export default KakaoLoginAccess;

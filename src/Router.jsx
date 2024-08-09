@@ -7,10 +7,12 @@ import HabitPage from './Pages/AddInfo/HabitPage';
 import FavoritePage from './Pages/AddInfo/FavoritePage';
 import AllergicPage from './Pages/AddInfo/AllergicPage';
 import SignUpCompletePage from './Pages/SignUpCompletePage';
-import LoginAccess from './components/Login/LoginAccess';
 import FridgeManagePage from './Pages/Refrigerator/FridgeManagePage.jsx';
 import AlertPage from './Pages/Alert/AlertPage';
 import NoAlertPage from './Pages/Alert/NoAlertPage';
+import KakaoLoginAccess from './components/Login/KakaoLoginAccess.jsx';
+import NaverLoginAccess from "./components/Login/NaverLoginAccess.jsx";
+import GoogleLoginAccess from "./components/Login/GoogleLoginAccess.jsx";
 
 const queryClient = new QueryClient();
 
@@ -21,9 +23,9 @@ const Router = () => {
                 <Routes>
                     {/* 로그인  */}
                     <Route path="/login" element={<LoginPage/>} />
-                    <Route path="/login/oauth2/code/:provider" element={<LoginAccess/>} />
-
-                    {/* 회원가입 */}
+                    <Route path="/login/oauth2/code/kakao" element={<KakaoLoginAccess/>} />
+                    <Route path="/login/oauth2/code/naver" element={<NaverLoginAccess/>}/>
+                    <Route path="/login/oauth2/code/google" element={<GoogleLoginAccess/>}/>
                     <Route path="/addinfo/habit" element={<HabitPage/>}/>
                     <Route path="/addinfo/favorite" element={<FavoritePage/>}/>
                     <Route path="/addinfo/allergic" element={<AllergicPage/>}/>
