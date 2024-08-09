@@ -9,7 +9,7 @@ const InputForm = () => {
   };
 
   return (
-    <div className='self-stretch w-[480px]'>
+    <div className='self-stretch w-[342px]'>
       <div className="self-stretch border rounded-[12px] w-[342px] flex justify-center items-center my-4">
         <input
           id="food"
