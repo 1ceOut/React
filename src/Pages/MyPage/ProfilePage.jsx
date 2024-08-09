@@ -1,7 +1,8 @@
 
-import ProfileInfo from '../../components/Profile/ProfileInfo';
 import MenuNavigate from './../../components/Common/MenuNavigate';
-import NavigateButton from './../../components/Profile/NavigateButton';
+import ProfileInfo from './../../components/Mypage/Profile/ProfileInfo';
+import NavigateButton from './../../components/Mypage/Profile/NavigateButton';
+
 
 const ProfilePage = () => {
     return (
