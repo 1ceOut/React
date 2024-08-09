@@ -14,6 +14,11 @@ import KakaoLoginAccess from './components/Login/KakaoLoginAccess.jsx';
 import NaverLoginAccess from "./components/Login/NaverLoginAccess.jsx";
 import GoogleLoginAccess from "./components/Login/GoogleLoginAccess.jsx";
 import ProfilePage from './Pages/MyPage/ProfilePage';
+import FridgeDelete from './Pages/MyPage/FridgeDelete';
+import UserDelete from './Pages/MyPage/UserDelete';
+import UserInvite from './Pages/MyPage/UserInvite';
+import FridgeUpdate from './Pages/MyPage/FridgeUpdate';
+import QRCode from './Pages/MyPage/QRCode';
 
 const queryClient = new QueryClient();
 
@@ -39,11 +44,17 @@ const Router = () => {
                     <Route path="/fridge/fridgemanage" element={<FridgeManagePage/>}/>
 
                     {/* 알림 */}
-                    <Route path="alert/alert" element={<AlertPage/>}/>
-                    <Route path="alert/noalert" element={<NoAlertPage/>}/>
+                    <Route path="/alert/alert" element={<AlertPage/>}/>
+                    <Route path="/alert/noalert" element={<NoAlertPage/>}/>
 
                     {/* 마이페이지 */}
-                    <Route path="mypage/profile" element={<ProfilePage/>}/>
+                    <Route path="/mypage/profile" element={<ProfilePage/>}/>
+                    <Route path="/mypage/fridgedelete" element={<FridgeDelete/>}/> 
+                    <Route path="/mypage/fridgeupdate" element={<FridgeUpdate/>}/>
+                    <Route path="/mypage/userinvite" element={<UserInvite/>}/>
+                    <Route path="/mypage/userdelete" element={<UserDelete/>}/>
+                    <Route path="/mypage/qrcode" element={<QRCode/>}/>
+
                 </Routes>
             </BrowserRouter>
             <ReactQueryDevtools />

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
-const MenuNavigate = ({ option, alertPath, profilePath }) => {
+const MenuNavigate = ({ option, alertPath }) => {
     const navigate =useNavigate();
   
     const alertNavigation = () => {
@@ -9,7 +9,7 @@ const MenuNavigate = ({ option, alertPath, profilePath }) => {
     }
 
     const profileNavigation = () => {
-        navigate(profilePath);
+        navigate("/mypage/profile");
     }
 
     return (
