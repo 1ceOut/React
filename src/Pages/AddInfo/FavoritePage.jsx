@@ -5,7 +5,7 @@ import InputForm from './../../components/AddInfo/Favorite/InputForm';
 
 const FavoritePage = () => {
     return ( 
-        <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px]">
+        <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
             <Navigation currentStep={2} nextPath="/addinfo/allergic"/>
             <Header/>
             <InputForm/>

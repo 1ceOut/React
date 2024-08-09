@@ -8,7 +8,7 @@ import CategoryFood from './../../components/Refrigerator/FridgeManage/CategoryF
 
 const FridgeManagePage = () => {
     return (
-        <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px]">
+        <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
             <MenuNavigate option={"나의 냉장고"} alertPath="/addinfo/habit" profilePath="/addinfo/habit"/>
             <FridgeSelect/>
             <div className="self-stretch pt-[10px]">

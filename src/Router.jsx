@@ -13,6 +13,7 @@ import NoAlertPage from './Pages/Alert/NoAlertPage';
 import KakaoLoginAccess from './components/Login/KakaoLoginAccess.jsx';
 import NaverLoginAccess from "./components/Login/NaverLoginAccess.jsx";
 import GoogleLoginAccess from "./components/Login/GoogleLoginAccess.jsx";
+import ProfilePage from './Pages/MyPage/ProfilePage';
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,9 @@ const Router = () => {
                     {/* 알림 */}
                     <Route path="alert/alert" element={<AlertPage/>}/>
                     <Route path="alert/noalert" element={<NoAlertPage/>}/>
+
+                    {/* 마이페이지 */}
+                    <Route path="mypage/profile" element={<ProfilePage/>}/>
                 </Routes>
             </BrowserRouter>
             <ReactQueryDevtools />
