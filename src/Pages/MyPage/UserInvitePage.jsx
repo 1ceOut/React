@@ -1,6 +1,6 @@
 
 
-const QRCode = () => {
+const UserInvitePage = () => {
     return (
         <div>
             
@@ -8,4 +8,4 @@ const QRCode = () => {
     );
 };
 
-export default QRCode;
+export default UserInvitePage;

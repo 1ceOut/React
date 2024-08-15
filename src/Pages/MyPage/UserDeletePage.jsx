@@ -1,6 +1,6 @@
 
 
-const FridgeUpdate = () => {
+const UserDeletePage = () => {
     return (
         <div>
             
@@ -8,4 +8,4 @@ const FridgeUpdate = () => {
     );
 };
 
-export default FridgeUpdate;
+export default UserDeletePage;

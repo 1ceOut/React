@@ -20,7 +20,7 @@ const FridgeManagePage = () => {
             <div className="self-stretch pt-5">
                 <CategoryFood/>
             </div>
-            <DetailButton foodCategory={"meat"} expireDate={"2024.08.24"} option={"[브룩클린688] 호주산 토시살 구이용 냉장고기"}/>
+            <DetailButton foodCategory={"meat"} expireDate={"2024.08.08"} option={"[브룩클린688] 호주산 토시살 구이용 냉장고기"}/>
         </main>
     );
 };
