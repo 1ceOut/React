@@ -1,18 +1,11 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import NextButton from './../Common/NextButton';
 
 const HabbitSelect = () => {
   const [selectedOption, setSelectedOption] = useState(null);
-  const navigate = useNavigate();
 
   const handleSelection = (option) => {
     setSelectedOption(option);
-  };
-
-  const handleSubmit = () => {
-    if (selectedOption) {
-      navigate('/addinfo/favorite');
-    }
   };
 
   const options = [
@@ -23,32 +16,27 @@ const HabbitSelect = () => {
 
   return (
     <div className="self-stretch w-[480px]">
-      <div className='h-[220px] flex flex-col justify-evenly'>
-      {options.map((option, index) => (
-        <div
-          key={index}
-          onClick={() => handleSelection(option)}
-          className={`flex font-['Pretendard'] text-[#191F28] text-base font-semibold items-center justify-center w-[342px] h-14 border rounded-[12px] cursor-pointer ${
-            selectedOption === option ? 'border-blue-500' : 'border-[#E1E1E1]'
-          }`}
-        >
-          <div className="flex items-center justify-center w-[302px] h-[19px]">
-            {option}
-          </div>
-          {selectedOption === option && (
-            <div className="text-blue-500">&#10003;</div>
-          )}
-        </div>
-      ))}
+      <div className="h-[220px] flex flex-col justify-evenly">
+        {options.map((option, index) => (
+          <label
+            key={index}
+            className={`flex items-center font-['Pretendard'] text-[#191F28] text-base font-semibold w-[342px] h-14 border rounded-xl cursor-pointer ${
+              selectedOption === option ? 'border-blue-500' : 'border-[#E1E1E1]'
+            } hover:border-[#E1E1E1]`}
+          >
+            <input
+              type="checkbox"
+              checked={selectedOption === option}
+              onChange={() => handleSelection(option)}
+              className="w-6 h-6 ml-2 border-solid border-[#E1E1E1] rounded-md bg-gray-200 checked:bg-blue-500 checked:border-blue-500 hover:border-[#E1E1E1]"
+            />
+            <div className="flex-1 flex justify-center w-[342px]">
+              <span>{option}</span>
+            </div>
+          </label>
+        ))}
       </div>
-      <div
-        className={`flex text-[#868686] rounded-[12px] self-stretch justify-center items-center w-[342px] h-14 mt-60 cursor-pointer ${
-          selectedOption ? 'bg-blue-500 text-white' : 'bg-[#D1D1D1]'
-        }`}
-        onClick={selectedOption ? handleSubmit : null}
-      >
-        다음
-      </div>
+      <NextButton isEnabled={!!selectedOption} nextPath="/addinfo/favorite" />
     </div>
   );
 };

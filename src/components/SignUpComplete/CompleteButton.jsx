@@ -1,15 +1,20 @@
 
+import { useNavigate } from 'react-router-dom';
 
 const CompleteButton = () => {
+  const navigate = useNavigate();
+
+  const handleSubmit = () => {
+      navigate("/");
+  };
 
     return (
-        <div>
             <div
-    className={`flex flex-col text-white rounded-[12px] self-stretch justify-center items-center w-[342px] h-14 mt-60 cursor-pointer bg-blue-500`}
-  >
-    완료
-  </div>
-        </div>
+              className={`flex text-white rounded-xl self-stretch absolute justify-center items-center w-[342px] h-14 cursor-pointer bottom-[54px] bg-blue-500`}
+              onClick={handleSubmit}
+            >
+              완료
+            </div>
     );
 };
 
