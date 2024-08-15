@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import FridgeDeleteButton from './FridgeDeleteButton';
 
 const FridgeSelect = () => {
 
@@ -17,6 +18,12 @@ const FridgeSelect = () => {
     return (
         <div className="self-stretch w-[480px]">
                 <div className='h-[220px] flex flex-col justify-evenly'>
+                        <div
+                            type="checkbox"
+                            className="w-11 h-11 appearance-none border-solid border border-pointColor1 rounded-md
+                                checked:bg-pointColor1 checked:bg-[url('https://icnlbuaakhminucvvzcj.supabase.co/storage/v1/object/public/assets/checkbox.png')]
+                                bg-md bg-no-repeat bg-center"
+                        />
                     {options.map((option, index) => (
                     <div
                         key={index}
@@ -34,7 +41,7 @@ const FridgeSelect = () => {
                     </div>
                     ))}
                 </div>
-            버튼
+            <FridgeDeleteButton isEnabled={!!selectedOption} nextPath=" /addinfo/favorite" />
         </div>
     );
 };
