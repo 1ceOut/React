@@ -18,7 +18,6 @@ import FridgeDeletePage from './Pages/MyPage/FridgeDeletePage.jsx';
 import UserDeletePage from './Pages/MyPage/UserDeletePage.jsx';
 import UserInvitePage from './Pages/MyPage/UserInvitePage.jsx';
 import FridgeUpdatePage from './Pages/MyPage/FridgeUpdatePage.jsx';
-import QRCodePage from './Pages/MyPage/QRCodePage.jsx';
 
 const queryClient = new QueryClient();
 
@@ -53,7 +52,6 @@ const Router = () => {
                     <Route path="/mypage/fridgeupdate" element={<FridgeUpdatePage/>}/>
                     <Route path="/mypage/userinvite" element={<UserInvitePage/>}/>
                     <Route path="/mypage/userdelete" element={<UserDeletePage/>}/>
-                    <Route path="/mypage/qrcode" element={<QRCodePage/>}/>
 
                 </Routes>
             </BrowserRouter>
