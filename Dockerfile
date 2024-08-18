@@ -19,8 +19,11 @@ RUN npm run build
 # 5. Nginx를 사용하여 정적 파일을 서빙
 FROM nginx:alpine
 
+RUN rm /etc/nginx/conf.d/default.conf
+
+
 # 6. Nginx 설정 파일 복사
-COPY ./nginx.conf /etc/nginx/nginx.conf
+COPY ./nginx.conf /etc/nginx/conf.d/nginx.conf
 
 # 7. 빌드된 파일을 Nginx의 기본 웹 디렉토리로 복사
 COPY --from=build /app/dist /usr/share/nginx/html
