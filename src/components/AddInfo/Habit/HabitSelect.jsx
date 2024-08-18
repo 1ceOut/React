@@ -16,11 +16,11 @@ const HabbitSelect = () => {
 
   return (
     <div className="self-stretch">
-      <div className="h-[220px] flex flex-col justify-evenly">
+      <div className="h-[220px] flex flex-col">
         {options.map((option, index) => (
           <label
             key={index}
-            className={`flex items-center font-['Pretendard'] text-[#191F28] text-base font-semibold w-[342px] h-14 border rounded-xl cursor-pointer ${
+            className={`flex items-center font-['Pretendard'] text-[#191F28] text-base font-semibold w-[342px] h-14 mb-3 border rounded-xl cursor-pointer ${
               selectedOption === option ? 'border-blue-500' : 'border-[#E1E1E1]'
             } hover:border-[#E1E1E1]`}
           >

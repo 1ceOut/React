@@ -16,31 +16,27 @@ const FridgeSelect = () => {
     ];
     
     return (
-        <div className="self-stretch w-[480px]">
-                <div className='h-[220px] flex flex-col justify-evenly'>
-                        <div
-                            type="checkbox"
-                            className="w-11 h-11 appearance-none border-solid border border-pointColor1 rounded-md
-                                checked:bg-pointColor1 checked:bg-[url('https://icnlbuaakhminucvvzcj.supabase.co/storage/v1/object/public/assets/checkbox.png')]
-                                bg-md bg-no-repeat bg-center"
-                        />
-                    {options.map((option, index) => (
-                    <div
-                        key={index}
-                        onClick={() => handleSelection(option)}
-                        className={`flex font-['Pretendard'] text-[#191F28] text-base font-semibold items-center justify-center w-[342px] h-14 border rounded-xl cursor-pointer ${
-                        selectedOption === option ? 'border-blue-500' : 'border-[#E1E1E1]'
-                        }`}
-                    >
-                        <div className="flex items-center justify-center w-full px-5 h-[19px]">
-                            {option}
-                        </div>
-                        {selectedOption === option && (
-                            <div className="text-blue-500">&#10003;</div>
-                        )}
+        <div className="self-stretch">
+            <div className="h-[220px] flex flex-col">
+                {options.map((option, index) => (
+                <label
+                    key={index}
+                    className={`flex items-center font-['Pretendard'] text-[#191F28] text-base font-semibold w-[342px] h-14 mb-3 border rounded-xl cursor-pointer ${
+                    selectedOption === option ? 'border-blue-500' : 'border-[#E1E1E1]'
+                    } hover:border-[#E1E1E1]`}
+                >
+                    <input
+                    type="checkbox"
+                    checked={selectedOption === option}
+                    onChange={() => handleSelection(option)}
+                    className="w-6 h-6 ml-2 border-solid border-[#E1E1E1] rounded-md cursor-pointer bg-gray-200 checked:bg-blue-500 checked:border-blue-500 hover:border-[#E1E1E1]"
+                    />
+                    <div className="flex justify-center w-[342px]">
+                    {option}
                     </div>
-                    ))}
-                </div>
+                </label>
+                ))}
+            </div>
             <FridgeDeleteButton isEnabled={!!selectedOption} nextPath=" /addinfo/favorite" />
         </div>
     );
