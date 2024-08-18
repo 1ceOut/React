@@ -4,7 +4,7 @@ import FridgeDeleteButton from './FridgeDeleteButton';
 
 const FridgeSelect = () => {
 
-    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedOption, setSelectedOption] = useState('');
 
     const handleSelection = (option) => {
         setSelectedOption(option);
@@ -32,7 +32,7 @@ const FridgeSelect = () => {
                     className="w-6 h-6 ml-2 border-solid border-[#E1E1E1] rounded-md cursor-pointer bg-gray-200 checked:bg-blue-500 checked:border-blue-500 hover:border-[#E1E1E1]"
                     />
                     <div className="flex justify-center w-[342px]">
-                    {option}
+                        {option}
                     </div>
                 </label>
                 ))}
