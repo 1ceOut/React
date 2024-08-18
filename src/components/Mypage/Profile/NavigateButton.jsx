@@ -20,10 +20,6 @@ const NavigateButton = () => {
                     <img className="w-7 h-7 mr-[10px]" src="/assets/cheese.png" alt="버튼 이미지"/> 
                     초대 코드
                 </div>
-                <div className="flex justify-center items-center h-[50px] cursor-pointer" onClick={() => handleNavigate("/mypage/qrcode")}>
-                    <img className="w-7 h-7 mr-[10px]" src="/assets/cheese.png" alt="버튼 이미지"/>
-                    QR코드
-                </div>
             </div>
             <div className="flex flex-col justify-start items-start w-1/2 h-full">
                 <div className="flex justify-center items-center h-[50px] cursor-pointer" onClick={() => handleNavigate("/mypage/fridgedelete")}>

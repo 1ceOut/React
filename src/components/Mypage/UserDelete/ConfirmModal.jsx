@@ -5,18 +5,21 @@ const ConfirmModal = ({ isOpen, onClose, onConfirm }) => {
   
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="bg-white rounded-lg p-6 w-[300px]">
-          <h2 className="text-lg font-semibold mb-4">일반 냉장고를 정말 삭제하시겠어요?</h2>
-          <div className="flex justify-end space-x-4">
+        <div className="bg-white rounded-lg p-6 w-[342px] h-[224px]">
+          <div className='flex justify-center items-center mb-[14px]'>
+            <img src="/assets/confirm.png" alt="확인 그림" />
+          </div>
+          <h2 className="flex justify-center items-center font-semibold mb-[31px]">일반 냉장고를 정말 삭제하시겠어요?</h2>
+          <div className="flex justify-end space-x-[10px]">
             <button
               onClick={onClose}
-              className="px-4 py-2 bg-gray-300 rounded-lg"
+              className="px-[44px] py-[18px] border-[1px] border-[#E1E1E1] rounded-xl w-[146px] h-[56px] font-semibold"
             >
               아니요
             </button>
             <button
               onClick={onConfirm}
-              className="px-4 py-2 bg-red-500 text-white rounded-lg"
+              className="px-[66px] py-[18px] border-[1px] border-[#E1E1E1] rounded-xl w-[146px] h-[56px] font-semibold"
             >
               네
             </button>
