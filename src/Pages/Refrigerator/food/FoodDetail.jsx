@@ -10,7 +10,7 @@ const FoodDetail=()=>{
         </div>
         <div>
             <div style={{width:114,height:17,top:140,left:96}}>
-                <p style={{fontWeight:400,fontSize:14}}>유제품.동물성.식물성.</p>
+                <p style={{fontWeight:400,fontSize:14}}>유제품.동물성.식물성</p>
             </div>
         </div>
         </div>
