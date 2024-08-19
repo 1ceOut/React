@@ -1,7 +1,9 @@
 import HorizontalLine from "../../components/Common/HorizontalLine";
 import MenuNavigate from "../../components/Common/MenuNavigate";
+import FeedContent from "../../components/Community/Feed/FeedTitle";
+import FeedMenu from "../../components/Community/Feed/FeedMenu";
 import Profile from "../../components/Community/Feed/Profile";
-import Feed from './../../components/Community/Feed/Feed';
+import FeedTitle from './../../components/Community/Feed/FeedTitle';
 
 
 const FeedPage = () => {
@@ -10,7 +12,9 @@ const FeedPage = () => {
             <MenuNavigate/>
             <Profile/>
             <HorizontalLine/>
-            <Feed/>
+            <FeedTitle/>
+            <FeedContent/>
+            <FeedMenu/>
         </main>
     );
 };
