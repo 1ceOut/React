@@ -50,7 +50,7 @@ const DetailButton = ({ foodCategory, expireDate, option }) => {
             <img src={getCategoryImage(foodCategory)} alt={foodCategory} className="w-[28px] h-[28px]"/>
         </div>
         <div className="flex flex-col">
-          <div className={`text-[13px] ${getTextColor(remainingDays)}`}>{`D-${remainingDays}`}</div>
+          <div className={`text-[13px] ${getTextColor(remainingDays)}`}>{`${remainingDays>=0?"D":"D+"}${remainingDays}`}</div>
           <div className="w-[250px] text-[15px] text-[#333D4B] truncate">{option}</div>
         </div>
       </div>

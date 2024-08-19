@@ -1,6 +1,6 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import LoginPage from "./Pages/LoginPage.jsx";
-import HomePage from './Pages/HomePage.jsx';
+import HomePage from './Pages/Main/HomePage.jsx';
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 import HabitPage from './Pages/AddInfo/HabitPage';
@@ -14,11 +14,10 @@ import KakaoLoginAccess from './components/Login/KakaoLoginAccess.jsx';
 import NaverLoginAccess from "./components/Login/NaverLoginAccess.jsx";
 import GoogleLoginAccess from "./components/Login/GoogleLoginAccess.jsx";
 import ProfilePage from './Pages/MyPage/ProfilePage';
-import FridgeDelete from './Pages/MyPage/FridgeDelete';
-import UserDelete from './Pages/MyPage/UserDelete';
-import UserInvite from './Pages/MyPage/UserInvite';
-import FridgeUpdate from './Pages/MyPage/FridgeUpdate';
-import QRCode from './Pages/MyPage/QRCode';
+import FridgeDeletePage from './Pages/MyPage/FridgeDeletePage.jsx';
+import UserDeletePage from './Pages/MyPage/UserDeletePage.jsx';
+import UserInvitePage from './Pages/MyPage/UserInvitePage.jsx';
+import FridgeUpdatePage from './Pages/MyPage/FridgeUpdatePage.jsx';
 
 const queryClient = new QueryClient();
 
@@ -49,11 +48,10 @@ const Router = () => {
 
                     {/* 마이페이지 */}
                     <Route path="/mypage/profile" element={<ProfilePage/>}/>
-                    <Route path="/mypage/fridgedelete" element={<FridgeDelete/>}/> 
-                    <Route path="/mypage/fridgeupdate" element={<FridgeUpdate/>}/>
-                    <Route path="/mypage/userinvite" element={<UserInvite/>}/>
-                    <Route path="/mypage/userdelete" element={<UserDelete/>}/>
-                    <Route path="/mypage/qrcode" element={<QRCode/>}/>
+                    <Route path="/mypage/fridgedelete" element={<FridgeDeletePage/>}/> 
+                    <Route path="/mypage/fridgeupdate" element={<FridgeUpdatePage/>}/>
+                    <Route path="/mypage/userinvite" element={<UserInvitePage/>}/>
+                    <Route path="/mypage/userdelete" element={<UserDeletePage/>}/>
 
                 </Routes>
             </BrowserRouter>

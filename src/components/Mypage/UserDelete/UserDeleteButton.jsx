@@ -2,7 +2,7 @@ import { useState } from 'react';
 import ConfirmModal from './ConfirmModal';
 import { PropTypes } from 'prop-types';
 
-const FridgeDeleteButton = ( {isEnabled} ) => {
+const UserDeleteButton = ( {isEnabled} ) => {
     const [isModalOpen, setIsModalOpen] = useState('');
 
     const handleDeleteClick = () => {
@@ -38,8 +38,8 @@ const FridgeDeleteButton = ( {isEnabled} ) => {
     );
 };
 
-FridgeDeleteButton.propTypes = {
+UserDeleteButton.propTypes = {
   isEnabled: PropTypes.bool.isRequired,
 };
 
-export default FridgeDeleteButton;
+export default UserDeleteButton;
