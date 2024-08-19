@@ -24,12 +24,3 @@ dist-ssr
 *.sw?
 .env
 
-.cache/
-.config/
-.gradle/
-.idea/
-*.log
-*.zip
-*.pdf
-.DS_Store
-node_modules/
