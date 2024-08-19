@@ -1,9 +1,8 @@
-import React from 'react';
-import Notification from "../components/Home/Notification.jsx";
-import Header from "../components/Home/Header.jsx";
-import Refrigerator from "../components/Home/Refrigerator.jsx";
-import ProductCard from "../components/Home/ProductCard.jsx";
-import Community from "../components/Home/Community.jsx";
+import Notification from "../../components/Home/Notification.jsx";
+import Header from "../../components/Home/Header.jsx";
+import Refrigerator from "../../components/Home/Refrigerator.jsx";
+import ProductCard from "../../components/Home/ProductCard.jsx";
+import Community from "../../components/Home/Community.jsx";
 
 const HomePage = () => {
     return (

@@ -1,6 +1,6 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import LoginPage from "./Pages/LoginPage.jsx";
-import HomePage from './Pages/HomePage.jsx';
+import HomePage from './Pages/Main/HomePage.jsx';
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 import HabitPage from './Pages/AddInfo/HabitPage';
