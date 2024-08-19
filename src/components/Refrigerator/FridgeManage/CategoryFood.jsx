@@ -1,10 +1,10 @@
+import PropTypes from 'prop-types';
 
-
-const CategoryFood = () => {
+const CategoryFood = ({option}) => {
     return (
         <div className="self-stretch flex items-center justify-between w-[342px]">
              <div className="text-xl">
-                유제품
+                {option}
              </div>
              <div className="text-sm text-[#767676]">
                 전체보기
@@ -12,5 +12,9 @@ const CategoryFood = () => {
         </div>
     );
 };
+
+CategoryFood.propTypes = {
+    option: PropTypes.string.isRequired
+  };
 
 export default CategoryFood;
