@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 
 
 const Community = () => {
@@ -7,11 +8,17 @@ const Community = () => {
         { title: "대학생 자취 꿀 레시피 공유한다", date: "2024.07.27" }
     ];
 
+    const navigate = useNavigate();
+
+    const communityNavigation = () => {
+        navigate("/community/feed")
+    }
+
     return (
         <section className="self-stretch">
             <div className="flex gap-5 justify-between whitespace-nowrap">
                 <h2 className="text-lg font-semibold tracking-tight text-gray-900">커뮤니티</h2>
-                <div className="text-sm tracking-tight text-neutral-500 underline">전체보기</div>
+                <div className="text-sm tracking-tight text-neutral-500 underline cursor-pointer" onClick={communityNavigation}>전체보기</div>
             </div>
             {posts.map((post, index) => (
                 <div key={index} className="flex gap-5 mt-9">

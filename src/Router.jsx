@@ -18,6 +18,10 @@ import FridgeDeletePage from './Pages/MyPage/FridgeDeletePage.jsx';
 import UserDeletePage from './Pages/MyPage/UserDeletePage.jsx';
 import UserInvitePage from './Pages/MyPage/UserInvitePage.jsx';
 import FridgeUpdatePage from './Pages/MyPage/FridgeUpdatePage.jsx';
+import FeedPage from "./Pages/Community/FeedPage.jsx";
+import FeedDetailPage from './Pages/Community/FeedDetailPage';
+import FeedPlusPage from './Pages/Community/FeedPlusPage';
+import MyFeedPage from './Pages/Community/MyFeedPage';
 
 const queryClient = new QueryClient();
 
@@ -52,6 +56,12 @@ const Router = () => {
                     <Route path="/mypage/fridgeupdate" element={<FridgeUpdatePage/>}/>
                     <Route path="/mypage/userinvite" element={<UserInvitePage/>}/>
                     <Route path="/mypage/userdelete" element={<UserDeletePage/>}/>
+
+                    {/* 커뮤니티 */}
+                    <Route path="community/feed" element={<FeedPage/>}/>
+                    <Route path="community/feeddetail" element={<FeedDetailPage/>}/>
+                    <Route path="community/feedplus" element={<FeedPlusPage/>}/>
+                    <Route path="community/myfeed" element={<MyFeedPage/>}/>
 
                 </Routes>
             </BrowserRouter>
