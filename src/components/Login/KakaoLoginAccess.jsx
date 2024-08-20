@@ -2,11 +2,12 @@ import React, {useEffect} from 'react';
 import {useLocation, useNavigate} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 import {Kakao_GetAccessToken} from "../../query/LoginQuery.jsx";
-import {CircularProgress} from "@mui/joy";
 import LoadingBar from "./LoadingBar.jsx";
+import useUserStore from "../../store/useUserStore.js";
 
 const KakaoLoginAccess = () => {
     const code = new URLSearchParams(useLocation().search).get("code"); //return code 값
+    const {LoginSuccessStatus} = useUserStore();
 
     const navigate = useNavigate();
 
@@ -27,7 +28,8 @@ const KakaoLoginAccess = () => {
         if (isError) {
             navigate("/login"); // Navigate to login on error
         } else if (data && data.accessToken) {
-            localStorage.setItem('accessToken', data.accessToken); // Store the token in local storage
+            LoginSuccessStatus(data.accessToken);
+            //localStorage.setItem('accessToken', data.accessToken); // 로컬 스토리지에 저장
             navigate("/"); // Navigate to the home page after storing the token
         }
     }, [isLoading, isError, data, navigate]); // Dependencies for useEffect
