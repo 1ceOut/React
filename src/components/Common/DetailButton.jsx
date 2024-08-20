@@ -30,10 +30,14 @@ const DetailButton = ({ foodCategory, expireDate, option }) => {
     switch(foodCategory) {
       case 'meat':
         return '/assets/meet.png';
-      case 'vegetables':
+      case 'chicken':
         return '/assets/chicken.png';
-      case 'processed food':
+      case 'cheese':
         return '/assets/cheese.png';
+        case 'milkcow':
+        return '/assets/milkcow.png';
+        case 'groundmeat':
+          return '/assets/groundmeat.png';
       default:
         return '/assets/meet.png';
     }

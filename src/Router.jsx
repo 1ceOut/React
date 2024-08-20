@@ -22,6 +22,10 @@ import FeedPage from "./Pages/Community/FeedPage.jsx";
 import FeedDetailPage from './Pages/Community/FeedDetailPage';
 import FeedPlusPage from './Pages/Community/FeedPlusPage';
 import MyFeedPage from './Pages/Community/MyFeedPage';
+import AddFood from './Pages/Refrigerator/food/AddFood.jsx';
+import AddInput from './Pages/Refrigerator/food/AddInput.jsx';
+import FoodDetail from './Pages/Refrigerator/food/FoodDetail.jsx'; 
+import FoodList from "./Pages/Refrigerator/food/FoodList.jsx";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +49,11 @@ const Router = () => {
 
                     {/* 냉장고 관리 */}
                     <Route path="/fridge/fridgemanage" element={<FridgeManagePage/>}/>
+                    <Route path="/Refrigerator/food/AddFood" element={<AddFood/>}/>
+                    <Route path="/Refrigerator/food/AddInput" element={<AddInput/>}/> 
+                    <Route path="/Refrigerator/food/FoodDetail" element={<FoodDetail/>}/>
+                    <Route path="/Refrigerator/food/FoodList" element={<FoodList/>}/>
+
 
                     {/* 알림 */}
                     <Route path="/alert/alert" element={<AlertPage/>}/>
