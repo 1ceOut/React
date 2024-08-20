@@ -12,7 +12,7 @@ const ProfileMenu = () => {
 
     return (
         <div className="self-stretch flex justify-between mt-6">
-            <div className="self-stretc flex">
+            <div className="self-stretch flex">
                 <div className="mr-[14px] mb-8">
                     <img src="/assets/cha.png" alt="차은우" className="w-20 h-20"/>
                 </div>
@@ -28,10 +28,16 @@ const ProfileMenu = () => {
                 </div>
             </div>
             <div>
-                <img src="/assets/cogwheel.png" alt="톱니바퀴" className="cursor-pointer" onClick={handleMenuClick}/>
-                <MenuModal
-                    isOpen={isModalOpen}
-                />
+                {isModalOpen ? (
+                        <MenuModal isOpen={isModalOpen} />
+                    ) : (
+                        <img 
+                            src="/assets/cogwheel.png" 
+                            alt="톱니바퀴" 
+                            className="cursor-pointer" 
+                            onClick={handleMenuClick}
+                        />
+                    )}
             </div>
         </div>
     );
