@@ -3,10 +3,30 @@ import DetailButton from "../../../components/Common/DetailButton";
 import MenuNavigate from "../../../components/Common/MenuNavigate";
 import SearchForm from "../../../components/Refrigerator/Common/SearchForm";
 
-
 const FoodList = () => {
     const [showPopup, setShowPopup] = useState(false);
+    const [selectedOption, setSelectedOption] = useState(null); // 선택된 옵션 상태 추가
+
     const togglePopup = () => setShowPopup(!showPopup);
+
+    const handleOptionClick = (option) => {
+        setSelectedOption(option); // 버튼 클릭 시 선택된 옵션 업데이트
+    };
+
+    const buttonStyle = (option) => ({
+        width: 108,
+        height: 56,
+        borderRadius: 12,
+        border: selectedOption === option ? '1px solid #2377EF' : '1px solid #E1E1E1',
+        color: selectedOption === option ? '#2377EF' : '#000',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        fontWeight: 400,
+        fontSize: 16,
+        cursor: 'pointer',
+    });
 
     return (
         <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
@@ -168,50 +188,20 @@ const FoodList = () => {
                             }}
                         >
                             <div
-                                style={{
-                                    width: 108,
-                                    height: 56,
-                                    borderRadius: 12,
-                                    border: '1px solid #E1E1E1',
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    textAlign: 'center',
-                                    fontWeight: 400,
-                                    fontSize: 16
-                                }}
+                                style={buttonStyle('이름 순')}
+                                onClick={() => handleOptionClick('이름 순')}
                             >
                                 이름 순
                             </div>
                             <div
-                                style={{
-                                    width: 108,
-                                    height: 56,
-                                    borderRadius: 12,
-                                    border: '1px solid #E1E1E1',
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    textAlign: 'center',
-                                    fontWeight: 400,
-                                    fontSize: 16
-                                }}
+                                style={buttonStyle('등록일 순')}
+                                onClick={() => handleOptionClick('등록일 순')}
                             >
                                 등록일 순
                             </div>
                             <div
-                                style={{
-                                    width: 108,
-                                    height: 56,
-                                    borderRadius: 12,
-                                    border: '1px solid #E1E1E1',
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    textAlign: 'center',
-                                    fontWeight: 400,
-                                    fontSize: 16
-                                }}
+                                style={buttonStyle('유통기한 순')}
+                                onClick={() => handleOptionClick('유통기한 순')}
                             >
                                 유통기한 순
                             </div>

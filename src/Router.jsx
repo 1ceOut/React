@@ -26,6 +26,11 @@ import AddFood from './Pages/Refrigerator/food/AddFood.jsx';
 import AddInput from './Pages/Refrigerator/food/AddInput.jsx';
 import FoodDetail from './Pages/Refrigerator/food/FoodDetail.jsx'; 
 import FoodList from "./Pages/Refrigerator/food/FoodList.jsx";
+import MyFridge from './Pages/Refrigerator/food/MyFridge.jsx';
+import TalkList from "./Pages/Talk/TalkList.jsx";
+import TalkDetail from "./Pages/Talk/TalkDetail.jsx";
+
+
 
 const queryClient = new QueryClient();
 
@@ -53,6 +58,7 @@ const Router = () => {
                     <Route path="/Refrigerator/food/AddInput" element={<AddInput/>}/> 
                     <Route path="/Refrigerator/food/FoodDetail" element={<FoodDetail/>}/>
                     <Route path="/Refrigerator/food/FoodList" element={<FoodList/>}/>
+                    <Route path="/Refrigerator/food/MyFridge" element={<MyFridge/>}/>
 
 
                     {/* 알림 */}
@@ -71,6 +77,11 @@ const Router = () => {
                     <Route path="community/feeddetail" element={<FeedDetailPage/>}/>
                     <Route path="community/feedcreate" element={<FeedCreatePage/>}/>
                     <Route path="community/myfeed" element={<MyFeedPage/>}/>
+
+                    {/* 채팅방 */}
+                    <Route path="Talk/TalkList" element={<TalkList/>}/>
+                    <Route path="Talk/TalkDetail" element={<TalkDetail/>}/>
+
 
                 </Routes>
             </BrowserRouter>
