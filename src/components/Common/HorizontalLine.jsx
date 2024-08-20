@@ -1,6 +1,6 @@
 const HorizontalLine = () => {
     return (
-        <div className="my-8 w-[342px]">
+      <div className="w-[342px]">
             <hr className="border-t-[1px] border-[#F3F3F3] border-1" />
         </div>
     );
