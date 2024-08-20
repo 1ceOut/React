@@ -24,14 +24,14 @@ const NaverLoginAccess = () => {
 
     useEffect(() => {
         if (isLoading) {
-            return; // Do nothing while loading
+            return <LoadingBar/>; // Do nothing while loading
         }
 
         if (isError) {
             navigate("/login"); // Navigate to login on error
         } else if (data && data.accessToken) {
             LoginSuccessStatus(data.accessToken);
-            localStorage.setItem('accessToken', data.accessToken); // 로컬 스토리지에 저장
+            //localStorage.setItem('accessToken', data.accessToken); // 로컬 스토리지에 저장
             navigate("/"); // Navigate to the home page after storing the token
         }
     }, [isLoading, isError, data, navigate, LoginSuccessStatus]); // Dependencies for useEffect
