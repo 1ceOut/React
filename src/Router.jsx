@@ -18,9 +18,10 @@ import FridgeDeletePage from './Pages/MyPage/FridgeDeletePage.jsx';
 import UserDeletePage from './Pages/MyPage/UserDeletePage.jsx';
 import UserInvitePage from './Pages/MyPage/UserInvitePage.jsx';
 import FridgeUpdatePage from './Pages/MyPage/FridgeUpdatePage.jsx';
-import AddFood from './Pages/Refrigerator/food/AddFood.jsx';  // 새로 추가
-import AddInput from './Pages/Refrigerator/food/AddInput.jsx';  // 새로 추가
-import FoodDetail from './Pages/Refrigerator/food/FoodDetail.jsx';  // 새로 추가
+import AddFood from './Pages/Refrigerator/food/AddFood.jsx';
+import AddInput from './Pages/Refrigerator/food/AddInput.jsx';
+import FoodDetail from './Pages/Refrigerator/food/FoodDetail.jsx'; 
+import FoodList from "./Pages/Refrigerator/food/FoodList.jsx";
 
 const queryClient = new QueryClient();
 
@@ -44,9 +45,11 @@ const Router = () => {
 
                     {/* 냉장고 관리 */}
                     <Route path="/fridge/fridgemanage" element={<FridgeManagePage/>}/>
-                    <Route path="/Refrigerator/food/AddFood" element={<AddFood/>}/> {/* 임포트한 컴포넌트 */}
-                    <Route path="/Refrigerator/food/AddInput" element={<AddInput/>}/> {/* 임포트한 컴포넌트 */}
-                    <Route path="/Refrigerator/food/FoodDetail" element={<FoodDetail/>}/> {/* 임포트한 컴포넌트 */}
+                    <Route path="/Refrigerator/food/AddFood" element={<AddFood/>}/>
+                    <Route path="/Refrigerator/food/AddInput" element={<AddInput/>}/> 
+                    <Route path="/Refrigerator/food/FoodDetail" element={<FoodDetail/>}/>
+                    <Route path="/Refrigerator/food/FoodList" element={<FoodList/>}/>
+
 
                     {/* 알림 */}
                     <Route path="/alert/alert" element={<AlertPage/>}/>
