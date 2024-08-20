@@ -1,6 +1,15 @@
+import MenuModal from "./MenuModal";
+import { useState } from 'react';
 
 
 const ProfileMenu = () => {
+
+    const [isModalOpen, setIsModalOpen] = useState('');
+
+    const handleMenuClick = () => {
+          setIsModalOpen(true);
+      };
+
     return (
         <div className="self-stretch flex justify-between mt-6">
             <div className="self-stretc flex">
@@ -19,7 +28,10 @@ const ProfileMenu = () => {
                 </div>
             </div>
             <div>
-                <img src="/assets/cogwheel.png" alt="톱니바퀴" />
+                <img src="/assets/cogwheel.png" alt="톱니바퀴" className="cursor-pointer" onClick={handleMenuClick}/>
+                <MenuModal
+                    isOpen={isModalOpen}
+                />
             </div>
         </div>
     );
