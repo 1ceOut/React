@@ -7,7 +7,7 @@ import BarNavigate from "../../components/Common/BarNavigate.jsx";
 const HomePage = () => {
     return (
         <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
-            <MenuNavigate/>
+            <MenuNavigate PageTitle={""}/>
             <ProductCard/>
             <Refrigerator/>
             <Community/>
