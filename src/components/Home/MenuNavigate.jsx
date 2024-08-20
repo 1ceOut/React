@@ -4,6 +4,10 @@ import { useNavigate } from 'react-router-dom';
 const MenuNavigate = ({ option }) => {
     const navigate =useNavigate();
 
+    const homeNavigation = () => {
+        navigate("/mypage/profile");
+    }
+
     const chatNavigation = () => {
       navigate("/mypage/profile");
   }
@@ -18,8 +22,10 @@ const MenuNavigate = ({ option }) => {
 
     return (
     <div className="relative self-stretch flex items-center justify-between w-[342px] h-14">
-      <div className="absolute left-0">
-        {'<'}
+      <div className="absolute cursor-pointer left-0 flex justify-center items-center text-[#777C89] font-bold" onClick={homeNavigation}>
+          <img src="/assets/logo.png" alt="logo"
+          className='w-6 h-6 m-[6px]'/>
+          냉모밀
       </div>
       <div className="absolute left-1/2 transform -translate-x-1/2">
         {option}

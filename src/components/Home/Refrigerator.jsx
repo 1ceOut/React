@@ -1,4 +1,4 @@
-import React from 'react';
+
 
 const Refrigerator = () => {
     const items = [
@@ -8,7 +8,7 @@ const Refrigerator = () => {
     ];
 
     return (
-        <section className="flex flex-col px-5 py-7 mt-2.5 w-full bg-white rounded-xl max-w-[380px]">
+        <section className="self-stretch mb-8">
             <div className="flex gap-5 justify-between">
                 <h2 className="text-lg font-semibold tracking-tight text-gray-900">나의 냉장고</h2>
                 <div className="text-sm tracking-tight text-neutral-500 underline">전체보기</div>

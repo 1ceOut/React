@@ -1,21 +1,18 @@
-import Notification from "../../components/Home/Notification.jsx";
-import Header from "../../components/Home/Header.jsx";
 import Refrigerator from "../../components/Home/Refrigerator.jsx";
-import ProductCard from "../../components/Home/ProductCard.jsx";
 import Community from "../../components/Home/Community.jsx";
+import MenuNavigate from "../../components/Home/MenuNavigate.jsx";
+import ProductCard from "../../components/Home/ProductCard.jsx";
+import BarNavigate from "../../components/Common/BarNavigate.jsx";
 
 const HomePage = () => {
     return (
-        <div className='flex flex-col items-center pt-5 pb-2 mx-auto w-full bg-zinc-100 max-w-[480px]'>
-            <Header/>
-            <Notification/>
-            <Refrigerator/>
+        <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
+            <MenuNavigate/>
             <ProductCard/>
-            <img loading="lazy"
-                 src="/assets/shop_progress_bar.png"
-                 alt="" className="mt-3 w-20 rounded-none aspect-[10]"/>
+            <Refrigerator/>
             <Community/>
-        </div>
+            <BarNavigate/>
+        </main>
     );
 };
 
