@@ -28,6 +28,16 @@ const FoodList = () => {
         cursor: 'pointer',
     });
 
+    // 백그라운드 클릭 시 팝업 닫기
+    const handleBackgroundClick = () => {
+        setShowPopup(false);
+    };
+
+    // 팝업 내부 클릭 시 이벤트 전파 방지
+    const handlePopupClick = (e) => {
+        e.stopPropagation();
+    };
+
     return (
         <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
             <MenuNavigate option="유제품 전체보기" alertPath="/addinfo/habit" />
@@ -152,6 +162,7 @@ const FoodList = () => {
                         alignItems: 'flex-end',
                         zIndex: 9999
                     }}
+                    onClick={handleBackgroundClick} // 백그라운드 클릭 시 팝업 닫기
                 >
                     <div
                         style={{
@@ -164,6 +175,7 @@ const FoodList = () => {
                             flexDirection: 'column',
                             alignItems: 'center'
                         }}
+                        onClick={handlePopupClick} // 팝업 내부 클릭 시 이벤트 전파 방지
                     >
                         <div
                             style={{
