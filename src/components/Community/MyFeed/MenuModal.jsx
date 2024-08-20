@@ -6,7 +6,7 @@ const MenuModal = ({ isOpen, feedDelete, profileEdit}) => {
     if (!isOpen) return null;
 
     return (
-        <div className="bg-white rounded-lg w-[86px] h-[84px] top-24 right-4 absolute
+        <div className="bg-white rounded-lg w-[86px] h-[84px] absolute
             border-[1px] border-[#F4F4F4] flex justify-center items-center shadow-md
         ">
           <div className="flex flex-col space-y-[12px]">
