@@ -20,7 +20,7 @@ import UserInvitePage from './Pages/MyPage/UserInvitePage.jsx';
 import FridgeUpdatePage from './Pages/MyPage/FridgeUpdatePage.jsx';
 import FeedPage from "./Pages/Community/FeedPage.jsx";
 import FeedDetailPage from './Pages/Community/FeedDetailPage';
-import FeedPlusPage from './Pages/Community/FeedPlusPage';
+import FeedCreatePage from './Pages/Community/FeedCreatePage';
 import MyFeedPage from './Pages/Community/MyFeedPage';
 import AddFood from './Pages/Refrigerator/food/AddFood.jsx';
 import AddInput from './Pages/Refrigerator/food/AddInput.jsx';
@@ -69,7 +69,7 @@ const Router = () => {
                     {/* 커뮤니티 */}
                     <Route path="community/feed" element={<FeedPage/>}/>
                     <Route path="community/feeddetail" element={<FeedDetailPage/>}/>
-                    <Route path="community/feedplus" element={<FeedPlusPage/>}/>
+                    <Route path="community/feedcreate" element={<FeedCreatePage/>}/>
                     <Route path="community/myfeed" element={<MyFeedPage/>}/>
 
                 </Routes>

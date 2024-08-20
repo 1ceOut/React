@@ -1,6 +1,14 @@
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
+
+    const navigate = useNavigate();
+
+    const myfeedNavigation = () => {
+        navigate("/community/feedcreate");
+    };
+
     const scrollContainerRef = useRef(null);
 
     const scrollLeft = () => {
@@ -48,7 +56,8 @@ const Profile = () => {
                             <img
                                 src={profile.src}
                                 alt={`Profile ${index + 1}`}
-                                className="w-[80px] h-[80px] rounded-full object-cover"
+                                className="w-[80px] h-[80px] rounded-full object-cover cursor-pointer"
+                                onClick={myfeedNavigation}
                             />
                             <span className="text-sm font-semibold mt-2 w-[80px] flex justify-center items-center">{profile.name}</span>
                         </div>
