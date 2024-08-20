@@ -24,7 +24,7 @@ const NaverLoginAccess = () => {
 
     useEffect(() => {
         if (isLoading) {
-            return <LoadingBar/>; // Do nothing while loading
+            return; // Do nothing while loading
         }
 
         if (isError) {
@@ -34,7 +34,7 @@ const NaverLoginAccess = () => {
             //localStorage.setItem('accessToken', data.accessToken); // 로컬 스토리지에 저장
             navigate("/"); // Navigate to the home page after storing the token
         }
-    }, [isLoading, isError, data, navigate, LoginSuccessStatus]); // Dependencies for useEffect
+    }, [isLoading, isError, data, navigate]); // Dependencies for useEffect
 
     if (isLoading) {
         return <LoadingBar/> // Show loading state
