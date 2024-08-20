@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import {useLocation, useNavigate} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 import {Google_GetAccessToken} from "../../query/LoginQuery.jsx";
+import LoadingBar from "./LoadingBar.jsx";
 
 const GoogleLoginAccess = () => {
     const code = new URLSearchParams(useLocation().search).get("code");
@@ -30,7 +31,7 @@ const GoogleLoginAccess = () => {
     }, [isLoading, isError, data, navigate]); // Dependencies for useEffect
 
     if (isLoading) {
-        return <div>Loading...</div>; // Show loading state
+        return <LoadingBar/> // Show loading state
     }
 
     return null; // Fallback return

@@ -2,6 +2,8 @@ import React, {useEffect} from 'react';
 import {useLocation, useNavigate} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 import {Kakao_GetAccessToken} from "../../query/LoginQuery.jsx";
+import {CircularProgress} from "@mui/joy";
+import LoadingBar from "./LoadingBar.jsx";
 
 const KakaoLoginAccess = () => {
     const code = new URLSearchParams(useLocation().search).get("code"); //return code 값
@@ -31,7 +33,7 @@ const KakaoLoginAccess = () => {
     }, [isLoading, isError, data, navigate]); // Dependencies for useEffect
 
     if (isLoading) {
-        return <div>Loading...</div>; // Show loading state
+        return <LoadingBar/> // Show loading state
     }
 
     return null; // Fallback return

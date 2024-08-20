@@ -48,5 +48,16 @@ const Google_GetAccessToken = async (accesstoken) => {
     }
 }
 
-export {Kakao_GetAccessToken,Naver_GetAccessToken,Google_GetAccessToken};
+const Auto_Login = async () => {
+    try {
+        return await axios.get(`${server_ip}/api/login/auto`, {
+            withCredentials: true,
+        });
+    } catch (error){
+        console.error('Error fetching JWT:', error);
+        throw error;
+    }
+}
+
+export {Kakao_GetAccessToken,Naver_GetAccessToken,Google_GetAccessToken,Auto_Login};
 

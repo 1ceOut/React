@@ -2,12 +2,16 @@ import React, {useEffect} from 'react';
 import {useLocation, useNavigate} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 import {Naver_GetAccessToken} from "../../query/LoginQuery.jsx";
+import {CircularProgress} from "@mui/joy";
+import LoadingBar from "./LoadingBar.jsx";
+import useUserStore from "../../store/useUserStore.js";
 
 const NaverLoginAccess = () => {
     const code = new URLSearchParams(useLocation().search).get("code");
     const state = import.meta.env.VITE_NAVER_STATE;
 
     const navigate = useNavigate();
+    const {LoginSuccessStatus} = useUserStore();
 
     const { data, isLoading, isError, error } = useQuery({
         queryKey: ["user", code, state], // Include code and param in the query key for caching
@@ -26,13 +30,14 @@ const NaverLoginAccess = () => {
         if (isError) {
             navigate("/login"); // Navigate to login on error
         } else if (data && data.accessToken) {
-            localStorage.setItem('accessToken', data.accessToken); // Store the token in local storage
+            LoginSuccessStatus(data.accessToken);
+            localStorage.setItem('accessToken', data.accessToken); // 로컬 스토리지에 저장
             navigate("/"); // Navigate to the home page after storing the token
         }
-    }, [isLoading, isError, data, navigate]); // Dependencies for useEffect
+    }, [isLoading, isError, data, navigate, LoginSuccessStatus]); // Dependencies for useEffect
 
     if (isLoading) {
-        return <div>Loading...</div>; // Show loading state
+        return <LoadingBar/> // Show loading state
     }
 
     return null; // Fallback return

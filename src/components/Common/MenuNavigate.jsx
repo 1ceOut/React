@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
 const MenuNavigate = ({ option }) => {
-    const navigate =useNavigate();
+    const navigate=useNavigate();
 
     const chatNavigation = () => {
       navigate("/mypage/profile");
