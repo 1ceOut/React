@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';  // PropTypes import
+import PropTypes from 'prop-types';
 import DetailButton from './../../components/Common/DetailButton';
 import CreateButton from './../../components/Common/CreateButton';
 import MenuNavigate from './../../components/Common/MenuNavigate';
@@ -8,14 +8,14 @@ import FridgeSelect from '../../components/Refrigerator/FridgeManage/FridgeSelec
 import CategoryFood from './../../components/Refrigerator/FridgeManage/CategoryFood';
 
 const FridgeManagePage = () => {
-    const [showMore, setShowMore] = useState(false);  // 더보기 클릭 여부를 관리하는 상태
+    const [showMore, setShowMore] = useState(false);
 
     const handleShowMore = () => {
-        setShowMore(true);  // 더보기 클릭 시 추가 콘텐츠가 표시되도록 상태 변경
+        setShowMore(true); 
     };
 
     return (
-        <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
+        <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px]">
             <MenuNavigate option={"나의 냉장고"} alertPath="/addinfo/habit" />
             <FridgeSelect />
             
@@ -29,7 +29,7 @@ const FridgeManagePage = () => {
             
             <div className="self-stretch pt-5">
                 <CategoryFood option={"유제품"} />
-                <DetailButton foodCategory={"cheese"} expireDate={"2024.08.11"} option={"서울우유 체다치즈"} />
+                <DetailButton foodCategory={"cheese"} expireDate={"2024.08.30"} option={"서울우유 체다치즈"} />
                 <DetailButton foodCategory={"milkcow"} expireDate={"2024.08.11"} option={"서울우유 플레인 요거트 순수무가당"} />
                 <DetailButton foodCategory={"milkcow"} expireDate={"2024.08.08"} option={"매일유업 매일바이오 제로 요구르트"} />
             </div>
@@ -43,13 +43,12 @@ const FridgeManagePage = () => {
 
             {/* 더보기 클릭 전에는 추가 콘텐츠가 보이지 않음 */}
             {!showMore && (
-                <div style={{ marginTop: 40, width: 100, height: 24, display: 'flex', alignItems: 'center' }}>
-                    더보기
+                <div style={{ marginTop: 40, display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={handleShowMore}>
+                    <span>더보기</span>
                     <img 
                         src="/assets/downarrow.png" 
-                        alt='' 
-                        style={{ marginLeft: 8, cursor: 'pointer' }} 
-                        onClick={handleShowMore}  // 클릭 시 더 많은 콘텐츠를 보여줌
+                        alt='down arrow' 
+                        style={{ marginLeft: 8 }} 
                     />
                 </div>
             )}
