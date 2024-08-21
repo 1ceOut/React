@@ -2,12 +2,14 @@ import { useState } from 'react';
 import ConfirmModal from './ConfirmModal';
 import { PropTypes } from 'prop-types';
 
-const FridgeDeleteButton = ( {isEnabled} ) => {
+const FridgeDeleteButton = ( {option, isEnabled} ) => {
     const [isModalOpen, setIsModalOpen] = useState('');
+    const [optionName, setOptionName] = useState('');
 
     const handleDeleteClick = () => {
       if (isEnabled) {
         setIsModalOpen(true);
+        setOptionName(option);
       }
     };
 
@@ -30,6 +32,7 @@ const FridgeDeleteButton = ( {isEnabled} ) => {
           삭제
         </div>
         <ConfirmModal
+          option={optionName}
           isOpen={isModalOpen} 
           onClose={handleCloseModal} 
           onConfirm={handleConfirmDelete} 
@@ -39,6 +42,7 @@ const FridgeDeleteButton = ( {isEnabled} ) => {
 };
 
 FridgeDeleteButton.propTypes = {
+  option : PropTypes.string.isRequired,
   isEnabled: PropTypes.bool.isRequired,
 };
 
