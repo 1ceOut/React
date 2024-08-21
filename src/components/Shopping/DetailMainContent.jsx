@@ -97,7 +97,7 @@ const DetailMainContent = () => {
                             </div>
                             <div>
                                 <div className='font-semibold text-[16px] mt-[40px] mb-3'>원산지</div>
-                                <div className='font-medium text-[14px] text-[#767676] flex'>
+                                <div className='font-medium text-[14px] text-[#767676] w-[217px] flex justify-between'>
                                     <div className='flex items-center'>
                                     <input
                                         type="checkbox"
@@ -113,7 +113,7 @@ const DetailMainContent = () => {
                                         미국산
                                     </div>
                                 </div>
-                                <div className='font-medium text-[14px] mt-4 text-[#767676] flex'>
+                                <div className='font-medium text-[14px] mt-4 text-[#767676] w-[217px] flex justify-between'>
                                     <div className='flex items-center'>
                                     <input
                                         type="checkbox"
@@ -129,7 +129,7 @@ const DetailMainContent = () => {
                                         중국산
                                     </div>
                                 </div>
-                                <div className='font-medium text-[14px] mt-4 text-[#767676] flex'>
+                                <div className='font-medium text-[14px] mt-4 text-[#767676] w-[217px] flex justify-between'>
                                     <div className='flex items-center'>
                                     <input
                                         type="checkbox"

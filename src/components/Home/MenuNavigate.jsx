@@ -9,7 +9,7 @@ const MenuNavigate = ({PageTitle}) => {
 
     //홈화면 이동
     const homeNavigation = () => {
-        navigate("/mypage/profile");
+        navigate("/");
     }
 
     //채팅으로 이동
@@ -19,7 +19,7 @@ const MenuNavigate = ({PageTitle}) => {
 
     //알림 페이지로 이동
     const alertNavigation = () => {
-        navigate("/mypage/profile");
+        navigate("/alert/noalert");
     }
 
     const profileNavigation = () => {
