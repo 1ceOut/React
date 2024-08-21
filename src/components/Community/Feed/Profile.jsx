@@ -39,7 +39,7 @@ const Profile = () => {
 
     return (
         <div>
-            <div className="self-stretch max-w-[342px] relative">
+            <div className="self-stretch max-w-[342px] mt-6 relative">
             <div className="flex items-center">
                 <button 
                     onClick={scrollLeft} 

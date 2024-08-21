@@ -2,7 +2,7 @@
 
 const FeedRecipe = () => {
     return (
-        <div>
+        <div className="mt-12">
             <div>
                 재료  
             </div>
