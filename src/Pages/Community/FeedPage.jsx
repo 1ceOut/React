@@ -6,6 +6,7 @@ import Profile from "../../components/Community/Feed/Profile";
 import FeedTitle from './../../components/Community/Feed/FeedTitle';
 import { useState, useEffect } from "react";
 import axios from "axios";
+import FeedProfile from "../../components/Community/Feed/FeedProfile";
 
 const FeedPage = () => {
     const [list, setList] = useState([]);
@@ -57,9 +58,8 @@ const FeedPage = () => {
         <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
             <MenuNavigate />
             <Profile />
-            <HorizontalLine />
+            <FeedProfile/>
             <FeedTitle />
-            <FeedContent />
             <FeedMenu />
         </main>
     );
