@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import MenuNavigate from '../../../components/Common/MenuNavigate';
-import {useNavigate} from "react-router-dom";
+
 
 const AddFood = () => {
 
 
-    const navigate = useNavigate(); // useNavigate 훅 사용
+    
 
     const handleNavigate = () => {
         navigate('/Refrigerator/food/AddBarcode'); // 페이지 이동할 경로 설정
