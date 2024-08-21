@@ -11,7 +11,11 @@ const HomePage = () => {
             <ProductCard/>
             <Refrigerator/>
             <Community/>
-            <BarNavigate/>
+            <BarNavigate 
+                shoppingsrc="/assets/shopping.png"
+                homesrc="/assets/homeselect.png"
+                searchsrc="/assets/search.png"
+            />
         </main>
     );
 };

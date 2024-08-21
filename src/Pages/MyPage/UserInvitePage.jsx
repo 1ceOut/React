@@ -1,8 +1,8 @@
-import HorizontalLine from "../../components/Common/HorizontalLine";
 import MenuNavigate from "../../components/Common/MenuNavigate";
 import Header from "../../components/Mypage/UserInvite/Header";
 import MyInviteCode from "../../components/Mypage/UserInvite/MyInviteCode";
 import InvitedUser from './../../components/Mypage/UserInvite/InvitedUser';
+import InviteButton from './../../components/Mypage/UserInvite/InviteButton';
 
 
 const UserInvitePage = () => {
@@ -11,8 +11,8 @@ const UserInvitePage = () => {
             <MenuNavigate option="초대코드"/>
             <Header/>
             <MyInviteCode/>
-            <HorizontalLine/>
             <InvitedUser/>
+            <InviteButton/>
         </main>
     );
 };
