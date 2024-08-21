@@ -1,13 +1,21 @@
+import { useNavigate } from 'react-router-dom';
 import MenuNavigate from '../../../components/Common/MenuNavigate';
 import {useNavigate} from "react-router-dom";
 
 const AddFood = () => {
+
 
     const navigate = useNavigate(); // useNavigate 훅 사용
 
     const handleNavigate = () => {
         navigate('/Refrigerator/food/AddBarcode'); // 페이지 이동할 경로 설정
     };
+
+
+    const navigate = useNavigate();
+    const handleNavigation = () => {
+        navigate('/Refrigerator/food/AddInput');
+      };
 
    return(
     <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
@@ -41,7 +49,7 @@ const AddFood = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            marginTop: 12}}>
+            marginTop: 12, cursor:'pointer'}} onClick={handleNavigation}>
             직접입력
         </div>
     </main>

@@ -8,8 +8,12 @@ const ProfileInfo = () => {
                     <img className="w-10 h-10" src="/assets/profile.png" alt="프로필 사진" />
                 </div>
                 <div>
-                    <div>이장우</div>
-                    <div>8282qwe@gmail.com</div>
+                    <div className="font-semibold text-[18px]">
+                        이장우
+                    </div>
+                    <div className="font-normal text-[14px] text-[#767676]">
+                        8282qwe@gmail.com
+                    </div>
                 </div>
             </div>
         </div>

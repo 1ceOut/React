@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import HorizontalLine from "../../Common/HorizontalLine";
 
 const Profile = () => {
 
@@ -37,7 +38,8 @@ const Profile = () => {
     ];
 
     return (
-        <div className="self-stretch max-w-[342px] relative">
+        <div>
+            <div className="self-stretch max-w-[342px] relative">
             <div className="flex items-center">
                 <button 
                     onClick={scrollLeft} 
@@ -70,6 +72,10 @@ const Profile = () => {
                 >
                     &#8250;
                 </button>
+            </div>
+        </div>
+            <div className="mt-[14px] mb-8">
+                <HorizontalLine/>
             </div>
         </div>
     );
