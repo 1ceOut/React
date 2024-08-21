@@ -1,16 +1,17 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
-    // port: 8080, // Vite 서버의 포트를 8080으로 설정
+    port: 8080,
     proxy: {
-      '/api': {
-        target: 'http://localhost:9000', // API 요청을 프록시할 서버
+      '/ocr': {
+        target: 'https://xnawjp24sv.apigw.ntruss.com',
         changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/ocr/, ''),
       },
+      // 추가적으로 다른 프록시 설정이 필요한 경우 여기에 추가
     },
-  },
-})
+  }
+});
