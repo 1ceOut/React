@@ -2,7 +2,7 @@
 
 const FeedProfile = () => {
     return (
-        <div className="self-stretch">
+        <div className="self-stretch mb-3">
             <div className="flex items-center justify-between w-[342px] h-[38px]">
                 <div className="flex justify-center items-center">
                     <div>
