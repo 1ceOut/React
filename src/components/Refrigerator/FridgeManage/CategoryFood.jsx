@@ -6,9 +6,6 @@ const CategoryFood = ({option}) => {
     const navigate = useNavigate();
 
     const handleNavigation = () => {
-
-        
-
         navigate('/Refrigerator/food/FoodList');
       };
     return (

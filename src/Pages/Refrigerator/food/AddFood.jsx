@@ -1,6 +1,12 @@
+import { useNavigate } from 'react-router-dom';
 import MenuNavigate from '../../../components/Common/MenuNavigate';
 
 const AddFood = () => {
+
+    const navigate = useNavigate();
+    const handleNavigation = () => {
+        navigate('/Refrigerator/food/AddInput');
+      };
    return(
     <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
         <MenuNavigate option={"일반 냉장고"} alertPath="/addinfo/habit" />
@@ -30,7 +36,7 @@ const AddFood = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            marginTop: 12}}>
+            marginTop: 12, cursor:'pointer'}} onClick={handleNavigation}>
             직접입력
         </div>
     </main>
