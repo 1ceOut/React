@@ -31,6 +31,7 @@ import TalkList from "./Pages/Talk/TalkList.jsx";
 import TalkDetail from "./Pages/Talk/TalkDetail.jsx";
 import ShoppingHome from "./Pages/Shopping/ShoppingHome.jsx";
 import ShoppingDetail from "./Pages/Shopping/ShoppingDetail.jsx";
+import AddFridge from "./Pages/Refrigerator/food/AddFridge.jsx";
 
 
 
@@ -61,6 +62,7 @@ const Router = () => {
                     <Route path="/Refrigerator/food/FoodDetail" element={<FoodDetail/>}/>
                     <Route path="/Refrigerator/food/FoodList" element={<FoodList/>}/>
                     <Route path="/Refrigerator/food/MyFridge" element={<MyFridge/>}/>
+                    <Route path="/Refrigerator/food/AddFridge" element={<AddFridge/>}/>
 
 
                     {/* 알림 */}
