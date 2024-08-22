@@ -31,7 +31,7 @@ const useUserStore = create(
     devtools(
         persist(store, {
             name: "LoginUser", // 로컬 스토리지에 저장될 키
-            getStorage: () => localStorage, // 사용할 스토리지
+            storage: localStorage, // 사용할 스토리지
         })
     )
 );
