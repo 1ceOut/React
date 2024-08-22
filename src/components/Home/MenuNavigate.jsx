@@ -7,6 +7,8 @@ const MenuNavigate = ({PageTitle}) => {
     const navigate = useNavigate();
     const {isLogin, userProfile, LoginSuccessStatus} = useUserStore();
 
+    console.log(isLogin)
+
     //홈화면 이동
     const homeNavigation = () => {
         navigate("/");
