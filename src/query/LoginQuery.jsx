@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, {Axios} from "axios";
 
 const server_ip = import.meta.env.VITE_API_IP;
 
@@ -61,7 +61,7 @@ const Auto_Login = async () => {
 
 const Logout_Action = async () => {
     try {
-        return await axios.delete(`${server_ip}/api/login/logout`, {
+        return await axios.get(`${server_ip}/api/login/logout`, {
             withCredentials: true,
         });
     } catch (error){
