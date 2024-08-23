@@ -10,8 +10,7 @@ const useFeedStore = create((set) => ({
             const res = await axios.get("/api/posting/list");
             set({ list: res.data, error: null });
         } catch (err) {
-            console.error("Error fetching posting list:", err);
-            set({ error: "Error fetching posting list" });
+                        set({ error: "Error fetching posting list" });
         }
     },
 
@@ -20,7 +19,6 @@ const useFeedStore = create((set) => ({
             await axios.post("http://localhost:17017/api/posting/insert", data);
             useFeedStore.getState().fetchPostingList();
         } catch (err) {
-            console.error("Error adding posting:", err);
             set({ error: "Error adding posting" });
         }
     },
@@ -30,7 +28,6 @@ const useFeedStore = create((set) => ({
             await axios.delete(`/api/posting/delete?postingId=${postingId}`);
             useFeedStore.getState().fetchPostingList();
         } catch (err) {
-            console.error("Error deleting posting:", err);
             set({ error: "Error deleting posting" });
         }
     },
@@ -40,7 +37,6 @@ const useFeedStore = create((set) => ({
             await axios.put(`/api/posting/update/${postingId}`, data);
             useFeedStore.getState().fetchPostingList();
         } catch (err) {
-            console.error("Error updating posting:", err);
             set({ error: "Error updating posting" });
         }
     },
