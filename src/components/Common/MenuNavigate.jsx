@@ -16,9 +16,13 @@ const MenuNavigate = ({ option }) => {
         navigate("/mypage/profile");
     }
 
+    const goBack = () => {
+      navigate(-1);
+  }
+
     return (
     <div className="relative self-stretch flex items-center justify-between w-[342px] h-14 mt-[50px]">
-      <div className="absolute left-0">
+      <div className="absolute left-0" onClick={goBack}>
         {'<'}
       </div>
       <div className="absolute left-1/2 transform -translate-x-1/2">

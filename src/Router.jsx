@@ -34,6 +34,7 @@ import ShoppingDetail from "./Pages/Shopping/ShoppingDetail.jsx";
 import AddFridge from "./Pages/Refrigerator/food/AddFridge.jsx";
 import Barcode from "./Pages/Refrigerator/food/Barocde.jsx";
 import AddInput2 from "./Pages/Refrigerator/food/AddInput2.jsx";
+import SearchPage from "./Pages/Main/SearchPage.jsx";
 
 
 
@@ -93,6 +94,9 @@ const Router = () => {
                     {/* 쇼핑 */}
                     <Route path="Shop/home" element={<ShoppingHome/>}/>
                     <Route path="Shop/detail" element={<ShoppingDetail/>}/>
+
+                    {/* 검색 */}
+                    <Route path="search/search" element={<SearchPage/>}/>
 
 
                 </Routes>
