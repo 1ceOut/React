@@ -1,10 +1,8 @@
-import HorizontalLine from "../../components/Common/HorizontalLine";
 import MenuNavigate from "../../components/Common/MenuNavigate";
-import FeedContent from "../../components/Community/Feed/FeedTitle";
 import FeedMenu from "../../components/Community/Feed/FeedMenu";
 import Profile from "../../components/Community/Feed/Profile";
 import FeedTitle from './../../components/Community/Feed/FeedTitle';
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 import FeedProfile from "../../components/Community/Feed/FeedProfile";
 

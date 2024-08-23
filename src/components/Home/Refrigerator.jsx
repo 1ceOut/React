@@ -18,7 +18,7 @@ const Refrigerator = () => {
             <div className="flex gap-5 justify-between">
                 <h2 className="text-lg font-semibold tracking-tight text-gray-900">나의 냉장고</h2>
                 <div className="text-sm tracking-tight text-neutral-500 underline">
-                    <p onClick={handleNavigate}>전체보기</p>
+                    <p className="cursor-pointer" onClick={handleNavigate}>전체보기</p>
                 </div>
             </div>
             {items.map((item, index) => (

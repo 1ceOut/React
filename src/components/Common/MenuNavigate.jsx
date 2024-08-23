@@ -5,11 +5,11 @@ const MenuNavigate = ({ option }) => {
     const navigate=useNavigate();
 
     const chatNavigation = () => {
-      navigate("/mypage/profile");
+      navigate("/Talk/TalkList");
   }
   
     const alertNavigation = () => {
-        navigate("/mypage/profile");
+        navigate("/alert/noalert");
     }
 
     const profileNavigation = () => {
