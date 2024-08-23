@@ -20,7 +20,7 @@ const SocialLoginButton  = () => {
 
     const GoogleRestApiKey = import.meta.env.VITE_GOOGLE_REST_API_KEY;
     const GoogleRedirect = import.meta.env.VITE_GOOGLE_REDIRECT_URL;
-    const googleURL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GoogleRestApiKey}&redirect_uri=${GoogleRedirect}&response_type=code&scope=openid email profile&state=${NaverState}`
+    const googleURL = `https://accounts.google.com/o/oauth2/v2/auth?&access_type=offline&prompt=consent&client_id=${GoogleRestApiKey}&redirect_uri=${GoogleRedirect}&response_type=code&scope=openid email profile&state=${NaverState}`
 
     const handleLogin = (url)=>{
         window.location.href = url
