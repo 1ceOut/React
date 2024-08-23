@@ -24,7 +24,7 @@ const SearchForm = () => {
                     value={inputValue}
                     onChange={handleInputChange}
                     placeholder="검색어를 입력하세요"
-                    className="flex items-center justify-center rounded-xl px-5 w-full h-14 text-gray-900 outline-none"
+                    className="flex items-center justify-center rounded-xl px-5 w-full text-gray-900 outline-none"
                 />
                 <div>
                     <img 
