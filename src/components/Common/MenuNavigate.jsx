@@ -1,7 +1,22 @@
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
+import useUserStore from './../../store/useUserStore';
+import { Auto_Login } from '../../query/LoginQuery';
 
 const MenuNavigate = ({ option }) => {
+
+    const {isLogin, userProfile, LoginSuccessStatus} = useUserStore();
+
+    const AutoLogin = () => {
+      Auto_Login().then((response) => {
+          if (response.status === 200) {
+              LoginSuccessStatus(response.data.accessToken);
+          } else {
+              navigate("/login")
+          }
+      })
+    }
+
     const navigate=useNavigate();
 
     const chatNavigation = () => {
@@ -38,8 +53,12 @@ const MenuNavigate = ({ option }) => {
           className='cursor-pointer'/>
         </div>
         <div>
-          <img src="/assets/profile.png" alt="profile" onClick={profileNavigation}
-          className='cursor-pointer'/>
+        {
+          isLogin?(<img src={userProfile} alt="profile" onClick={profileNavigation}
+                    className='cursor-pointer shrink-0 w-6 h-6 aspect-[1.04] rounded-full' />):
+                      (<img src="/assets/profile.png" alt="profile" onClick={AutoLogin}
+                        className='cursor-pointer shrink-0 w-6 aspect-[1.04]'/>)
+            }
         </div>
       </div>
     </div>
