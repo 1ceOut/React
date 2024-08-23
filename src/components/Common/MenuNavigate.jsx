@@ -22,7 +22,7 @@ const MenuNavigate = ({ option }) => {
 
     return (
     <div className="relative self-stretch flex items-center justify-between w-[342px] h-14 mt-[50px]">
-      <div className="absolute left-0" onClick={goBack}>
+      <div className="absolute left-0 w-6 h-6 cursor-pointer" onClick={goBack}>
         {'<'}
       </div>
       <div className="absolute left-1/2 transform -translate-x-1/2">
