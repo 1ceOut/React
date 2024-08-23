@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PropTypes } from 'prop-types';
 import { AiOutlinePlus } from 'react-icons/ai';
-import useFeedStore from '../../../store/useFeedStore'; // 게시물 관련 Zustand store
-import useUserStore from '../../../store/useUserStore'; // 유저 관련 Zustand store
+import { useAddPost } from '../../../query/FeedQuery'; // React Query 훅 import
+import useUserStore from '../../../store/useUserStore'; // Zustand store import
+import PropTypes from 'prop-types'; // PropTypes 임포트
 
 const CreateFeed = () => {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -13,9 +13,9 @@ const CreateFeed = () => {
     const [isEnabled, setIsEnabled] = useState(false); // 버튼 활성화 상태
     const navigate = useNavigate();
 
-    // Zustand 스토어에서 함수 가져오기
-    const { addPosting } = useFeedStore(); 
-    const { userId } = useUserStore(); 
+    // React Query 훅에서 mutation 가져오기
+    const { mutate: addPost } = useAddPost();
+    const { userId } = useUserStore(); // Zustand store에서 유저 ID 가져오기
 
     useEffect(() => {
         // 모든 필드가 채워졌는지 확인
@@ -44,14 +44,14 @@ const CreateFeed = () => {
                 title,
                 contents: content,
                 tags: tag,
-                image: selectedImage, 
+                image: selectedImage,
                 user_id: userId, // 유저 ID 추가
                 writeday: new Date(), // 작성일자 추가
             };
 
             try {
-                // Zustand에서 정의된 addPosting 함수 호출
-                await addPosting(postingData);
+                // React Query의 mutate 함수를 사용하여 게시물 추가
+                await addPost(postingData);
 
                 // 게시물 추가 후 페이지 이동
                 navigate('/community/feed');
@@ -134,8 +134,9 @@ const CreateFeed = () => {
     );
 };
 
-CreateFeed.propTypes = {
-    isEnabled: PropTypes.bool, // 이 prop은 더 이상 필요 없으므로 제거 가능
-};
+// PropTypes는 제거할 수 있습니다. 이 예제에서는 사용되지 않으므로 아래와 같이 삭제 가능합니다.
+// CreateFeed.propTypes = {
+//     isEnabled: PropTypes.bool, // 이 prop은 더 이상 필요 없으므로 제거 가능
+// };
 
 export default CreateFeed;
