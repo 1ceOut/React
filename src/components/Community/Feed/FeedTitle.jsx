@@ -25,7 +25,7 @@ const FeedTitle = ({ title, imageUrl, _id }) => {
 FeedTitle.propTypes = {
     title: PropTypes.string.isRequired,
     imageUrl: PropTypes.string.isRequired,
-    _id: PropTypes.string.isRequired,
+    _id: PropTypes.string.isRequired
 };
 
 export default FeedTitle;
