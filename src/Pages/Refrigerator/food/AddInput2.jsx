@@ -61,6 +61,7 @@ const AddInput2 = () => {
 
     useEffect(() => {
         setIsEnabled(productName && expiryDate && count && selectedOption && (!showAdditionalSelect || (additionalSelectValue && subcategoryValue)));
+        console.log(productName,expiryDate);
     }, [productName, expiryDate, count, selectedOption, additionalSelectValue, subcategoryValue, showAdditionalSelect]);
 
     useEffect(() => {
@@ -82,7 +83,6 @@ const AddInput2 = () => {
             productType: selectedOption,
             lcategory: additionalSelectValue,
             scategory: subcategoryValue,
-            createdDate: new Date().toISOString(),
             refrigeratorName: refrigeratorName || '기본 냉장고 이름',
             userId
         };
