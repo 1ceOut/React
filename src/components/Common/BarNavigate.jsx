@@ -15,11 +15,11 @@ const BarNavigate = ({ shoppingsrc, homesrc, searchsrc }) => {
     }
 
     const searchNavigate = () => {
-        navigate("/")
+        navigate("/search/search")
     }
 
     return (
-        <div className="flex justify-evenly items-center fixed bottom-0 border-x-0 w-[390px] h-20 border-t-2 rounded-2xl">
+        <div className="flex justify-evenly items-center border-x-0 w-[390px] border-t-2 rounded-2xl bg-white fixed bottom-0 h-20">
             <div className="flex flex-col justify-center items-center w-1/3">
                 <img src={shoppingsrc} alt="쇼핑" className='cursor-pointer' onClick={shoppingNavigate}/>
                 쇼핑
