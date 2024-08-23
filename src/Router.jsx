@@ -33,6 +33,7 @@ import ShoppingHome from "./Pages/Shopping/ShoppingHome.jsx";
 import ShoppingDetail from "./Pages/Shopping/ShoppingDetail.jsx";
 import AddFridge from "./Pages/Refrigerator/food/AddFridge.jsx";
 import Barcode from "./Pages/Refrigerator/food/Barocde.jsx";
+import AddInput2 from "./Pages/Refrigerator/food/AddInput2.jsx";
 
 
 
@@ -61,6 +62,7 @@ const Router = () => {
                     <Route path="/Refrigerator/food/AddFood" element={<AddFood/>}/>
                     <Route path="/Refrigerator/food/AddBarcode" element={<Barcode/>}/>
                     <Route path="/Refrigerator/food/AddInput" element={<AddInput/>}/>
+                    <Route path="/Refrigerator/food/AddInput2" element={<AddInput2/>}/>
                     <Route path="/Refrigerator/food/FoodDetail" element={<FoodDetail/>}/>
                     <Route path="/Refrigerator/food/FoodList" element={<FoodList/>}/>
                     <Route path="/Refrigerator/food/MyFridge" element={<MyFridge/>}/>

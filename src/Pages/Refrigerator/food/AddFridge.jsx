@@ -1,18 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import MenuNavigate from "../../../components/Common/MenuNavigate.jsx";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import useUserStore from "../../../store/useUserStore"; // zustand 상태 관리 라이브러리 import
 
 const AddFridge = () => {
     const navigate = useNavigate();
     const [isEnabled, setIsEnabled] = useState(false); // 버튼 활성화 상태
-    const [userId, setUserId] = useState('testuser'); // 예시로 userId를 testuser 로 설정
     const [form, setForm] = useState({ refrigeratorName: '' });
 
     useEffect(() => {
         // input 창에 값이 있을 때 버튼을 활성화
         setIsEnabled(form.refrigeratorName.trim().length > 0);
     }, [form.refrigeratorName]);
+
+    //로그인 userid 가져오고, 로그인 상태확인
+    const { userId, isLogin, LoginSuccessStatus } = useUserStore();
+
+    useEffect(() => {
+        const savedToken = localStorage.getItem('accessToken');
+        if (savedToken && !isLogin) {
+            LoginSuccessStatus(savedToken);  // 토큰이 있다면 로그인 상태 초기화
+        }
+        if (!userId) {
+            navigate('/login');  // 로그인 안되어 있으면 로그인 페이지로 이동
+        }
+    }, [userId, isLogin, navigate, LoginSuccessStatus]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -21,6 +33,7 @@ const AddFridge = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log(userId);
         const product = { ...form, userId }; // userId를 포함한 데이터
 
         try {
@@ -34,13 +47,13 @@ const AddFridge = () => {
                 navigate("/fridge/fridgemanage"); // 냉장고 관리 페이지로 이동
             }
         } catch (error) {
+            console.log(userId);
             console.error('DB에 냉장고를 저장하는 중 오류 발생', error);
         }
     };
 
     return (
         <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
-            <MenuNavigate option={"냉장고 추가"} alertPath="/addinfo/habit" />
             <div style={{ width: 342, height: 111, fontWeight: 600, fontSize: 28, marginTop: 24 }}>
                 냉장고 이름을 입력해주세요.<br />
                 <div style={{ width: 342, height: 21, fontWeight: 500, fontSize: 15, color: '#767676', marginTop: 14 }}>
@@ -84,7 +97,6 @@ const AddFridge = () => {
                 }`}
                 onClick={isEnabled ? handleSubmit : null} // 클릭 시 제출 함수 호출
             >
-
                 <p style={{ fontWeight: 500, fontSize: 16 }}>냉장고 등록하기</p>
             </div>
         </main>

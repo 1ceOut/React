@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField } from '@mui/material';
 import MenuNavigate from "../../../components/Common/MenuNavigate.jsx";
-import { useLocation, useNavigate } from "react-router-dom";
-import axios from 'axios'; // axios import 추가
+import { useLocation, useNavigate, Link } from "react-router-dom";
+import axios from 'axios';
 
 const Barcode = () => {
     const location = useLocation();
@@ -21,18 +22,10 @@ const Barcode = () => {
         companyName: '',
         address: '',
         productType: '',
-        permissionDate: '',
-        count: '',
-        lcategory: '',
-        scategory: ''
-    });
-    const [categories, setCategories] = useState({
-        lcategories: [],
-        scategories: []
     });
 
-    const [showLcategories, setShowLcategories] = useState(false);
-    const [showScategories, setShowScategories] = useState(false);
+    // 모달 표시 상태 관리
+    const [modalIsOpen, setModalIsOpen] = useState(false);
 
     useEffect(() => {
         const initCamera = async () => {
@@ -101,7 +94,6 @@ const Barcode = () => {
                 return;
             }
             setOcrResult(response.data);
-
             extractInferTexts(response.data);
         } catch (error) {
             console.error("Error recognizing text: ", error);
@@ -128,6 +120,11 @@ const Barcode = () => {
 
         const finalConcatenatedText = texts.join(' ');
         setConcatenatedText(finalConcatenatedText);
+
+        // foodSafetyInfo가 설정되기 전에 모달을 열 수 있도록 하기 위해 setTimeout을 사용
+        setTimeout(() => {
+            setModalIsOpen(true);
+        }, 500);  // 0.5초 정도의 지연 시간
     };
 
     const fetchFoodSafetyInfo = async (barcode) => {
@@ -146,9 +143,6 @@ const Barcode = () => {
                     address: product.SITE_ADDR,
                     productType: product.PRDLST_DCNM,
                     permissionDate: product.PRMS_DT,
-                    count: '',
-                    lcategory: '',
-                    scategory: ''
                 });
             }
         } catch (error) {
@@ -164,12 +158,31 @@ const Barcode = () => {
         }));
     };
 
+
+    // 모달 닫기
+    const closeModal = () => {
+        setModalIsOpen(false);
+    };
+
+    // 추가 입력창으로 이동
+    const goToAddInput = () => {
+        navigate('/Refrigerator/food/AddInput2', {
+            state: {
+                barcode : additionalInfo.barcode,
+                productName: additionalInfo.productName,
+                expiryDate: additionalInfo.expiryDate
+            }
+        });
+        closeModal();
+    };
+
     return (
         <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
             <MenuNavigate option={"음식 바코드"} alertPath="/addinfo/habit"/>
             <div style={{width: 342, height: 76, marginTop: 24}}>
                 <p style={{fontWeight: 600, fontSize: 28}}>
                     상품 바코드를 찍어주세요<br/>
+                    {refrigeratorName && <h2>{refrigeratorName} 냉장고</h2>}
                 </p>
             </div>
             <video ref={videoRef} autoPlay playsInline style={{width: '100%', height: 'auto'}}/>
@@ -188,18 +201,6 @@ const Barcode = () => {
             }}>
                 <button onClick={recognizeText}>바코드 인식</button>
             </div>
-            <div style={{
-                width: 342,
-                height: 56,
-                borderRadius: 12,
-                border: '1px solid #E1E1E1',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: 12
-            }}>
-                직접입력
-            </div>
             <div>
                 {capturedImage && (
                     <div style={{marginRight: '20px'}}>
@@ -217,7 +218,87 @@ const Barcode = () => {
                         />
                     </div>
                 )}
+                {concatenatedText && (
+                    <div>
+                        <h3>인식된 바코드 결과는 ? :</h3>
+                        <p>{concatenatedText}</p>
+                    </div>
+                )}
+                {foodSafetyInfo && foodSafetyInfo.C005 && (
+                    <div>
+                        {foodSafetyInfo.C005.total_count === '0' ? (
+                            <div>
+                                <h3>해당 바코드에 등록된 상품 정보가 없음</h3>
+                                <h3>해당 식품을 직접 입력하실?</h3>
+                                <Link to="/userinput">
+                                    <button>상품등록</button>
+                                </Link>
+                            </div>
+                        ) : (
+                            <div>
+                                <h3>추가 정보 입력:</h3>
+                                <form>
+                                    <label>
+                                        제품명:
+                                        <input
+                                            type="text"
+                                            name="productName"
+                                            value={additionalInfo.productName}
+                                            onChange={handleInputChange}
+                                        />
+                                    </label><br/>
+                                    <p><strong>유통기한:</strong> {additionalInfo.expiryDate}</p><br/>
+                                    <p>유통기한은 년월일로 기입해주세요</p>
+                                    <label>
+                                        유통기한:
+                                        <input
+                                            type="date"
+                                            name="expiryDate"
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                    </label><br/><br/>
+
+                                </form>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
+
+            {/* 모달 구현 */}
+            <Dialog
+                open={modalIsOpen}
+                onClose={closeModal}
+                maxWidth="sm"
+                fullWidth
+            >
+                <DialogTitle>바코드 정보</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        label="인식된 바코드"
+                        fullWidth
+                        margin="normal"
+                        value={concatenatedText}
+                        InputProps={{ readOnly: true }}
+                    />
+                    <TextField
+                        label="제품명"
+                        fullWidth
+                        margin="normal"
+                        value={additionalInfo.productName}
+                        InputProps={{ readOnly: true }}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={closeModal} color="primary">
+                        다시 찍기
+                    </Button>
+                    <Button onClick={goToAddInput} color="primary">
+                        추가 입력창으로 넘어가기
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </main>
     );
 };

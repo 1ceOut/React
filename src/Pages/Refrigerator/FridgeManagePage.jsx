@@ -20,7 +20,7 @@ const FridgeManagePage = () => {
             <FridgeSelect />
             
             <div className="self-stretch pt-[10px]">
-                <CreateButton option={"음식 추가하기"} nextPath={"/Refrigerator/food/addFood"} />
+                <CreateButton option={"음식 추가하기"} nextPath={"/Refrigerator/food/AddFood"} />
             </div>
             
             <div className="self-stretch pt-8">

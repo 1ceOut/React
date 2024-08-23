@@ -32,7 +32,7 @@ const NaverLoginAccess = () => {
         } else if (data && data.accessToken) {
             LoginSuccessStatus(data.accessToken);
             //localStorage.setItem('accessToken', data.accessToken); // 로컬 스토리지에 저장
-            navigate("/"); // Navigate to the home page after storing the token
+            navigate("/Refrigerator/food/AddInput2"); // Navigate to the home page after storing the token
         }
     }, [isLoading, isError, data, navigate]); // Dependencies for useEffect
 
