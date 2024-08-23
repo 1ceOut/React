@@ -7,7 +7,7 @@ import Community from "../components/Home/Community.jsx";
 
 const HomePage = () => {
     return (
-        <div className='flex flex-col items-center pt-5 pb-2 mx-auto w-full bg-zinc-100 max-w-[480px] h-screen'>
+        <div className='flex flex-col items-center pt-5 pb-2 mx-auto w-full bg-zinc-100 max-w-[390px] h-screen'>
             <Header/>
             <Notification/>
             <Refrigerator/>
