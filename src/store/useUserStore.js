@@ -1,14 +1,13 @@
-import {create} from "zustand";
+import { create } from "zustand";
 import parseJwt from "../logic/parseJwt.js";
-import {devtools} from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 
-
-//유저정보 전역저장소
+// 유저정보 전역저장소
 const initState = {
-    userName : "",
-    userProfile:"",
-    userId:"",
-    userAccessToken:"",
+    userName: "",
+    userProfile: "",
+    userId: "",
+    userAccessToken: "",
     isLogin: false
 }
 
@@ -16,11 +15,24 @@ const store = (set) => ({
     ...initState,
     LoginSuccessStatus: (accessToken) => {
         const jwt = parseJwt(accessToken);
-        set({isLogin: true,userAccessToken: accessToken,userName:jwt.name,userProfile:jwt.photo,userId:jwt.sub});
+        set({
+            isLogin: true,
+            userAccessToken: accessToken,
+            userName: jwt.name,
+            userProfile: jwt.photo,
+            userId: jwt.sub
+        });
     },
     LogoutStatus: () => set(initState)
-})
+});
 
-const useUserStore = create(devtools(store,{name:"UserStore"}))
+// persist 미들웨어를 사용하여 상태를 로컬 스토리지에 저장
+const useUserStore = create(
+    devtools(
+        persist(store, {
+            name: "LoginUser", // 로컬 스토리지에 저장될 키
+        })
+    )
+);
 
 export default useUserStore;

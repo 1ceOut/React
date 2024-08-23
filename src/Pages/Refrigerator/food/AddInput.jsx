@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // 페이지 이동을 위한 useNavigate 훅 추가
 import MenuNavigate from '../../../components/Common/MenuNavigate';
-import NextButton from '../../../components/AddInfo/Common/NextButton';
 
 const AddInput = () => {
     const [selectedOption, setSelectedOption] = useState('');
@@ -9,6 +9,8 @@ const AddInput = () => {
     const [productName, setProductName] = useState('');
     const [expiryDate, setExpiryDate] = useState('');
     const [count, setCount] = useState('');
+    
+    const navigate = useNavigate(); // useNavigate 훅 초기화
 
     const handleChange = (event) => {
         const value = event.target.value;
@@ -28,7 +30,6 @@ const AddInput = () => {
     };
 
     const isFormValid = () => {
-        // 모든 필드가 입력되었는지 확인
         return (
             selectedOption &&
             (!showAdditionalSelect || additionalSelectValue) &&
@@ -38,9 +39,15 @@ const AddInput = () => {
         );
     };
 
+    const handleNavigate = () => {
+        if (isFormValid()) {
+            navigate('/fridge/fridgemanage'); // 페이지 이동
+        }
+    };
+
     return (
         <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
-            <MenuNavigate option={"추가 입력"} alertPath="/addinfo/habit" />
+            <MenuNavigate option={"식품 추가"} alertPath="/addinfo/habit" />
             <div style={{ width: 342, height: 134, marginTop: 24 }}>
                 <p style={{ width: 342, height: 76, fontWeight: 600, fontSize: 28 }}>
                     추가 입력을<br />
@@ -152,7 +159,26 @@ const AddInput = () => {
                     }}
                 />
             </div>
-            <NextButton isEnabled={isFormValid()} nextPath="/Refrigerator/food/FoodDetail" />
+            <button
+                disabled={!isFormValid()}  // 조건에 따라 버튼 비활성화
+                onClick={handleNavigate}  // 페이지 이동 처리
+                style={{
+                    width: '342px',
+                    height: '56px',
+                    borderRadius: '12px',
+                    background: isFormValid() ? '#2377EF' : '#A9A9A9',  // 유효하면 파란색, 아니면 회색
+                    marginTop: '30px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    lineHeight: '56px',
+                    fontSize: 16,
+                    color: '#FFFFFF',
+                    cursor: isFormValid() ? 'pointer' : 'not-allowed',
+                }}
+            >
+                생성
+            </button>
         </main>
     );
 };

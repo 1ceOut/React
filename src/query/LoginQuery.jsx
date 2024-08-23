@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, {Axios} from "axios";
 
 const server_ip = import.meta.env.VITE_API_IP;
 
@@ -59,5 +59,16 @@ const Auto_Login = async () => {
     }
 }
 
-export {Kakao_GetAccessToken,Naver_GetAccessToken,Google_GetAccessToken,Auto_Login};
+const Logout_Action = async () => {
+    try {
+        return await axios.get(`${server_ip}/api/login/logout`, {
+            withCredentials: true,
+        });
+    } catch (error){
+        console.error('Error fetching JWT:', error);
+        throw error;
+    }
+}
+
+export {Kakao_GetAccessToken,Naver_GetAccessToken,Google_GetAccessToken,Auto_Login,Logout_Action};
 
