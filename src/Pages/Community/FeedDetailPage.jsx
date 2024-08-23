@@ -7,10 +7,13 @@ import FeedTitle from "../../components/Community/FeedDetail/FeedTitle";
 
 
 const FeedDetailPage = () => {
+    // const { data: posts, isLoading, isError } = useDetailPost();
+    
     return (
         <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
             <MenuNavigate/>
-            <FeedRecipe/>
+            <FeedRecipe
+            />
             <FeedTags/>
             <FeedTitle/>
             <FeedMenu/>
