@@ -61,7 +61,7 @@ const Auto_Login = async () => {
 
 const Logout_Action = async () => {
     try {
-        return await axios.get(`${server_ip}/api/login/logout`, {
+        return await axios.delete(`${server_ip}/api/login/logout`, {
             withCredentials: true,
         });
     } catch (error){
