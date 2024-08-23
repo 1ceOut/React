@@ -75,7 +75,11 @@ const ShoppingHome = () => {
         <p style={{ width: 62, height: 21, fontSize: 15, fontWeight: 600 }}>4,900원</p>
     </div>
 </div>
-        <BarNavigate/>
+            <BarNavigate 
+                shoppingsrc="/assets/shoppingselect.png"
+                homesrc="/assets/home.png"
+                searchsrc="/assets/search.png"
+            />
 
 
 
