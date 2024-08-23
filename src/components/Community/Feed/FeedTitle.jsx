@@ -1,24 +1,29 @@
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
-
-const FeedTitle = () => {
-
-    const navigate = useNavigate('');
+const FeedTitle = ({ title, imageUrl, postingId }) => {
+    const navigate = useNavigate();
 
     const detailNavigation = () => {
-        navigate("/community/feeddetail")
-    }
+        navigate(`/community/feeddetail/${postingId}`);
+    };
 
     return (
         <div className="self-stretch cursor-pointer" onClick={detailNavigation}>
-                <div>
-                    <img src="/assets/kimchi.png" alt="김치찌개" className="w-[342px] h-auto"/>
-                </div>
-                <div className="my-[14px] text-[15px] font-medium">
-                    자취생이 추천하는 초간단 김치찌개 레시피 공유한다
-                </div>
+            <div>
+                <img src={imageUrl} alt={title} className="w-[342px] h-auto" />
+            </div>
+            <div className="my-[14px] text-[15px] font-medium">
+                {title}
+            </div>
         </div>
     );
+};
+
+FeedTitle.propTypes = {
+    title: PropTypes.string.isRequired,
+    imageUrl: PropTypes.string.isRequired,
+    postingId: PropTypes.string.isRequired,
 };
 
 export default FeedTitle;

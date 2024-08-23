@@ -1,4 +1,3 @@
-// stores/useFeedStore.js
 import create from 'zustand';
 import axios from 'axios';
 
@@ -6,10 +5,9 @@ const useFeedStore = create((set) => ({
     list: [],
     error: null,
 
-    // 게시물 목록 가져오기
     fetchPostingList: async () => {
         try {
-            const res = await axios.get("/posting/list");
+            const res = await axios.get("/api/posting/list");
             set({ list: res.data, error: null });
         } catch (err) {
             console.error("Error fetching posting list:", err);
@@ -17,13 +15,9 @@ const useFeedStore = create((set) => ({
         }
     },
 
-    // 게시물 등록
     addPosting: async (data) => {
         try {
-            await axios.post("/posting/insert", data);
-            // 게시물 목록 업데이트
-            set((state) => ({ ...state, error: null }));
-            // 추가 후 목록 다시 불러오기
+            await axios.post("http://localhost:17017/api/posting/insert", data);
             useFeedStore.getState().fetchPostingList();
         } catch (err) {
             console.error("Error adding posting:", err);
@@ -31,12 +25,9 @@ const useFeedStore = create((set) => ({
         }
     },
 
-    // 게시물 삭제
     deletePosting: async (postingId) => {
         try {
-            await axios.delete(`/posting/delete?postingId=${postingId}`);
-            set((state) => ({ ...state, error: null }));
-            // 삭제 후 목록 다시 불러오기
+            await axios.delete(`/api/posting/delete?postingId=${postingId}`);
             useFeedStore.getState().fetchPostingList();
         } catch (err) {
             console.error("Error deleting posting:", err);
@@ -44,12 +35,9 @@ const useFeedStore = create((set) => ({
         }
     },
 
-    // 게시물 수정
     updatePosting: async (postingId, data) => {
         try {
-            await axios.put(`/posting/update/${postingId}`, data);
-            set((state) => ({ ...state, error: null }));
-            // 수정 후 목록 다시 불러오기
+            await axios.put(`/api/posting/update/${postingId}`, data);
             useFeedStore.getState().fetchPostingList();
         } catch (err) {
             console.error("Error updating posting:", err);
@@ -58,4 +46,4 @@ const useFeedStore = create((set) => ({
     },
 }));
 
-export default useFeedStore;
+export default useFeedStore;  
