@@ -1,26 +1,63 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
-import { AiOutlinePlus } from 'react-icons/ai'; // 사진 추가 아이콘
+import { AiOutlinePlus } from 'react-icons/ai';
+import useFeedStore from '../../../store/useFeedStore'; // 게시물 관련 Zustand store
+import useUserStore from '../../../store/useUserStore'; // 유저 관련 Zustand store
 
-const CreateFeed = ({ isEnabled, nextPath }) => {
+const CreateFeed = () => {
     const [selectedImage, setSelectedImage] = useState(null);
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
+    const [tag, setTag] = useState('');
+    const [isEnabled, setIsEnabled] = useState(false); // 버튼 활성화 상태
     const navigate = useNavigate();
+
+    // Zustand 스토어에서 함수 가져오기
+    const { addPosting } = useFeedStore(); 
+    const { userId } = useUserStore(); 
+
+    useEffect(() => {
+        // 모든 필드가 채워졌는지 확인
+        if (title && content && tag) {
+            setIsEnabled(true);
+        } else {
+            setIsEnabled(false);
+        }
+    }, [title, content, tag]);
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setSelectedImage(reader.result);
+                setSelectedImage(reader.result); // 이미지 base64 저장
             };
             reader.readAsDataURL(file);
         }
     };
 
-    const handleSubmit = () => {
-        if (isEnabled) {
-            navigate(nextPath);
+    const handleSubmit = async () => {
+        if (isEnabled && userId) {
+            // 게시물 데이터 생성
+            const postingData = {
+                title,
+                contents: content,
+                tags: tag,
+                image: selectedImage, 
+                user_id: userId, // 유저 ID 추가
+                writeday: new Date(), // 작성일자 추가
+            };
+
+            try {
+                // Zustand에서 정의된 addPosting 함수 호출
+                await addPosting(postingData);
+
+                // 게시물 추가 후 페이지 이동
+                navigate('/community/feed');
+            } catch (err) {
+                console.error("Error adding posting:", err);
+            }
         }
     };
 
@@ -59,6 +96,8 @@ const CreateFeed = ({ isEnabled, nextPath }) => {
                     type="text"
                     placeholder="30글자 이내로 제목을 입력해 주세요"
                     className="block outline-none w-[302px] h-14 text-gray-900 placeholder:text-[#A8A8A8]"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
                 />
             </div>
             <div className="self-stretch border rounded-[12px] w-[342px] h-[300px] flex justify-center my-8">
@@ -68,6 +107,8 @@ const CreateFeed = ({ isEnabled, nextPath }) => {
                     type="text"
                     placeholder="장우님의 얘기를 들려주세요"
                     className="block outline-none w-[302px] h-14 text-gray-900 placeholder:text-[#A8A8A8]"
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
                 />
             </div>
             <div className="self-stretch border rounded-[12px] w-[342px] flex justify-center items-center mt-4">
@@ -77,13 +118,15 @@ const CreateFeed = ({ isEnabled, nextPath }) => {
                     type="text"
                     placeholder="# 주제어를 입력해주세요"
                     className="block outline-none w-[302px] h-14 text-gray-900 placeholder:text-[#A8A8A8]"
+                    value={tag}
+                    onChange={(e) => setTag(e.target.value)}
                 />
             </div>
             <div
-                className={`flex text-[#868686] rounded-xl self-stretch justify-center items-center w-[342px] mt-5 h-14 cursor-pointer bottom-[54px] ${
+                className={`flex text-[#868686] rounded-xl self-stretch justify-center items-center w-[342px] mt-5 h-14 cursor-pointer ${
                     isEnabled ? 'bg-blue-500 text-white' : 'bg-[#D1D1D1]'
                 }`}
-                onClick={isEnabled ? handleSubmit : null}
+                onClick={isEnabled ? handleSubmit : undefined}
             >
                 게시하기
             </div>
@@ -92,8 +135,7 @@ const CreateFeed = ({ isEnabled, nextPath }) => {
 };
 
 CreateFeed.propTypes = {
-    isEnabled: PropTypes.bool.isRequired,
-    nextPath: PropTypes.string.isRequired,
+    isEnabled: PropTypes.bool, // 이 prop은 더 이상 필요 없으므로 제거 가능
 };
 
 export default CreateFeed;
