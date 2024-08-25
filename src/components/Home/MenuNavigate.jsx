@@ -60,7 +60,7 @@ const MenuNavigate = ({PageTitle}) => {
                 <div>
                     {
                         isLogin?(<img src={userProfile} alt="profile" onClick={profileNavigation}
-                                      className='cursor-pointer shrink-0 w-6 aspect-[1.04] rounded-lg' />):
+                                      className='cursor-pointer shrink-0 w-6 aspect-[1.04] rounded-full' />):
                             (<img src="/assets/profile.png" alt="profile" onClick={AutoLogin}
                                   className='cursor-pointer shrink-0 w-6 aspect-[1.04]'/>)
                     }
