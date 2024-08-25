@@ -13,7 +13,7 @@ const FeedDetailPage = () => {
             <FeedRecipe/>
             <FeedTags/>
             <FeedTitle/>
-            <FeedMenu/>
+            <FeedMenu option="이장우"/>
             <FeedComment/>
         </main>
     );
