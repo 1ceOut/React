@@ -15,14 +15,15 @@ const detailPostingList = async (_id) => {
 }
 
 const addPosting = async (data) => {
-    await axios.post(`${API_URL}/posting/insert`, data);
+    const response = await axios.post(`${API_URL}/posting/insert`, data);
+    return response.data; // 응답 데이터 반환
 };
 
 const deletePosting = async (_id) => {
     await axios.delete(`${API_URL}/posting/delete?postingId=${_id}`);
 };
 
-const updatePosting = async (postingId, data) => {
+const updatePosting = async (_id, data) => {
     await axios.put(`${API_URL}/posting/update/${_id}`, data);
 };
 
@@ -36,7 +37,7 @@ export const usePosts = () => {
 
 export const useDetailPost = () => {
     return useQuery({
-        queryKey: ['posts'],
+        queryKey: ['postDetail'],
         queryFn: detailPostingList,
     });
 };
