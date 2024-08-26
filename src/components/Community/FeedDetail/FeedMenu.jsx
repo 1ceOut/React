@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AiOutlineHeart, AiOutlinePlus } from 'react-icons/ai';
+import { AiOutlinePlus } from 'react-icons/ai';
 import { PropTypes } from 'prop-types';
 import Rating from '@mui/material/Rating';
 
@@ -39,7 +39,6 @@ const FeedMenu = ({ option }) => {
                 <div className="flex justify-evenly items-center text-[13px]">
                     <div className="flex justify-center items-center">
                         <img src="/assets/heart.png" alt="하트" className="mr-[4px]" />
-                        <AiOutlineHeart />
                         좋아요
                         <button>
                         </button>

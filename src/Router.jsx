@@ -35,6 +35,7 @@ import AddFridge from "./Pages/Refrigerator/food/AddFridge.jsx";
 import Barcode from "./Pages/Refrigerator/food/Barocde.jsx";
 import AddInput2 from "./Pages/Refrigerator/food/AddInput2.jsx";
 import SearchPage from "./Pages/Main/SearchPage.jsx";
+import FridgePlusPage from "./Pages/MyPage/FridgePlusPage.jsx";
 
 
 const queryClient = new QueryClient();
@@ -74,6 +75,7 @@ const Router = () => {
 
                     {/* 마이페이지 */}
                     <Route path="/mypage/profile" element={<ProfilePage/>}/>
+                    <Route path="/mypage/fridgepluse" element={<FridgePlusPage/>}/>
                     <Route path="/mypage/fridgedelete" element={<FridgeDeletePage/>}/> 
                     <Route path="/mypage/fridgeupdate" element={<FridgeUpdatePage/>}/>
                     <Route path="/mypage/userinvite" element={<UserInvitePage/>}/>

@@ -1,10 +1,9 @@
-import React from "react";
 import MenuNavigate from "../../components/Common/MenuNavigate";
-import FeedMenu from "../../components/Community/Feed/FeedMenu";
 import Profile from "../../components/Community/Feed/Profile";
 import FeedTitle from './../../components/Community/Feed/FeedTitle';
 import { usePosts } from '../../query/FeedQuery'; // React Query 훅을 임포트
 import FeedProfile from "../../components/Community/Feed/FeedProfile";
+import FeedMenu from './../../components/Community/FeedDetail/FeedMenu';
 
 const FeedPage = () => {
 
@@ -52,6 +51,7 @@ const FeedPage = () => {
                         <div className="flex justify-between mt-2 text-sm text-gray-500">
                         </div>
                         <FeedMenu />
+                        
                     </div>
                 ))
             ) : (
