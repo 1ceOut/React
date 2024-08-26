@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useSearchStore from './../../store/udseSearchStore';
+import useSearchStore from '../../store/useSearchStore.js';
 
 const SearchForm = () => {
     const [inputValue, setInputValue] = useState('');
