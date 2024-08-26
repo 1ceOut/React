@@ -3,6 +3,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField } 
 import MenuNavigate from "../../../components/Common/MenuNavigate.jsx";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import axios from 'axios';
+import Webcam from "react-webcam";
 
 const Barcode = () => {
     const location = useLocation();
@@ -47,6 +48,12 @@ const Barcode = () => {
         }
     }, [concatenatedText]);
 
+    const videoConstraints = {
+        width: 1280,
+        height: 720,
+        facingMode: "user"
+    };
+
     const captureImage = () => {
         const video = videoRef.current;
         const canvas = canvasRef.current;
@@ -62,33 +69,68 @@ const Barcode = () => {
         return null;
     };
 
-    const recognizeText = async () => {
+    const getBase64ImageBytes = (imageSrc) => {
+        // Data URL에서 실제 Base64 문자열 추출
+        const base64String = imageSrc.split(',')[1];
+
+        // Base64 문자열을 바이트 배열로 변환
+        const byteCharacters = atob(base64String);
+        const byteNumbers = new Array(byteCharacters.length);
+
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+
+        // 바이트 배열을 Uint8Array로 변환
+        const byteArray = new Uint8Array(byteNumbers);
+
+        return byteArray;
+    };
+
+    const dataURLtoFile = (dataurl, filename) => {
+        // Data URL에서 MIME 타입과 Base64 데이터 추출
+        const arr = dataurl.split(',');
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+
+        // Base64 데이터를 Uint8Array로 변환
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+
+        // Blob 생성 후 File 객체로 변환
+        return new File([u8arr], filename, { type: mime });
+    };
+
+    const recognizeText = async (images) => {
         const image = captureImage();
         if (!image) return;
-        const apiUrl = '/ocr/custom/v1/33678/ae953fb9fe052d72be98d1323256888dc27f1ef8ef26a0f9d04e8a63d5c9d4d6/general';
-        const secretKey = 'aHhaem1QdGxIQnJSbWZKTUdLRmh3cENPWlZWTEJJdE4=';
+        const apiUrl = 'https://yebuqn32b7.apigw.ntruss.com/custom/v1/33749/eabf62390c999978f5ed9a22ad4477fe994740622efffce38ff633a44d27665c/general';
+        const secretKey = 'ZWxFV2ZGTHJoRERwdkJKeUhoU0FBYXRBc1JYa3BtWVI=';
+
+        const formData = new FormData();
+        formData.append('message', JSON.stringify({
+            images: [{ format: 'jpeg', name: 'image' ,url:null}],
+            requestId: 'string',
+            version: 'V2',
+            timestamp: Date.now(),
+        }));
+        formData.append('file', images);
+
         try {
             const response = await axios.post(
                 apiUrl,
-                {
-                    images: [
-                        {
-                            format: 'png',
-                            name: 'image',
-                            data: image.split(',')[1],
-                        },
-                    ],
-                    requestId: 'string',
-                    version: 'V2',
-                    timestamp: Date.now(),
-                },
+                formData,
                 {
                     headers: {
-                        'Content-Type': 'application/json',
                         'X-OCR-SECRET': secretKey,
-                    },
+                    }
                 }
-            );
+            ).then((response)=>{
+                console.log(response);
+            });
             if (response.data.images.length === 0 || response.data.images[0].fields.length === 0) {
                 alert('텍스트를 인식하지 못했습니다. 다시 시도해 주세요.');
                 return;
@@ -199,7 +241,28 @@ const Barcode = () => {
                 marginTop: 32,
                 cursor: "pointer"
             }}>
-                <button onClick={recognizeText}>바코드 인식</button>
+                <Webcam
+                    audio={false}
+                    height={720}
+                    screenshotFormat="image/jpeg"
+                    width={1280}
+                    videoConstraints={videoConstraints}
+                >
+                    {({ getScreenshot }) => (
+                        <button
+                            onClick={() => {
+                                const imageSrc = getScreenshot();
+                                const imageFile = dataURLtoFile(imageSrc, 'captured_image.jpg');
+                                console.log('Image file:', imageFile);
+                                // 이제 imageFile을 서버로 전송하거나 다른 처리를 할 수 있습니다.
+                                recognizeText(imageFile);
+                            }}
+                        >
+                            Capture photo
+                        </button>
+                    )}
+                </Webcam>
+                {/*<button onClick={recognizeText}>바코드 인식</button>*/}
             </div>
             <div>
                 {capturedImage && (

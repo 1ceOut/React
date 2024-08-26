@@ -1,5 +1,5 @@
 
-import useSearchStore from './../../store/udseSearchStore';
+import useSearchStore from '../../store/useSearchStore.js';
 
 const RecentSearch = () => {
     const recentSearches = useSearchStore((state) => state.recentSearches);
