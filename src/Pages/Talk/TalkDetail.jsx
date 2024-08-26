@@ -12,6 +12,16 @@ const TalkDetail = () => {
     const [newAnnouncement, setNewAnnouncement] = useState("");
     const [isAnnouncementVisible, setIsAnnouncementVisible] = useState(false);
 
+    const [animationClass, setAnimationClass] = useState('animate-slideInUp');
+
+    useEffect(() => {
+        setAnimationClass('animate-slideInUp');
+
+        return () => {
+            setAnimationClass('animate-slideOutDown');
+        };
+    }, []);
+
     const chatEndRef = useRef(null);
 
     const handleSendMessage = () => {
@@ -38,7 +48,7 @@ const TalkDetail = () => {
     }, [messages]);
 
     return (
-        <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
+        <main className={`${animationClass} flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen`}>
             <MenuNavigate option="일반 냉장고" alertPath="/addinfo/habit"/>
 
             <div className="flex flex-col w-[390px] h-full bg-gray-50">

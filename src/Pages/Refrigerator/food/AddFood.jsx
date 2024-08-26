@@ -1,10 +1,19 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MenuNavigate from '../../../components/Common/MenuNavigate';
 
 
 const AddFood = () => {
 
+    const [animationClass, setAnimationClass] = useState('animate-slideInUp');
 
+    useEffect(() => {
+        setAnimationClass('animate-slideInUp');
+
+        return () => {
+            setAnimationClass('animate-slideOutDown');
+        };
+    }, []);
     
 
     const handleNavigate = () => {
@@ -18,7 +27,7 @@ const AddFood = () => {
       };
 
    return(
-    <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
+    <main className={`${animationClass} flex flex-col items-center px-6 pt-5 pb-32 mx-auto w-full max-w-[390px] min-h-[844px] h-screen`}>
         <MenuNavigate option={"일반 냉장고"} alertPath="/addinfo/habit" />
         <div style={{width: 342, height: 76, marginTop: 24}}>
             <p style={{fontWeight: 600, fontSize: 28}}>

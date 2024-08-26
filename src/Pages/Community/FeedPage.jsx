@@ -50,15 +50,13 @@ const FeedPage = () => {
 
                         {/* 게시물의 태그, 조회수, 좋아요 등 추가 정보 */}
                         <div className="flex justify-between mt-2 text-sm text-gray-500">
-                            <div>Tags: {post.tags}</div>
-                            <div>{post.views} views · {post.likes} likes</div>
                         </div>
+                        <FeedMenu />
                     </div>
                 ))
             ) : (
                 <div>No posts available</div>
             )}
-            <FeedMenu />
         </main>
     );
 };

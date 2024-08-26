@@ -30,6 +30,16 @@ const AddInput2 = () => {
     const { lcategories, scategories, fetchLcategories, fetchScategories } = useProductStore();
     const { userId, isLogin, LoginSuccessStatus } = useUserStore();
 
+    const [animationClass, setAnimationClass] = useState('animate-slideInUp');
+
+    useEffect(() => {
+        setAnimationClass('animate-slideInUp');
+
+        return () => {
+            setAnimationClass('animate-slideOutDown');
+        };
+    }, []);
+
     useEffect(() => {
         if (initialBarcode) setBarcode(initialBarcode);
         if (initialProductName) setProductName(initialProductName);
@@ -101,7 +111,7 @@ const AddInput2 = () => {
     };
 
     return (
-        <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
+        <main className={`${animationClass} flex flex-col items-center px-6 pt-5 pb-32 mx-auto w-full max-w-[390px] min-h-[844px] h-screen`}>
             <MenuNavigate option={"추가 입력"} alertPath="/addinfo/habit"/>
             <div style={{width: 342, height: 134, marginTop: 24}}>
                 <p style={{width: 342, height: 76, fontWeight: 600, fontSize: 28}}>
