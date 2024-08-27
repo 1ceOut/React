@@ -1,10 +1,9 @@
-import React from "react";
 import MenuNavigate from "../../components/Common/MenuNavigate";
-import FeedMenu from "../../components/Community/Feed/FeedMenu";
 import Profile from "../../components/Community/Feed/Profile";
 import FeedTitle from './../../components/Community/Feed/FeedTitle';
 import { usePosts } from '../../query/FeedQuery'; // React Query 훅을 임포트
 import FeedProfile from "../../components/Community/Feed/FeedProfile";
+import FeedMenu from './../../components/Community/FeedDetail/FeedMenu';
 
 const FeedPage = () => {
 
@@ -50,15 +49,14 @@ const FeedPage = () => {
 
                         {/* 게시물의 태그, 조회수, 좋아요 등 추가 정보 */}
                         <div className="flex justify-between mt-2 text-sm text-gray-500">
-                            <div>Tags: {post.tags}</div>
-                            <div>{post.views} views · {post.likes} likes</div>
                         </div>
+                        <FeedMenu />
+                        
                     </div>
                 ))
             ) : (
                 <div>No posts available</div>
             )}
-            <FeedMenu />
         </main>
     );
 };

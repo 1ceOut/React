@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // 페이지 이동을 위한 useNavigate 훅 추가
 import MenuNavigate from '../../../components/Common/MenuNavigate';
@@ -9,6 +10,16 @@ const AddInput = () => {
     const [productName, setProductName] = useState('');
     const [expiryDate, setExpiryDate] = useState('');
     const [count, setCount] = useState('');
+
+    const [animationClass, setAnimationClass] = useState('animate-slideInUp');
+
+    useEffect(() => {
+        setAnimationClass('animate-slideInUp');
+
+        return () => {
+            setAnimationClass('animate-slideOutDown');
+        };
+    }, []);
     
     const navigate = useNavigate(); // useNavigate 훅 초기화
 
@@ -46,7 +57,7 @@ const AddInput = () => {
     };
 
     return (
-        <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
+        <main className={`${animationClass} flex flex-col items-center px-6 pt-5 pb-32 mx-auto w-full max-w-[390px] min-h-[844px] h-auto relative`}>
             <MenuNavigate option={"식품 추가"} alertPath="/addinfo/habit" />
             <div style={{ width: 342, height: 134, marginTop: 24 }}>
                 <p style={{ width: 342, height: 76, fontWeight: 600, fontSize: 28 }}>

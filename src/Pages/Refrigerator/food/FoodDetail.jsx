@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import MenuNavigate from "../../../components/Common/MenuNavigate";
+import { useEffect } from "react";
 
 const FoodDetail = () => {
 
@@ -19,8 +20,18 @@ const FoodDetail = () => {
       // 실제 저장 로직을 여기에 추가해야함.
   };
 
+  const [animationClass, setAnimationClass] = useState('animate-slideInUp');
+
+  useEffect(() => {
+      setAnimationClass('animate-slideInUp');
+
+      return () => {
+          setAnimationClass('animate-slideOutDown');
+      };
+  }, []);
+
     return (
-        <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen overflow-auto">
+        <main className={`${animationClass} flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen overflow-auto`}>
             <MenuNavigate option={"상품 상세"} alertPath="/addinfo/habit" />
             <div style={{
                 position: 'relative',

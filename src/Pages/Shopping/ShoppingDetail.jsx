@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from 'react';
 import BarNavigate from "../../components/Common/BarNavigate";
 import MenuNavigate from "../../components/Common/MenuNavigate";
 import DetailMainContent from "../../components/Shopping/DetailMainContent";
@@ -7,8 +7,18 @@ const ShoppingDetail=()=>{
 
     const [isModalVisible, setIsModalVisible] = useState(false);
 
+    const [animationClass, setAnimationClass] = useState('animate-slideInUp');
+
+    useEffect(() => {
+        setAnimationClass('animate-slideInUp');
+
+        return () => {
+            setAnimationClass('animate-slideOutDown');
+        };
+    }, []);
+
     return(
-        <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
+        <main className={`${animationClass} flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen`}>
             <MenuNavigate option={"식재료 추천"} alertPath="/addinfo/habit" />
             <DetailMainContent setIsModalVisible={setIsModalVisible} />
             <div className={`w-full ${isModalVisible ? 'opacity-0' : ''}`}>

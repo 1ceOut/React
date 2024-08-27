@@ -9,7 +9,6 @@ const CreateFeed = () => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [tag, setTag] = useState('');
-    const [recipe, setRecipe] = useState('');
     const [stepDescription, setStepDescription] = useState('');
     const [stepImage, setStepImage] = useState(null);
     const [steps, setSteps] = useState([]);
@@ -77,7 +76,6 @@ const CreateFeed = () => {
                 image: selectedImage || null, // 이미지가 없을 경우 null 처리
                 user_id: userId,
                 writeday: new Date().toISOString(), // 작성일자 추가 (ISO 형식)
-                recipe_id: recipe || null, // 레시피 ID가 없을 경우 null 처리
                 steps // 스텝 데이터 추가
             };
 
@@ -135,17 +133,6 @@ const CreateFeed = () => {
                     className="block outline-none w-[302px] h-14 text-gray-900 placeholder:text-[#A8A8A8]"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                />
-            </div>
-            <div className="self-stretch border rounded-[12px] w-[342px] h-[200px] flex justify-center my-8">
-                <input
-                    id="recipe"
-                    name="recipe"
-                    type="text"
-                    placeholder="레시피를 입력해 주세요."
-                    className="block outline-none w-[302px] h-14 text-gray-900 placeholder:text-[#A8A8A8]"
-                    value={recipe}
-                    onChange={(e) => setRecipe(e.target.value)}
                 />
             </div>
             <div className="self-stretch border rounded-[12px] w-[342px] h-[300px] flex justify-center my-8">

@@ -1,4 +1,6 @@
 import { useState } from "react";
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import { red } from '@mui/material/colors';
 
 
 const FeedMenu = () => {
@@ -18,7 +20,7 @@ const FeedMenu = () => {
             <div className="flex flex-col font-medium text-[#767676]">
                 <div className="flex justify-between items-center text-[12px] mb-[10px]">
                     <div className="flex justify-center items-center">
-                        <img src="/assets/heart.png" alt="하트" className="mr-[4px]"/>
+                        <FavoriteIcon sx={{ color: red[500] }}/>
                         좋아요 25개
                     </div>
                     <div>댓글 2개</div>
