@@ -1,11 +1,14 @@
-
 import { useNavigate } from 'react-router-dom';
-import { PropTypes } from 'prop-types';
+import PropTypes from 'prop-types';
 
-const CreateButton = ({ option, nextPath }) => {
+const CreateButton = ({ option, nextPath, selectedFridge }) => {
     const navigate = useNavigate();
 
     const nextPage = () => {
+        if (!selectedFridge) {
+            alert('냉장고를 선택해 주세요.');
+            return;
+        }
         navigate(nextPath);
     };
 
@@ -21,8 +24,9 @@ const CreateButton = ({ option, nextPath }) => {
 };
 
 CreateButton.propTypes = {
-    option : PropTypes.string.isRequired,
-    nextPath : PropTypes.string.isRequired,
-}; 
+    option: PropTypes.string.isRequired,
+    nextPath: PropTypes.string.isRequired,
+    selectedFridge: PropTypes.string // 추가된 prop
+};
 
 export default CreateButton;
