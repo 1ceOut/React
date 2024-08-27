@@ -99,7 +99,7 @@ const Router = () => {
                     <Route path="search/search" element={<SearchPage/>}/>
                 </Routes>
             </BrowserRouter>
-            <ReactQueryDevtools />
+            <ReactQueryDevtools buttonPosition={"relative"}/>
         </QueryClientProvider>
     );
 };
