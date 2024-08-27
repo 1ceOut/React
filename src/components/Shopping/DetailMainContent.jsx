@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import HorizontalLine from './../Common/HorizontalLine';
+import { PropTypes } from 'prop-types';
 
-const DetailMainContent = () => {
-    const [isModalVisible, setIsModalVisible] = useState(false);
+const DetailMainContent = ({ setIsModalVisible }) => {
+    const [isModalVisible, setModalVisible] = useState(false);
 
     // 체크박스 상태를 관리하기 위한 useState 훅
     const [priceFilters, setPriceFilters] = useState({
@@ -26,10 +27,12 @@ const DetailMainContent = () => {
     });
 
     const handleClick = () => {
+        setModalVisible(true);
         setIsModalVisible(true);
     };
 
     const closeModal = () => {
+        setModalVisible(false);
         setIsModalVisible(false);
     };
 
@@ -54,7 +57,7 @@ const DetailMainContent = () => {
     };
 
     return (
-        <div className='self-stretch mt-[50px]'>
+        <div className='self-stretch mt-[50px] max-w-[390px]'>
             <div className='flex justify-between items-center h-6'>
                 <div className='font-medium text-[18px]'>상세필터</div>
                 <div>
@@ -96,15 +99,15 @@ const DetailMainContent = () => {
                     </div>
                 </div>
             </div>
-
+            <div className='self-stretch w-[390px] left-1/2'>
             {isModalVisible && (
-                <div>
+                <div className='w-[390px] self-stretch left-1/2'>
                     <div
                         className="fixed inset-0 bg-black bg-opacity-50"
                         onClick={closeModal}
                     ></div>
 
-                    <div className="fixed bottom-0 left-0 bg-white w-[390px] h-[648px] px-6 z-50 rounded-2xl">
+                    <div className="fixed bg-white w-[390px] h-[648px] px-6 z-50 rounded-2xl">
                         <div className="flex justify-between items-center mt-1 h-[46px]">
                             <div className="text-lg font-bold">상세 필터</div>
                             <button onClick={closeModal} className="text-lg font-bold">
@@ -237,7 +240,7 @@ const DetailMainContent = () => {
                         <div className='flex justify-end items-center mt-6'>
                             <div
                                 className='mr-[10px] border-[1px] w-[110px] h-[56px] border-[#E1E1E1] rounded-xl flex justify-center items-center text-[16px] font-normal cursor-pointer'
-                                onClick={resetFilters} // 초기화 버튼 클릭 시 필터 초기화
+                                onClick={resetFilters}
                             >
                                 초기화
                             </div>
@@ -248,8 +251,13 @@ const DetailMainContent = () => {
                     </div>
                 </div>
             )}
+            </div>
         </div>
     );
 };
+
+DetailMainContent.propTypes = {
+    setIsModalVisible: PropTypes.string.isRequired
+  };
 
 export default DetailMainContent;

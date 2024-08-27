@@ -37,7 +37,6 @@ import AddInput2 from "./Pages/Refrigerator/food/AddInput2.jsx";
 import SearchPage from "./Pages/Main/SearchPage.jsx";
 
 
-
 const queryClient = new QueryClient();
 
 const Router = () => {
@@ -69,7 +68,6 @@ const Router = () => {
                     <Route path="/Refrigerator/food/MyFridge" element={<MyFridge/>}/>
                     <Route path="/Refrigerator/food/AddFridge" element={<AddFridge/>}/>
 
-
                     {/* 알림 */}
                     <Route path="/alert/alert" element={<AlertPage/>}/>
                     <Route path="/alert/noalert" element={<NoAlertPage/>}/>
@@ -97,8 +95,6 @@ const Router = () => {
 
                     {/* 검색 */}
                     <Route path="search/search" element={<SearchPage/>}/>
-
-
                 </Routes>
             </BrowserRouter>
             <ReactQueryDevtools />

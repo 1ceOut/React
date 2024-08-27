@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import HorizontalLine from "../../components/Common/HorizontalLine";
 import MenuNavigate from "../../components/Common/MenuNavigate";
 
+
 const Talk = () => {
     const navigate = useNavigate();
 

@@ -1,3 +1,4 @@
+import { Rating } from '@mui/material';
 import { useState } from 'react';
 
 const FeedComment = () => {
@@ -24,35 +25,43 @@ const FeedComment = () => {
 
     return (
         <div className="self-stretch">
-            <div className="my-5 cursor-pointer" onClick={handleClick}>
+            <div className="my-5 cursor-pointer flex" onClick={handleClick}>
                 관련성 높은 댓글
+                <img src="/assets/downarrow.png" alt="아래방향" className='ml-2 flex justify-center items-center'/>
             </div>
             <div className="flex">
                 <div>
                     <img src="/assets/cha.png" alt="차은우" className="w-8 h-8" />
                 </div>
                 <div className="ml-2">
-                    <div className="w-[302px] h-auto bg-[#F5F5F5] p-[14px]">
-                        글쓴이
-                        <br /><br />
+                    <div className="w-[302px] rounded-xl h-auto bg-[#F5F5F5] p-[14px]">
+                        <div className="flex space-x-4">
+                            <div>
+                                글쓴이
+                            </div>
+                            <div className='flex justify-center items-center'>
+                                <Rating size='small' readOnly/>
+                            </div>
+                            <div>
+                                상중하
+                            </div>
+                        </div>
+                        <br />
                         초간단 이라구 해서 봤는데 초간단 까지는 아닌듯 하네요 ㅇㅇ..
                     </div>
                     <div className="flex space-x-5 font-normal text-[12px] text-[#767676]">
                         <div>1시간</div>
-                        <div>답글달기</div>
                     </div>
                 </div>
             </div>
 
             {isModalVisible && (
                 <div>
-                    {/* Background Overlay */}
                     <div
                         className="fixed inset-0 bg-black bg-opacity-50 z-40"
                         onClick={closeModal}
                     ></div>
 
-                    {/* Modal Content */}
                     <div className="fixed bottom-0 bg-white w-[390px] h-[258px] px-6 z-50">
                         <div className="flex justify-between items-center mt-1 h-[46px]">
                             <div className="text-lg font-bold">댓글 필터링</div>
