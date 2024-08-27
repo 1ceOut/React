@@ -67,8 +67,6 @@ const MenuNavigate = ({ option }) => {
 
 MenuNavigate.propTypes = {
   option: PropTypes.string.isRequired,
-  alertPath : PropTypes.string.isRequired,
-  profilePath : PropTypes.string.isRequired,
 };
 
 export default MenuNavigate;
