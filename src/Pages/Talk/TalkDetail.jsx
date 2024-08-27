@@ -8,58 +8,51 @@ import useUserStore from "../../store/useUserStore.js";
 
 const TalkDetail = () => {
     const { userId, userName } = useUserStore();
-    const chatroomSeq = 12;
+    const chatroomSeq = 13;
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const [announcement, setAnnouncement] = useState("이건 공지사항 띄울거임");
     const [newAnnouncement, setNewAnnouncement] = useState("");
     const [isAnnouncementVisible, setIsAnnouncementVisible] = useState(false);
 
-    const [animationClass, setAnimationClass] = useState('animate-slideInUp');
-
     useEffect(() => {
-        setAnimationClass('animate-slideInUp');
-
-        return () => {
-            setAnimationClass('animate-slideOutDown');
-        };
-    }, []);
-
-    const chatEndRef = useRef(null);
-    const stompClient = useRef(null);
+        scrollToBottom();
+    }, [messages]);
 
     useEffect(() => {
         connect();
         fetchMessages();
-        return () => {
-            disconnect();
-        };
     }, []);
 
+    useEffect(() => {
+
+    }, [newMessage]);
+
+
+    const chatEndRef = useRef(null);
+    const stompClient = useRef(null);
 
     const connect = () => {
         const socket = new SockJS('http://localhost:8081/ws');
         stompClient.current = Stomp.over(socket);
 
         stompClient.current.connect({}, (frame) => {
-            console.log('Connected: ' + frame);
-            stompClient.current.subscribe(`/sub/chatroom/${chatroomSeq}`, (message) => {
-                console.log('Received message:', message.body);
-                const newMessage = JSON.parse(message.body);
-                setMessages((prevMessages) => [...prevMessages, newMessage]);
+            console.log("Connected: " + frame);
+            console.log("WebSocket readyState:", stompClient.current.ws.readyState);
+
+            stompClient.current.subscribe(`/topic/messages`, (message) => {
+                console.log("Received message:", message.body);
+                try {
+                    const newMessage = JSON.parse(message.body);  // 메시지를 JSON으로 파싱
+                    setMessages((prevMessages) => [...prevMessages, newMessage]);
+                } catch (error) {
+                    console.error("Failed to parse incoming message:", error);
+                }
             });
         }, (error) => {
-            console.error('STOMP error:', error);
-            setTimeout(connect, 1000); // Reconnect after 1 second
+            console.error("STOMP error:", error);
+            setTimeout(connect, 1000);
         });
-    };
-
-    const disconnect = () => {
-        if (stompClient.current && stompClient.current.ws.readyState === WebSocket.OPEN) {
-            stompClient.current.disconnect(() => {
-                console.log('Disconnected');
-            });
-        }
     };
 
     const fetchMessages = () => {
@@ -81,11 +74,13 @@ const TalkDetail = () => {
                 chatroomSeq: chatroomSeq,
                 sender: userName,
                 message: newMessage,
+                id: chatroomSeq,
+                senderSeq: Date.now()
             };
             stompClient.current.send(`/pub/message`, {}, JSON.stringify(messageObj));
-            setNewMessage(""); // Clear input field
+            setNewMessage("");
         } else {
-            console.error('WebSocket connection is not open.');
+            console.error("WebSocket connection is not open.");
         }
     };
 
@@ -101,28 +96,24 @@ const TalkDetail = () => {
         setIsAnnouncementVisible(!isAnnouncementVisible);
     };
 
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
-
     const scrollToBottom = () => {
         chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
     return (
-        <main className={`${animationClass} flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen`}>
-            <MenuNavigate option="일반 냉장고" alertPath="/addinfo/habit"/>
+        <main className={`flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen`}>
+            <MenuNavigate option="일반 냉장고" alertPath="/addinfo/habit" />
 
             <div className="flex flex-col w-[390px] h-full bg-gray-50">
                 {/* 공지사항 */}
                 <div className="bg-gray-100 p-3 text-center text-sm text-gray-600 flex items-center justify-between">
-                    <img src="/assets/alert_icon.png" alt="확성기" className="w-5 h-5"/>
-                    <span className="w-[250px] overflow-hidden h-4">{announcement}</span> {/*공지사항 내용*/}
+                    <img src="/assets/alert_icon.png" alt="확성기" className="w-5 h-5" />
+                    <span className="w-[250px] overflow-hidden h-4">{announcement}</span> {/* 공지사항 내용 */}
                     <button
                         className="text-gray-500 hover:text-gray-700"
                         onClick={toggleAnnouncementVisibility}
                     >
-                        {isAnnouncementVisible ? <FaChevronUp/> : <FaChevronDown/>}
+                        {isAnnouncementVisible ? <FaChevronUp /> : <FaChevronDown />}
                     </button>
                 </div>
 
@@ -147,25 +138,22 @@ const TalkDetail = () => {
                 {/* 채팅 메시지 목록 */}
                 <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50" style={{ maxHeight: 'calc(100vh - 176px)' }}>
                     {messages.map((msg, index) => (
-                        <div key={index}
-                             className={`flex flex-col ${msg.sender === userName ? 'items-end' : 'items-start'}`}>
-                            <div
-                                className={`text-x5 ${msg.sender === userName ? "text-blue-500" : "text-gray-500"} mb-1`}>
+                        <div key={index} className={`flex flex-col ${msg.sender === userName ? 'items-end' : 'items-start'}`}>
+                            <div className={`text-x5 ${msg.sender === userName ? "text-blue-500" : "text-gray-500"} mb-1`}>
                                 {msg.sender}
                             </div>
 
                             <div className={`flex ${msg.sender === userName ? "justify-end" : "justify-start"}`}>
                                 {msg.sender === "other" && (
-                                    <img src="/assets/profile.png" alt="profile" className="w-8 h-8 rounded-full mr-2"/>
+                                    <img src="/assets/profile.png" alt="profile" className="w-8 h-8 rounded-full mr-2" />
                                 )}
-                                <div
-                                    className={`max-w-xs rounded-lg p-2 text-sm ${msg.sender === userName ? "bg-blue-500 text-white" : "bg-gray-300 text-gray-700"}`}>
+                                <div className={`max-w-xs rounded-lg p-2 text-sm ${msg.sender === userName ? "bg-blue-500 text-white" : "bg-gray-300 text-gray-700"}`}>
                                     {msg.message}
                                 </div>
                             </div>
                         </div>
                     ))}
-                    <div ref={chatEndRef}/>
+                    <div ref={chatEndRef} />
                 </div>
 
                 {/* 입력 및 전송 버튼 */}
@@ -182,6 +170,12 @@ const TalkDetail = () => {
                         <button
                             className="ml-4 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 text-sm"
                             onClick={sendMessage}
+                            onKeyPress={(e) => {
+                                if (e.key === "Enter") {
+                                    e.preventDefault(); // Prevent default form submission
+                                    sendMessage();
+                                }
+                            }}
                         >
                             전송
                         </button>
