@@ -106,14 +106,13 @@ const Router = () => {
           {/* 쇼핑 */}
           <Route path="Shop/home" element={<ShoppingHome />} />
           <Route path="Shop/detail" element={<ShoppingDetail />} />
-
-          {/* 검색 */}
-          <Route path="search/search" element={<SearchPage />} />
-        </Routes>
-      </BrowserRouter>
-      <ReactQueryDevtools />
-    </QueryClientProvider>
-  );
+                    {/* 검색 */}
+                    <Route path="search/search" element={<SearchPage/>}/>
+                </Routes>
+            </BrowserRouter>
+            <ReactQueryDevtools buttonPosition={"relative"}/>
+        </QueryClientProvider>
+    );
 };
 
 export default Router;
