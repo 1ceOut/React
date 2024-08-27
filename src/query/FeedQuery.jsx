@@ -5,10 +5,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 const API_URL = import.meta.env.VITE_FOOD_IP || "http://localhost:17017";
 
 // 포스팅과 유저 정보를 함께 가져오는 함수
-const fetchPostWithUserDetails = async (userId) => {
+const fetchPostWithUserDetails = async () => {
   const response = await axios.get(`${API_URL}/posting/listWithUser`, {
     withCredentials: true,
-    params: { userId },
   });
   return response.data;
 };
@@ -17,7 +16,7 @@ const fetchPostWithUserDetails = async (userId) => {
 const fetchPostsByUser = async (userId) => {
   const response = await axios.get(`${API_URL}/posting/listByUser`, {
     withCredentials: true,
-    params: { userId },
+    params: { user_id: userId },
   });
   return response.data;
 };
