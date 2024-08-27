@@ -1,12 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 import MenuNavigate from "../../components/Common/MenuNavigate";
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import axiosApi from "./axiosApi.js";
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
+import useUserStore from "../../store/useUserStore.js";
 
 const TalkDetail = () => {
-    const [messages, setMessages] = useState([
-        { sender: "user", senderName: "사용자", text: "냉장고 채팅방임" },
-        { sender: "other", senderName: "상대방", text: "하 하" },
-    ]);
+    const { userId, userName } = useUserStore();
+    const chatroomSeq = 12;
+    const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const [announcement, setAnnouncement] = useState("이건 공지사항 띄울거임");
     const [newAnnouncement, setNewAnnouncement] = useState("");
@@ -23,11 +26,66 @@ const TalkDetail = () => {
     }, []);
 
     const chatEndRef = useRef(null);
+    const stompClient = useRef(null);
 
-    const handleSendMessage = () => {
-        if (newMessage.trim() !== "") {
-            setMessages([...messages, { sender: "user", senderName: "사용자", text: newMessage }]);
-            setNewMessage("");
+    useEffect(() => {
+        connect();
+        fetchMessages();
+        return () => {
+            disconnect();
+        };
+    }, []);
+
+
+    const connect = () => {
+        const socket = new SockJS('http://localhost:8081/ws');
+        stompClient.current = Stomp.over(socket);
+
+        stompClient.current.connect({}, (frame) => {
+            console.log('Connected: ' + frame);
+            stompClient.current.subscribe(`/sub/chatroom/${chatroomSeq}`, (message) => {
+                console.log('Received message:', message.body);
+                const newMessage = JSON.parse(message.body);
+                setMessages((prevMessages) => [...prevMessages, newMessage]);
+            });
+        }, (error) => {
+            console.error('STOMP error:', error);
+            setTimeout(connect, 1000); // Reconnect after 1 second
+        });
+    };
+
+    const disconnect = () => {
+        if (stompClient.current && stompClient.current.ws.readyState === WebSocket.OPEN) {
+            stompClient.current.disconnect(() => {
+                console.log('Disconnected');
+            });
+        }
+    };
+
+    const fetchMessages = () => {
+        axiosApi.get(`/api/chatroom/${chatroomSeq}/messages`)
+            .then((response) => {
+                console.log("Fetched messages:", response.data);
+                if (Array.isArray(response.data)) {
+                    setMessages(response.data);
+                } else {
+                    console.error("Unexpected data format for messages:", response.data);
+                }
+            })
+            .catch((error) => console.error("Failed to fetch chat messages.", error));
+    };
+
+    const sendMessage = () => {
+        if (stompClient.current && stompClient.current.ws.readyState === WebSocket.OPEN) {
+            const messageObj = {
+                chatroomSeq: chatroomSeq,
+                sender: userName,
+                message: newMessage,
+            };
+            stompClient.current.send(`/pub/message`, {}, JSON.stringify(messageObj));
+            setNewMessage(""); // Clear input field
+        } else {
+            console.error('WebSocket connection is not open.');
         }
     };
 
@@ -44,8 +102,12 @@ const TalkDetail = () => {
     };
 
     useEffect(() => {
-        chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        scrollToBottom();
     }, [messages]);
+
+    const scrollToBottom = () => {
+        chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
 
     return (
         <main className={`${animationClass} flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen`}>
@@ -84,24 +146,26 @@ const TalkDetail = () => {
 
                 {/* 채팅 메시지 목록 */}
                 <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50" style={{ maxHeight: 'calc(100vh - 176px)' }}>
-                    {messages.map((message, index) => (
-                        <div key={index} className={`flex flex-col ${message.sender === "user" ? "items-end" : "items-start"}`}>
-                            <div className={`text-xs ${message.sender === "user" ? "text-blue-500" : "text-gray-500"} mb-1`}>
-                                {message.senderName}
+                    {messages.map((msg, index) => (
+                        <div key={index}
+                             className={`flex flex-col ${msg.sender === userName ? 'items-end' : 'items-start'}`}>
+                            <div
+                                className={`text-x5 ${msg.sender === userName ? "text-blue-500" : "text-gray-500"} mb-1`}>
+                                {msg.sender}
                             </div>
 
-                            <div className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
-                                {message.sender === "other" && (
+                            <div className={`flex ${msg.sender === userName ? "justify-end" : "justify-start"}`}>
+                                {msg.sender === "other" && (
                                     <img src="/assets/profile.png" alt="profile" className="w-8 h-8 rounded-full mr-2"/>
                                 )}
                                 <div
-                                    className={`max-w-xs rounded-lg p-2 text-sm ${message.sender === "user" ? "bg-blue-500 text-white" : "bg-gray-300 text-gray-700"}`}>
-                                    {message.text}
+                                    className={`max-w-xs rounded-lg p-2 text-sm ${msg.sender === userName ? "bg-blue-500 text-white" : "bg-gray-300 text-gray-700"}`}>
+                                    {msg.message}
                                 </div>
                             </div>
                         </div>
                     ))}
-                    <div ref={chatEndRef} />
+                    <div ref={chatEndRef}/>
                 </div>
 
                 {/* 입력 및 전송 버튼 */}
@@ -113,11 +177,11 @@ const TalkDetail = () => {
                             placeholder="메시지를 입력하세요..."
                             value={newMessage}
                             onChange={(e) => setNewMessage(e.target.value)}
-                            onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                            onKeyPress={(e) => e.key === "Enter" && sendMessage()}
                         />
                         <button
                             className="ml-4 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 text-sm"
-                            onClick={handleSendMessage}
+                            onClick={sendMessage}
                         >
                             전송
                         </button>

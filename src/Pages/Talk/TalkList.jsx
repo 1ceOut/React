@@ -1,21 +1,25 @@
 import { useNavigate } from 'react-router-dom';
 import HorizontalLine from "../../components/Common/HorizontalLine";
 import MenuNavigate from "../../components/Common/MenuNavigate";
+import useUserStore from "../../store/useUserStore.js";
 
 
 const Talk = () => {
     const navigate = useNavigate();
+    const {userId,userName}=useUserStore();
 
     // 클릭 이벤트 핸들러
     const handleClick = () => {
-        navigate("/Talk/TalkDetail");  // 이동할 페이지 경로
+        navigate("/Talk/TalkDetail", {
+            state: { userId, userName }  // 사용자 ID와 이름을 state로 전달
+        });
     };
 
     return (
         <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
             <MenuNavigate option={"채팅방"} alertPath="/addinfo/habit" />
 
-            <div 
+            <div
                 style={{ marginTop: 20, width: 342, height: 55, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
             >
                 <div style={{ width: 342, height: 44, display: 'flex', alignItems: 'center' }}>
@@ -33,8 +37,8 @@ const Talk = () => {
             </div>
 
             {/* 일반 냉장고 채팅 */}
-            <div 
-                style={{ marginTop: 32, width: 342, height: 40, display: 'flex', alignItems: 'center', padding: '0 4px', cursor: 'pointer' }} 
+            <div
+                style={{ marginTop: 32, width: 342, height: 40, display: 'flex', alignItems: 'center', padding: '0 4px', cursor: 'pointer' }}
                 onClick={() => handleClick()}
             >
                 <div style={{ width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -58,8 +62,8 @@ const Talk = () => {
             </div>
 
             {/* 김치 냉장고 채팅 아이템 */}
-            <div 
-                style={{ marginTop: 24, width: 342, height: 40, display: 'flex', alignItems: 'center', padding: '0 4px', cursor: 'pointer' }} 
+            <div
+                style={{ marginTop: 24, width: 342, height: 40, display: 'flex', alignItems: 'center', padding: '0 4px', cursor: 'pointer' }}
                 onClick={() => handleClick()}
             >
                 <div style={{ width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
