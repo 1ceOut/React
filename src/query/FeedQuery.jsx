@@ -5,7 +5,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 const API_URL = import.meta.env.VITE_FOOD_IP;
 
 const fetchPostingList = async () => {
-    const response = await axios.get(`${API_URL}/posting/list`);
+    const response = await axios.get(`${API_URL}/posting/list`,{
+        withCredentials: true,
+    });
     return response.data;
 };
 

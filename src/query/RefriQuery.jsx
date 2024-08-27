@@ -1,4 +1,3 @@
-// useFridgeOptions 훅을 정의한 파일 (RefriQuery.jsx)
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
@@ -6,6 +5,7 @@ import axios from 'axios';
 const fetchFridgeOptions = async (userId) => {
     try {
         const response = await axios.post('http://localhost:9000/api/refri/user/refrilist', { userId });
+        console.log('Fetched data:', response.data);
         return response.data;
     } catch (error) {
         console.error('Error fetching fridge options:', error);
@@ -13,7 +13,7 @@ const fetchFridgeOptions = async (userId) => {
     }
 };
 
-// react-query 훅
+// React Query 훅
 const useFridgeOptions = (userId) => {
     return useQuery({
         queryKey: ['fridgeOptions', userId],

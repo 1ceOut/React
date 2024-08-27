@@ -3,6 +3,8 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField } 
 import MenuNavigate from "../../../components/Common/MenuNavigate.jsx";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import axios from 'axios';
+import { uploadImageToNCP } from "../../../logic/bucket.js";
+
 
 const Barcode = () => {
     const location = useLocation();
@@ -23,8 +25,6 @@ const Barcode = () => {
         address: '',
         productType: '',
     });
-
-    // 모달 표시 상태 관리
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
     useEffect(() => {
@@ -47,6 +47,12 @@ const Barcode = () => {
         }
     }, [concatenatedText]);
 
+    const videoConstraints = {
+        width: 1280,
+        height: 720,
+        facingMode: "user"
+    };
+
     const captureImage = () => {
         const video = videoRef.current;
         const canvas = canvasRef.current;
@@ -62,43 +68,98 @@ const Barcode = () => {
         return null;
     };
 
-    const recognizeText = async () => {
+    const getBase64ImageBytes = (imageSrc) => {
+        // Data URL에서 실제 Base64 문자열 추출
+        const base64String = imageSrc.split(',')[1];
+
+        // Base64 문자열을 바이트 배열로 변환
+        const byteCharacters = atob(base64String);
+        const byteNumbers = new Array(byteCharacters.length);
+
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+
+        // 바이트 배열을 Uint8Array로 변환
+        const byteArray = new Uint8Array(byteNumbers);
+
+        return byteArray;
+    };
+
+    const dataURLtoFile = (dataurl, filename) => {
+        // Data URL에서 MIME 타입과 Base64 데이터 추출
+        const arr = dataurl.split(',');
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+
+        // Base64 데이터를 Uint8Array로 변환
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+
+        // Blob 생성 후 File 객체로 변환
+        return new File([u8arr], filename, { type: mime });
+    };
+
+    const recognizeText = async (images) => {
         const image = captureImage();
         if (!image) return;
-        const apiUrl = '/ocr/custom/v1/33678/ae953fb9fe052d72be98d1323256888dc27f1ef8ef26a0f9d04e8a63d5c9d4d6/general';
-        const secretKey = 'aHhaem1QdGxIQnJSbWZKTUdLRmh3cENPWlZWTEJJdE4=';
         try {
-            const response = await axios.post(
-                apiUrl,
-                {
-                    images: [
-                        {
-                            format: 'png',
-                            name: 'image',
-                            data: image.split(',')[1],
-                        },
-                    ],
-                    requestId: 'string',
-                    version: 'V2',
-                    timestamp: Date.now(),
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-OCR-SECRET': secretKey,
-                    },
-                }
-            );
-            if (response.data.images.length === 0 || response.data.images[0].fields.length === 0) {
+            // 이미지 업로드
+            const imageUrl = await uploadImageToNCP(image);
+            console.log("Image URL:", imageUrl);
+
+            // 전체 URL 생성
+            const baseUrl = 'https://kr.object.ncloudstorage.com/barcode-reader-finalproject/';
+            const fullImageUrl = `${baseUrl}${imageUrl}`;
+            console.log("Full image URL for OCR:", fullImageUrl);
+
+            // OCR 인식 요청
+            const ocrResponse = await recognizeTextWithUrl(fullImageUrl);
+            if (!ocrResponse || ocrResponse.images.length === 0 || ocrResponse.images[0].fields.length === 0) {
                 alert('텍스트를 인식하지 못했습니다. 다시 시도해 주세요.');
                 return;
             }
-            setOcrResult(response.data);
-            extractInferTexts(response.data);
+
+            setOcrResult(ocrResponse);
+            extractInferTexts(ocrResponse);
         } catch (error) {
-            console.error("Error recognizing text: ", error);
+            console.error("Error recognizing text:", error);
         }
     };
+
+    // 이미지 URL을 사용하는 OCR 인식 요청 함수
+    const recognizeTextWithUrl = async (imageUrl) => {
+
+        const ocrRequest = {
+            images: [
+                {
+                    format: 'png',
+                    name: 'barcodereader',
+                    url: imageUrl // 전체 이미지 URL
+                }
+            ],
+            requestId: 'string',
+            version: 'V2',
+            timestamp: Date.now(),
+        };
+
+        try {
+            const response = await axios.post('http://localhost:9000/api/ocr', ocrRequest, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error recognizing text:", error.response ? error.response.data : error.message);
+            throw error;
+        }
+    };
+
+
 
     const extractInferTexts = (ocrData) => {
         const texts = [];
@@ -121,10 +182,9 @@ const Barcode = () => {
         const finalConcatenatedText = texts.join(' ');
         setConcatenatedText(finalConcatenatedText);
 
-        // foodSafetyInfo가 설정되기 전에 모달을 열 수 있도록 하기 위해 setTimeout을 사용
         setTimeout(() => {
             setModalIsOpen(true);
-        }, 500);  // 0.5초 정도의 지연 시간
+        }, 500);
     };
 
     const fetchFoodSafetyInfo = async (barcode) => {
@@ -146,7 +206,7 @@ const Barcode = () => {
                 });
             }
         } catch (error) {
-            console.error("Error fetching food safety info: ", error);
+            console.error("Error fetching food safety info:", error);
         }
     };
 
@@ -158,19 +218,17 @@ const Barcode = () => {
         }));
     };
 
-
-    // 모달 닫기
     const closeModal = () => {
         setModalIsOpen(false);
     };
 
-    // 추가 입력창으로 이동
     const goToAddInput = () => {
         navigate('/Refrigerator/food/AddInput2', {
             state: {
-                barcode : additionalInfo.barcode,
+                barcode: additionalInfo.barcode,
                 productName: additionalInfo.productName,
-                expiryDate: additionalInfo.expiryDate
+                expiryDate: additionalInfo.expiryDate,
+                refrigeratorName: refrigeratorName
             }
         });
         closeModal();
@@ -178,11 +236,10 @@ const Barcode = () => {
 
     return (
         <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
-            <MenuNavigate option={"음식 바코드"} alertPath="/addinfo/habit"/>
+            <MenuNavigate option={`${refrigeratorName} 냉장고`} alertPath="/addinfo/habit"/>
             <div style={{width: 342, height: 76, marginTop: 24}}>
                 <p style={{fontWeight: 600, fontSize: 28}}>
                     상품 바코드를 찍어주세요<br/>
-                    {refrigeratorName && <h2>{refrigeratorName} 냉장고</h2>}
                 </p>
             </div>
             <video ref={videoRef} autoPlay playsInline style={{width: '100%', height: 'auto'}}/>
@@ -199,7 +256,28 @@ const Barcode = () => {
                 marginTop: 32,
                 cursor: "pointer"
             }}>
-                <button onClick={recognizeText}>바코드 인식</button>
+                <Webcam
+                    audio={false}
+                    height={720}
+                    screenshotFormat="image/jpeg"
+                    width={1280}
+                    videoConstraints={videoConstraints}
+                >
+                    {({ getScreenshot }) => (
+                        <button
+                            onClick={() => {
+                                const imageSrc = getScreenshot();
+                                const imageFile = dataURLtoFile(imageSrc, 'captured_image.jpg');
+                                console.log('Image file:', imageFile);
+                                // 이제 imageFile을 서버로 전송하거나 다른 처리를 할 수 있습니다.
+                                recognizeText(imageFile);
+                            }}
+                        >
+                            Capture photo
+                        </button>
+                    )}
+                </Webcam>
+                {/*<button onClick={recognizeText}>바코드 인식</button>*/}
             </div>
             <div>
                 {capturedImage && (
@@ -258,7 +336,6 @@ const Barcode = () => {
                                             required
                                         />
                                     </label><br/><br/>
-
                                 </form>
                             </div>
                         )}
@@ -266,7 +343,6 @@ const Barcode = () => {
                 )}
             </div>
 
-            {/* 모달 구현 */}
             <Dialog
                 open={modalIsOpen}
                 onClose={closeModal}
