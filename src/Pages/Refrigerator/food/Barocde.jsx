@@ -3,6 +3,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField } 
 import MenuNavigate from "../../../components/Common/MenuNavigate.jsx";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import axios from 'axios';
+import { uploadImageToNCP } from "../../../logic/bucket.js";
 
 const Barcode = () => {
     const location = useLocation();
@@ -23,8 +24,6 @@ const Barcode = () => {
         address: '',
         productType: '',
     });
-
-    // 모달 표시 상태 관리
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
     useEffect(() => {
@@ -65,40 +64,61 @@ const Barcode = () => {
     const recognizeText = async () => {
         const image = captureImage();
         if (!image) return;
-        const apiUrl = '/ocr/custom/v1/33678/ae953fb9fe052d72be98d1323256888dc27f1ef8ef26a0f9d04e8a63d5c9d4d6/general';
-        const secretKey = 'aHhaem1QdGxIQnJSbWZKTUdLRmh3cENPWlZWTEJJdE4=';
+
         try {
-            const response = await axios.post(
-                apiUrl,
-                {
-                    images: [
-                        {
-                            format: 'png',
-                            name: 'image',
-                            data: image.split(',')[1],
-                        },
-                    ],
-                    requestId: 'string',
-                    version: 'V2',
-                    timestamp: Date.now(),
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-OCR-SECRET': secretKey,
-                    },
-                }
-            );
-            if (response.data.images.length === 0 || response.data.images[0].fields.length === 0) {
+            // 이미지 업로드
+            const imageUrl = await uploadImageToNCP(image);
+            console.log("Image URL:", imageUrl);
+
+            // 전체 URL 생성
+            const baseUrl = 'https://kr.object.ncloudstorage.com/barcode-reader-finalproject/';
+            const fullImageUrl = `${baseUrl}${imageUrl}`;
+            console.log("Full image URL for OCR:", fullImageUrl);
+
+            // OCR 인식 요청
+            const ocrResponse = await recognizeTextWithUrl(fullImageUrl);
+            if (!ocrResponse || ocrResponse.images.length === 0 || ocrResponse.images[0].fields.length === 0) {
                 alert('텍스트를 인식하지 못했습니다. 다시 시도해 주세요.');
                 return;
             }
-            setOcrResult(response.data);
-            extractInferTexts(response.data);
+
+            setOcrResult(ocrResponse);
+            extractInferTexts(ocrResponse);
         } catch (error) {
-            console.error("Error recognizing text: ", error);
+            console.error("Error recognizing text:", error);
         }
     };
+
+    // 이미지 URL을 사용하는 OCR 인식 요청 함수
+    const recognizeTextWithUrl = async (imageUrl) => {
+
+        const ocrRequest = {
+            images: [
+                {
+                    format: 'png',
+                    name: 'barcodereader',
+                    url: imageUrl // 전체 이미지 URL
+                }
+            ],
+            requestId: 'string',
+            version: 'V2',
+            timestamp: Date.now(),
+        };
+
+        try {
+            const response = await axios.post('http://localhost:9000/api/ocr', ocrRequest, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error recognizing text:", error.response ? error.response.data : error.message);
+            throw error;
+        }
+    };
+
+
 
     const extractInferTexts = (ocrData) => {
         const texts = [];
@@ -121,10 +141,9 @@ const Barcode = () => {
         const finalConcatenatedText = texts.join(' ');
         setConcatenatedText(finalConcatenatedText);
 
-        // foodSafetyInfo가 설정되기 전에 모달을 열 수 있도록 하기 위해 setTimeout을 사용
         setTimeout(() => {
             setModalIsOpen(true);
-        }, 500);  // 0.5초 정도의 지연 시간
+        }, 500);
     };
 
     const fetchFoodSafetyInfo = async (barcode) => {
@@ -146,7 +165,7 @@ const Barcode = () => {
                 });
             }
         } catch (error) {
-            console.error("Error fetching food safety info: ", error);
+            console.error("Error fetching food safety info:", error);
         }
     };
 
@@ -158,19 +177,17 @@ const Barcode = () => {
         }));
     };
 
-
-    // 모달 닫기
     const closeModal = () => {
         setModalIsOpen(false);
     };
 
-    // 추가 입력창으로 이동
     const goToAddInput = () => {
         navigate('/Refrigerator/food/AddInput2', {
             state: {
-                barcode : additionalInfo.barcode,
+                barcode: additionalInfo.barcode,
                 productName: additionalInfo.productName,
-                expiryDate: additionalInfo.expiryDate
+                expiryDate: additionalInfo.expiryDate,
+                refrigeratorName: refrigeratorName
             }
         });
         closeModal();
@@ -178,11 +195,10 @@ const Barcode = () => {
 
     return (
         <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
-            <MenuNavigate option={"음식 바코드"} alertPath="/addinfo/habit"/>
+            <MenuNavigate option={`${refrigeratorName} 냉장고`} alertPath="/addinfo/habit"/>
             <div style={{width: 342, height: 76, marginTop: 24}}>
                 <p style={{fontWeight: 600, fontSize: 28}}>
                     상품 바코드를 찍어주세요<br/>
-                    {refrigeratorName && <h2>{refrigeratorName} 냉장고</h2>}
                 </p>
             </div>
             <video ref={videoRef} autoPlay playsInline style={{width: '100%', height: 'auto'}}/>
@@ -258,7 +274,6 @@ const Barcode = () => {
                                             required
                                         />
                                     </label><br/><br/>
-
                                 </form>
                             </div>
                         )}
@@ -266,7 +281,6 @@ const Barcode = () => {
                 )}
             </div>
 
-            {/* 모달 구현 */}
             <Dialog
                 open={modalIsOpen}
                 onClose={closeModal}

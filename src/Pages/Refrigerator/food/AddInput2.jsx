@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import MenuNavigate from '../../../components/Common/MenuNavigate';
-import NextButton from '../../../components/AddInfo/Common/NextButton';
 import axios from 'axios';
 import useProductStore from '../../../store/useProductStore';
 import useUserStore from '../../../store/useUserStore';
@@ -15,8 +14,9 @@ const AddInput2 = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
+    // location.state에서 이전 페이지에서 넘겨준 상태를 가져옵니다.
     const { barcode: initialBarcode, productName: initialProductName, expiryDate: initialExpiryDate, refrigeratorName } = location.state || {};
-
+    console.log(refrigeratorName);
     const [productName, setProductName] = useState(initialProductName || '');
     const [expiryDate, setExpiryDate] = useState(initialExpiryDate || '');
     const [barcode, setBarcode] = useState(initialBarcode || '');
@@ -61,7 +61,6 @@ const AddInput2 = () => {
 
     useEffect(() => {
         setIsEnabled(productName && expiryDate && count && selectedOption && (!showAdditionalSelect || (additionalSelectValue && subcategoryValue)));
-        console.log(productName,expiryDate);
     }, [productName, expiryDate, count, selectedOption, additionalSelectValue, subcategoryValue, showAdditionalSelect]);
 
     useEffect(() => {
@@ -83,7 +82,7 @@ const AddInput2 = () => {
             productType: selectedOption,
             lcategory: additionalSelectValue,
             scategory: subcategoryValue,
-            refrigeratorName: refrigeratorName || '기본 냉장고 이름',
+            refrigeratorName: refrigeratorName || '기본 냉장고 이름', // 냉장고 이름을 서버로 전달
             userId
         };
 
@@ -101,7 +100,7 @@ const AddInput2 = () => {
     };
 
     return (
-        <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
+        <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen overflow-auto">
             <MenuNavigate option={"추가 입력"} alertPath="/addinfo/habit"/>
             <div style={{width: 342, height: 134, marginTop: 24}}>
                 <p style={{width: 342, height: 76, fontWeight: 600, fontSize: 28}}>
@@ -239,12 +238,6 @@ const AddInput2 = () => {
                     }}
                 />
             </div>
-            {/*<NextButton*/}
-            {/*    isEnabled={isEnabled}*/}
-            {/*    onClick={isEnabled ? saveBarcode : undefined}  // onClick 프롭으로 saveBarcode 전달*/}
-            {/*    nextPath="/Refrigerator/food/FoodList"*/}
-
-            {/*/>*/}
             <div
                 style={{
                     width: 342,
@@ -254,9 +247,9 @@ const AddInput2 = () => {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    marginTop:100
+                    marginTop: 32
                 }}
-                className={`flex text-[#868686] rounded-xl self-stretch justify-center items-center w-[342px] h-14 cursor-pointer absolute bottom-[300px] ${
+                className={`flex text-[#868686] rounded-xl self-stretch justify-center items-center w-[342px] h-14 cursor-pointer ${
                     isEnabled ? 'bg-blue-500 text-white' : 'bg-[#D1D1D1]'
                 }`}
                 onClick={isEnabled ? saveBarcode : null} // 클릭 시 제출 함수 호출
