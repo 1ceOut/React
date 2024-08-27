@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import DetailButton from './../../components/Common/DetailButton';
 import CreateButton from './../../components/Common/CreateButton';
 import MenuNavigate from './../../components/Common/MenuNavigate';
@@ -10,9 +10,31 @@ import CategoryFood from './../../components/Refrigerator/FridgeManage/CategoryF
 const FridgeManagePage = () => {
     const [showMore, setShowMore] = useState(false);
     const [selectedFridge, setSelectedFridge] = useState(null); // 선택된 냉장고 상태
+    const [saveFoodList, setSaveFoodList] = useState([]); // 음식 목록 상태
 
     const handleShowMore = () => {
         setShowMore(true);
+    };
+
+    useEffect(() => {
+        if (selectedFridge) {
+            fetchSavedBarcodes(selectedFridge);
+        }
+    }, [selectedFridge]);
+
+    const fetchSavedBarcodes = async (selectedFridge) => {
+        try {
+            // 쿼리 파라미터에 selectedFridge를 올바르게 포함시키는지 확인
+            const response = await axios.get(`http://localhost:9000/api/list`, {
+                params: {
+                    refrigeratorName: selectedFridge
+                }
+            });
+            console.log(response.data);
+            setSaveFoodList(response.data);
+        } catch (error) {
+            console.error('Error fetching saved barcodes', error);
+        }
     };
 
     return (
@@ -32,18 +54,23 @@ const FridgeManagePage = () => {
                 <SearchForm />
             </div>
 
+            {/* 선택된 냉장고의 음식 목록을 동적으로 렌더링 */}
             <div className="self-stretch pt-5">
-                <CategoryFood option={"유제품"} />
-                <DetailButton foodCategory={"cheese"} expireDate={"2024.08.30"} option={"서울우유 체다치즈"} />
-                <DetailButton foodCategory={"milkcow"} expireDate={"2024.08.11"} option={"서울우유 플레인 요거트 순수무가당"} />
-                <DetailButton foodCategory={"milkcow"} expireDate={"2024.08.08"} option={"매일유업 매일바이오 제로 요구르트"} />
-            </div>
-
-            <div className="self-stretch pt-5">
-                <CategoryFood option={"육류"} />
-                <DetailButton foodCategory={"chicken"} expireDate={"2024.08.13"} option={"[올마레]춘천 국물 닭갈비 떡볶이"} />
-                <DetailButton foodCategory={"meet"} expireDate={"2024.08.10"} option={"[브룩클린688] 호주산 토시살 구이용 냉장..."} />
-                <DetailButton foodCategory={"groundmeat"} expireDate={"2024.08.07"} option={"국내산 다짐 쇠고기 600g"} />
+                {saveFoodList.map((food, index) => (
+                    <div key={index}>
+                        <CategoryFood option={food.lcategory} />
+                        <DetailButton
+                        productName={food.productName}
+                        expiryDate={food.expiryDate}
+                        count={food.count}
+                        productType={food.productType}
+                        createdDate={food.createdDate}
+                        lcategory={food.lcategory}
+                        scategory={food.scategory}
+                            option={food.productName}
+                        />
+                    </div>
+                ))}
             </div>
 
             {!showMore && (
@@ -59,12 +86,22 @@ const FridgeManagePage = () => {
 
             {showMore && (
                 <div className="self-stretch pt-5">
-                    <CategoryFood option={"해산물"} />
-                    <DetailButton foodCategory={"seafood"} expireDate={"2024.08.15"} option={"노르웨이산 연어"} />
-                    <DetailButton foodCategory={"shrimp"} expireDate={"2024.08.12"} option={"새우 1kg"} />
-                    <CategoryFood option={"채소"} />
-                    <DetailButton foodCategory={"vegetable"} expireDate={"2024.08.09"} option={"시금치"} />
-                    <DetailButton foodCategory={"vegetable"} expireDate={"2024.08.10"} option={"방울토마토"} />
+                    {/* 추가적인 음식 목록을 렌더링 */}
+                    {saveFoodList.map((food, index) => (
+                        <div key={index}>
+                            <CategoryFood option={food.lcategory} />
+                            <DetailButton
+                                productName={food.productName}
+                                expiryDate={food.expiryDate}
+                                count={food.count}
+                                productType={food.productType}
+                                createdDate={food.createdDate}
+                                lcategory={food.lcategory}
+                                scategory={food.scategory}
+                                option={food.productName}
+                            />
+                        </div>
+                    ))}
                 </div>
             )}
         </main>

@@ -1,19 +1,28 @@
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
-const DetailButton = ({ foodCategory, expireDate, option }) => {
+const DetailButton = ({
+                        foodCategory,
+                        expiryDate,
+                        option,
+                        count,
+                        productType,
+                        createdDate,
+                        lcategory,
+                        scategory
+                      }) => {
   const navigate = useNavigate();
 
-  const calculateRemainingDays = (expireDate) => {
+  const calculateRemainingDays = (expiryDate) => {
     const today = new Date();
-    const expirationDate = new Date(expireDate);
+    const expirationDate = new Date(expiryDate);
     const diffTime = expirationDate - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays; 
+    return diffDays;
   };
 
-  const remainingDays = calculateRemainingDays(expireDate);
-  
+  const remainingDays = calculateRemainingDays(expiryDate);
+
   const getTextColor = (remainingDays) => {
     if (remainingDays <= 0) {
       return 'text-red-500';
@@ -34,41 +43,58 @@ const DetailButton = ({ foodCategory, expireDate, option }) => {
         return '/assets/chicken.png';
       case 'cheese':
         return '/assets/cheese.png';
-        case 'milkcow':
+      case 'milkcow':
         return '/assets/milkcow.png';
-        case 'groundmeat':
-          return '/assets/groundmeat.png';
+      case 'groundmeat':
+        return '/assets/groundmeat.png';
       default:
         return '/assets/meet.png';
     }
   };
 
   const handleNavigation = () => {
-    navigate('/Refrigerator/food/FoodDetail');
+    navigate('/Refrigerator/food/FoodDetail', {
+      state: {
+        foodCategory,
+        expiryDate,
+        option,
+        count,
+        productType,
+        createdDate,
+        lcategory,
+        scategory
+      }
+    });
   };
 
+
   return (
-    <div className="self-stretch w-[342px] h-[60px] flex items-center justify-between cursor-pointer" onClick={handleNavigation}>
-      <div className="flex items-center">
-        <div className="flex items-center justify-center mr-3 w-10 h-10 rounded-lg bg-[#F5F5F5]">
+      <div className="self-stretch w-[342px] h-[60px] flex items-center justify-between cursor-pointer" onClick={handleNavigation}>
+        <div className="flex items-center">
+          <div className="flex items-center justify-center mr-3 w-10 h-10 rounded-lg bg-[#F5F5F5]">
             <img src={getCategoryImage(foodCategory)} alt={foodCategory} className="w-[28px] h-[28px]"/>
+          </div>
+          <div className="flex flex-col">
+            <div className={`text-[13px] ${getTextColor(remainingDays)}`}>
+              {`${remainingDays >= 0 ? "D-" : "D+"}${Math.abs(remainingDays)}`}
+            </div>
+            <div className="w-[250px] text-[15px] text-[#333D4B] truncate">{option}</div>
+          </div>
         </div>
-        <div className="flex flex-col">
-        <div className={`text-[13px] ${getTextColor(remainingDays)}`}>
-  {`${remainingDays >= 0 ? "D-" : "D+"}${Math.abs(remainingDays)}`}
+        <div className="text-xl">{'>'}</div>
       </div>
-          <div className="w-[250px] text-[15px] text-[#333D4B] truncate">{option}</div>
-        </div>
-      </div>
-      <div className="text-xl">{'>'}</div>
-    </div>
   );
 };
 
 DetailButton.propTypes = {
   foodCategory: PropTypes.string.isRequired,
-  expireDate: PropTypes.string.isRequired,
+  expiryDate: PropTypes.string.isRequired,
   option: PropTypes.string.isRequired,
+  count: PropTypes.string.isRequired,
+  productType: PropTypes.string.isRequired,
+  createdDate: PropTypes.string.isRequired,
+  lcategory: PropTypes.string.isRequired,
+  scategory: PropTypes.string.isRequired,
 };
 
 export default DetailButton;
