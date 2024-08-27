@@ -16,7 +16,6 @@ const AddInput2 = () => {
 
     // location.state에서 이전 페이지에서 넘겨준 상태를 가져옵니다.
     const { barcode: initialBarcode, productName: initialProductName, expiryDate: initialExpiryDate, refrigeratorName } = location.state || {};
-    console.log(refrigeratorName);
     const [productName, setProductName] = useState(initialProductName || '');
     const [expiryDate, setExpiryDate] = useState(initialExpiryDate || '');
     const [barcode, setBarcode] = useState(initialBarcode || '');
@@ -49,7 +48,7 @@ const AddInput2 = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             if (selectedOption) {
-                await fetchLcategories(selectedOption === 'processedFood' ? PRODUCT_TYPES.RECIPE : PRODUCT_TYPES.FOOD);
+                await fetchLcategories(selectedOption === '가공식품' ? PRODUCT_TYPES.RECIPE : PRODUCT_TYPES.FOOD);
                 setShowAdditionalSelect(true);
             } else {
                 setShowAdditionalSelect(false);
@@ -63,7 +62,7 @@ const AddInput2 = () => {
 
     useEffect(() => {
         if (additionalSelectValue) {
-            fetchScategories(selectedOption === 'processedFood' ? PRODUCT_TYPES.RECIPE : PRODUCT_TYPES.FOOD, additionalSelectValue);
+            fetchScategories(selectedOption === '가공식품' ? PRODUCT_TYPES.RECIPE : PRODUCT_TYPES.FOOD, additionalSelectValue);
         } else {
             setSubcategoryValue('');
         }
@@ -102,7 +101,7 @@ const AddInput2 = () => {
                 alert('중복된 바코드가 이미 존재합니다.');
             } else {
                 alert(`${product.productName}이 성공적으로 저장되었습니다.`);
-                navigate('/Refrigerator/food/FoodList');
+                navigate('/fridge/fridgemanage');
             }
         } catch (error) {
             console.error('DB에 제품을 저장하는 중 오류 발생', error);
@@ -139,8 +138,8 @@ const AddInput2 = () => {
                     }}
                 >
                     <option value="" disabled>식품유형을 선택해주세요</option>
-                    <option value="processedFood">가공식품</option>
-                    <option value="rawMaterial">원자재성식품</option>
+                    <option value="가공식품">가공식품</option>
+                    <option value="원자재성식품">원자재성식품</option>
                 </select>
             </div>
             {showAdditionalSelect && (

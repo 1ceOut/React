@@ -256,28 +256,7 @@ const Barcode = () => {
                 marginTop: 32,
                 cursor: "pointer"
             }}>
-                <Webcam
-                    audio={false}
-                    height={720}
-                    screenshotFormat="image/jpeg"
-                    width={1280}
-                    videoConstraints={videoConstraints}
-                >
-                    {({ getScreenshot }) => (
-                        <button
-                            onClick={() => {
-                                const imageSrc = getScreenshot();
-                                const imageFile = dataURLtoFile(imageSrc, 'captured_image.jpg');
-                                console.log('Image file:', imageFile);
-                                // 이제 imageFile을 서버로 전송하거나 다른 처리를 할 수 있습니다.
-                                recognizeText(imageFile);
-                            }}
-                        >
-                            Capture photo
-                        </button>
-                    )}
-                </Webcam>
-                {/*<button onClick={recognizeText}>바코드 인식</button>*/}
+                <button onClick={recognizeText}>바코드 인식</button>
             </div>
             <div>
                 {capturedImage && (
