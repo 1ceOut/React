@@ -1,6 +1,11 @@
+import PropTypes from "prop-types";
 import HorizontalLine from "./../../Common/HorizontalLine";
+import { usePostsByUser } from "./../../../query/FeedQuery";
 
-const FeedContent = () => {
+const FeedContent = ({ userId }) => {
+  const { data: posts } = usePostsByUser(userId);
+  const safePosts = Array.isArray(posts) ? posts : [];
+
   return (
     <div>
       <div>
@@ -12,32 +17,29 @@ const FeedContent = () => {
           <HorizontalLine />
         </div>
       </div>
-      <div className="self-stretch space-y-[8px]">
-        <div className="flex space-x-[3px]">
-          <div>
-            <img src="/assets/feed1.png" alt="피드" className="w-28 h-28" />
+      <div className="self-stretch space-y-2">
+        {safePosts.length > 0 ? (
+          <div className="grid grid-cols-3 gap-3">
+            {safePosts.map(({ posting }) => (
+              <div key={posting.posting_id} className="mb-6">
+                <img
+                  src={posting.thumbnail}
+                  alt="피드 사진"
+                  className="w-[112px] h-[114px]"
+                />
+              </div>
+            ))}
           </div>
-          <div>
-            <img src="/assets/feed2.png" alt="피드" className="w-28 h-28" />
-          </div>
-          <div>
-            <img src="/assets/feed3.png" alt="피드" className="w-28 h-28" />
-          </div>
-        </div>
-        <div className="flex space-x-[3px]">
-          <div>
-            <img src="/assets/feed4.png" alt="피드" className="w-28 h-28" />
-          </div>
-          <div>
-            <img src="/assets/feed5.png" alt="피드" className="w-28 h-28" />
-          </div>
-          <div>
-            <img src="/assets/feed6.png" alt="피드" className="w-28 h-28" />
-          </div>
-        </div>
+        ) : (
+          <div>No posts available</div>
+        )}
       </div>
     </div>
   );
+};
+
+FeedContent.propTypes = {
+  userId: PropTypes.string.isRequired,
 };
 
 export default FeedContent;
