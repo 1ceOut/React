@@ -75,7 +75,7 @@ const Router = () => {
 
                     {/* 마이페이지 */}
                     <Route path="/mypage/profile" element={<ProfilePage/>}/>
-                    <Route path="/mypage/fridgepluse" element={<FridgePlusPage/>}/>
+                    <Route path="/mypage/fridgeplus" element={<FridgePlusPage/>}/>
                     <Route path="/mypage/fridgedelete" element={<FridgeDeletePage/>}/> 
                     <Route path="/mypage/fridgeupdate" element={<FridgeUpdatePage/>}/>
                     <Route path="/mypage/userinvite" element={<UserInvitePage/>}/>

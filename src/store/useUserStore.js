@@ -7,6 +7,7 @@ const initState = {
     userName: "",
     userProfile: "",
     userId: "",
+    userRole:"",
     userAccessToken: "",
     isLogin: false
 }
@@ -20,6 +21,7 @@ const store = (set) => ({
             userAccessToken: accessToken,
             userName: jwt.name,
             userProfile: jwt.photo,
+            userRole: jwt.role,
             userId: jwt.sub
         });
     },
