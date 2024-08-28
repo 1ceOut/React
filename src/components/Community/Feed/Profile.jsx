@@ -12,6 +12,10 @@ const Profile = () => {
     navigate(`/community/myfeed/${userId}`); // Pass the userId in the navigation
   };
 
+  const handlePlusClick = () => {
+    navigate("/community/feedcreate");
+  };
+
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollBy({ left: -200, behavior: "smooth" });
@@ -50,12 +54,20 @@ const Profile = () => {
                   key={profile.userId}
                   className="flex flex-col items-center"
                 >
-                  <img
-                    src={profile.src}
-                    alt={`Profile of ${profile.name}`}
-                    className="w-[80px] h-[80px] rounded-full object-cover cursor-pointer"
-                    onClick={() => handleProfileClick(profile.userId)}
-                  />
+                  <div className="flex justify-end items-end">
+                    <img
+                      src={profile.src}
+                      alt={`Profile of ${profile.name}`}
+                      className="w-[80px] h-[80px] rounded-full object-cover cursor-pointer"
+                      onClick={() => handleProfileClick(profile.userId)}
+                    />
+                    <img
+                      src="/assets/plusbutton.png"
+                      alt="게시글 버튼"
+                      className="cursor-pointer absolute"
+                      onClick={handlePlusClick}
+                    />
+                  </div>
                   <span className="text-sm font-semibold mt-2 w-[80px] flex justify-center items-center">
                     {profile.name}
                   </span>

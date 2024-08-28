@@ -28,13 +28,14 @@ const FeedPage = () => {
       <Profile />
       {/* 게시물 리스트 렌더링 */}
       {safePosts.length > 0 ? (
-        safePosts.map(({ posting, userProfile, userName }) => (
+        safePosts.map(({ posting, userProfile, userName, userId }) => (
           <div key={posting.posting_id} className="mb-6">
             {/* FeedProfile: 작성자 정보와 등록일자 표시 */}
             <FeedProfile
               userName={userName}
               writeday={posting.writeday}
               userProfile={userProfile}
+              userId={userId}
             />
 
             {/* FeedTitle: 게시물의 제목 및 썸네일 표시 */}

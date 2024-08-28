@@ -4,6 +4,21 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 // API URL 설정
 const API_URL = import.meta.env.VITE_FOOD_IP || 'http://localhost:17017';
 
+// 포스팅과 유저 정보를 함께 가져오는 함수
+const fetchPostWithUserDetails = async () => {
+  const response = await axios.get(`${API_URL}/posting/listWithUser`, {
+    withCredentials: true,
+  });
+  return response.data;
+};
+
+//포스팅에 있는 유저 정보 가져오는 함수
+const fetchPostsByUser = async (userId) => {
+  const response = await axios.get(`${API_URL}/posting/listByUser`, {
+    withCredentials: true,
+    params: { user_id: userId },
+  });
+  return response.data;
 // 이미지 업로드
 const uploadImage = async (file) => {
     const formData = new FormData();
