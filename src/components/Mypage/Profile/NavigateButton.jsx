@@ -1,12 +1,11 @@
-
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const NavigateButton = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleNavigate = (nextPath) => {
-        navigate(nextPath);
-    }
+  const handleNavigate = (nextPath) => {
+    navigate(nextPath);
+  };
 
 
     return (
@@ -36,7 +35,9 @@ const NavigateButton = () => {
                 </div>
             </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default NavigateButton;

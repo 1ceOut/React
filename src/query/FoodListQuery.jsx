@@ -2,6 +2,7 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_REFRI;
 
+
 export const fetchSavedBarcodes = async (selectedFridge) => {
     try {
         // 쿼리 파라미터에 selectedFridge를 올바르게 포함시키는지 확인

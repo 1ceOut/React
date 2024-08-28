@@ -1,75 +1,112 @@
-import axios from 'axios';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from "axios";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-// API 호출 함수들
-const API_URL = import.meta.env.VITE_FOOD_IP;
+// API URL 설정 (환경 변수가 없을 경우 기본 URL로 대체)
+const API_URL = import.meta.env.VITE_FOOD_IP || "http://localhost:17017";
 
-const fetchPostingList = async () => {
-    const response = await axios.get(`${API_URL}/posting/list`,{
-        withCredentials: true,
-    });
-    return response.data;
+// 포스팅과 유저 정보를 함께 가져오는 함수
+const fetchPostWithUserDetails = async (userId) => {
+  const response = await axios.get(`${API_URL}/posting/listWithUser`, {
+    withCredentials: true,
+    params: { userId },
+  });
+  return response.data;
 };
 
-const detailPostingList = async (_id) => {
-    const response = await axios.get(`${API_URL}/posting/detail?postingId=${_id}`);
-    return response.data;
-}
+//포스팅에 있는 유저 정보 가져오는 함수
+const fetchPostsByUser = async (userId) => {
+  const response = await axios.get(`${API_URL}/posting/listByUser`, {
+    withCredentials: true,
+    params: { userId },
+  });
+  return response.data;
+};
 
+// 게시물 추가
 const addPosting = async (data) => {
-    const response = await axios.post(`${API_URL}/posting/insert`, data);
-    return response.data; // 응답 데이터 반환
+  const response = await axios.post(`${API_URL}/posting/insert`, data, {
+    withCredentials: true,
+  });
+  return response.data;
 };
 
-const deletePosting = async (_id) => {
-    await axios.delete(`${API_URL}/posting/delete?postingId=${_id}`);
+// 게시물 삭제
+const deletePosting = async (postingId) => {
+  await axios.delete(`${API_URL}/posting/delete`, {
+    params: { postingId },
+    withCredentials: true,
+  });
 };
 
-const updatePosting = async (_id, data) => {
-    await axios.put(`${API_URL}/posting/update/${_id}`, data);
+// 게시물 수정
+const updatePosting = async (postingId, data) => {
+  const response = await axios.put(
+    `${API_URL}/posting/update/${postingId}`,
+    data,
+    {
+      withCredentials: true,
+    }
+  );
+  return response.data;
+};
+
+//포스팅에 있는 유저 정보 가져오기
+export const usePostsByUser = (userId) => {
+  return useQuery({
+    queryKey: ["posts", userId],
+    queryFn: () => fetchPostsByUser(userId),
+    enabled: !!userId,
+  });
 };
 
 // React Query 훅들
 export const usePosts = () => {
-    return useQuery({
-        queryKey: ['posts'],
-        queryFn: fetchPostingList,
-    });
+  return useQuery({
+    queryKey: ["posts"],
+    queryFn: fetchPostWithUserDetails, // 새로운 API 호출
+  });
 };
 
-export const useDetailPost = () => {
-    return useQuery({
-        queryKey: ['postDetail'],
-        queryFn: detailPostingList,
-    });
+export const useDetailPost = (postingId) => {
+  return useQuery({
+    queryKey: ["postDetail", postingId],
+    queryFn: async () => {
+      const response = await axios.get(`${API_URL}/posting/detail`, {
+        params: { postingId },
+        withCredentials: true,
+      });
+      return response.data;
+    },
+    enabled: !!postingId,
+  });
 };
 
 export const useAddPost = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: addPosting,
-        onSuccess: () => {
-            queryClient.invalidateQueries(['posts']);
-        },
-    });
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: addPosting,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["posts"]);
+    },
+  });
 };
 
 export const useDeletePost = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: deletePosting,
-        onSuccess: () => {
-            queryClient.invalidateQueries(['posts']);
-        },
-    });
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deletePosting,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["posts"]);
+    },
+  });
 };
 
 export const useUpdatePost = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: updatePosting,
-        onSuccess: () => {
-            queryClient.invalidateQueries(['posts']);
-        },
-    });
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: updatePosting,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["posts"]);
+    },
+  });
 };
