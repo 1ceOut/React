@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { usePosts } from "../../query/FeedQuery";
+import { useAllUsers } from "../../query/FeedQuery";
 
 const Community = () => {
   const navigate = useNavigate();
@@ -8,7 +8,7 @@ const Community = () => {
     navigate("/community/feed");
   };
 
-  const { data: posts } = usePosts();
+  const { data: posts } = useAllUsers();
 
   const safePosts = Array.isArray(posts) ? posts : [];
 
