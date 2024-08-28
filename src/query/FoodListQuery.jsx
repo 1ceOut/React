@@ -1,14 +1,22 @@
 import axios from "axios";
-import {useState} from "react";
+
+const API_URL = import.meta.env.VITE_API_REFRI;
 
 
-const [saveFoodList, setSaveFoodList] = useState([]);
-
-const fetchSavedBarcodes = async () => {
+export const fetchSavedBarcodes = async (selectedFridge) => {
     try {
-        const response = await axios.get('http://localhost:9000/api/list');
-        setSaveFoodList(response.data);
+        // 쿼리 파라미터에 selectedFridge를 올바르게 포함시키는지 확인
+        const response = await axios.get(`${API_URL}/api/food/list`, {
+            params: {
+                refrigeratorName: selectedFridge
+            }
+        });
+        console.log(response.data);
+        return response.data;
     } catch (error) {
         console.error('Error fetching saved barcodes', error);
     }
 };
+
+
+

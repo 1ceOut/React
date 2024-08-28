@@ -21,14 +21,6 @@ const FridgeSelect = ({ onSelectFridge }) => { // onSelectFridge prop 추가
         }
     }, [userId, isLogin, navigate, LoginSuccessStatus]);
 
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
-
-    if (error) {
-        return <div>Error loading fridge options.</div>;
-    }
-
     const handleSelection = (option) => {
         setSelectedOption(option);
         onSelectFridge(option.refrigeratorName); // 선택된 냉장고 이름을 상위 컴포넌트로 전달
@@ -36,7 +28,7 @@ const FridgeSelect = ({ onSelectFridge }) => { // onSelectFridge prop 추가
 
     return (
         <div className="self-stretch w-[342px] h-[60px] border rounded-xl bg-[#F3F3F3]">
-            <div className="flex my-1 mx-[10px] overflow-x-auto">
+            <div className="flex my-1 mx-[10px] overflow-x-auto whitespace-nowrap">
                 {fridgeOptions.map((option, index) => (
                     <div
                         key={index}
@@ -44,7 +36,7 @@ const FridgeSelect = ({ onSelectFridge }) => { // onSelectFridge prop 추가
                         className={`flex items-center justify-center h-[46px] text-gray-900 cursor-pointer ${
                             selectedOption === option ? 'bg-white border-2 border-gray-900 rounded-xl' : 'bg-[#F3F3F3] rounded-xl'
                         }`}
-                        style={{ minWidth: '161px', padding: '4px 10px' }}
+                        style={{minWidth: '161px', padding: '4px 10px'}}
                     >
                         {option.refrigeratorName}
                     </div>

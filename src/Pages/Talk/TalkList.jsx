@@ -10,9 +10,7 @@ const Talk = () => {
 
     // 클릭 이벤트 핸들러
     const handleClick = () => {
-        navigate("/Talk/TalkDetail", {
-            state: { userId, userName }  // 사용자 ID와 이름을 state로 전달
-        });
+        navigate("/Talk/TalkDetail");
     };
 
     return (
