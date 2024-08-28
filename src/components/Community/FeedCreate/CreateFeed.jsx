@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AiOutlinePlus } from 'react-icons/ai';
-import { useAddPost } from '../../../query/FeedQuery'; // React Query 훅 import
+import { useAddPost, uploadImage } from '../../../query/FeedQuery'; // React Query 훅 import
 import useUserStore from '../../../store/useUserStore'; // Zustand store import
 
 const CreateFeed = () => {
@@ -12,7 +12,7 @@ const CreateFeed = () => {
     const [stepDescription, setStepDescription] = useState('');
     const [stepImage, setStepImage] = useState(null);
     const [steps, setSteps] = useState([]);
-    const [isEnabled, setIsEnabled] = useState(false); // 버튼 활성화 상태
+    const [isEnabled, setIsEnabled] = useState(false);
     const navigate = useNavigate();
 
     // React Query 훅에서 mutation 가져오기
@@ -28,14 +28,15 @@ const CreateFeed = () => {
         }
     }, [title, content, tag]);
 
-    const handleImageChange = (event) => {
+    const handleImageChange = async (event) => {
         const file = event.target.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setSelectedImage(reader.result); // 이미지 base64 저장
-            };
-            reader.readAsDataURL(file);
+            try {
+                const imageUrl = await uploadImage(file);
+                setSelectedImage(imageUrl); // 업로드된 이미지 URL을 저장
+            } catch (error) {
+                console.error("이미지 업로드 실패:", error);
+            }
         }
     };
 
@@ -68,24 +69,20 @@ const CreateFeed = () => {
 
     const handleSubmit = async () => {
         if (isEnabled && userId) {
-            // 게시물 데이터 생성
             const postingData = {
                 title,
                 contents: content,
                 tags: tag,
-                image: selectedImage || null, // 이미지가 없을 경우 null 처리
+                thumbnail: selectedImage || null, // 이미지 URL 포함
                 user_id: userId,
                 writeday: new Date().toISOString(), // 작성일자 추가 (ISO 형식)
                 steps // 스텝 데이터 추가
             };
-
+    
             console.log("Posting Data:", postingData); // 데이터 확인용 콘솔 로그
-
+    
             try {
-                // React Query의 mutate 함수를 사용하여 게시물 추가
                 await addPost(postingData);
-
-                // 게시물 추가 후 페이지 이동
                 navigate('/community/feed');
             } catch (err) {
                 console.error("Error adding posting:", err.response?.data || err);
@@ -95,6 +92,7 @@ const CreateFeed = () => {
             alert("Please fill in all required fields.");
         }
     };
+    
 
     return (
         <div className="self-stretch">
