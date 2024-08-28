@@ -4,6 +4,7 @@ import MenuNavigate from '../../../components/Common/MenuNavigate';
 import axios from 'axios';
 import useProductStore from '../../../store/useProductStore';
 import useUserStore from '../../../store/useUserStore';
+import { saveBarcode } from '../../../query/RefriQuery';
 
 const PRODUCT_TYPES = {
     RECIPE: '가공식품',
@@ -14,8 +15,8 @@ const AddInput2 = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    // location.state에서 이전 페이지에서 넘겨준 상태를 가져옵니다.
-    const { barcode: initialBarcode, productName: initialProductName, expiryDate: initialExpiryDate, refrigeratorName } = location.state || {};
+    // 이전 페이지에서 넘어온 상태를 가져옵니다.
+    const { barcode: initialBarcode, productName: initialProductName, expiryDate: initialExpiryDate, refrigeratorName, inputMethod } = location.state || {};
     const [productName, setProductName] = useState(initialProductName || '');
     const [expiryDate, setExpiryDate] = useState(initialExpiryDate || '');
     const [barcode, setBarcode] = useState(initialBarcode || '');
@@ -82,43 +83,30 @@ const AddInput2 = () => {
         }
     }, [userId, isLogin, navigate, LoginSuccessStatus]);
 
-    const saveBarcode = async () => {
-        const product = {
-            barcode,
-            productName,
-            expiryDate,
-            count,
-            productType: selectedOption,
-            lcategory: additionalSelectValue,
-            scategory: subcategoryValue,
-            refrigeratorName: refrigeratorName || '기본 냉장고 이름', // 냉장고 이름을 서버로 전달
-            userId
-        };
-
+    const handleSave = async () => {
         try {
-            const response = await axios.post('http://localhost:9000/api/barcodes', product);
-            if (response.data.exists) {
-                alert('중복된 바코드가 이미 존재합니다.');
-            } else {
-                alert(`${product.productName}이 성공적으로 저장되었습니다.`);
-                navigate('/fridge/fridgemanage');
-            }
+            await saveBarcode(barcode, productName, expiryDate, count, selectedOption, additionalSelectValue, subcategoryValue, refrigeratorName, userId);
+            navigate('/fridge/fridgemanage');
         } catch (error) {
-            console.error('DB에 제품을 저장하는 중 오류 발생', error);
+            console.error('Save error:', error);
         }
     };
 
+
+
     return (
         <main className={`${animationClass} flex flex-col items-center px-6 pt-5 pb-32 mx-auto w-full max-w-[390px] min-h-[844px] h-screen`}>
-            <MenuNavigate option={"추가 입력"} alertPath="/addinfo/habit"/>
+            <MenuNavigate option={"음식 등록"} alertPath="/addinfo/habit"/>
             <div style={{width: 342, height: 134, marginTop: 24}}>
                 <p style={{width: 342, height: 76, fontWeight: 600, fontSize: 28}}>
-                    추가 입력을<br/>
+                    {inputMethod === 'manual' ? "직접 입력" : "바코드 추가 입력"}을<br/>
                     선택 하셨어요.
                 </p>
                 <p style={{width: 342, height: 44, marginTop: 14, fontWeight: 500, fontSize: 15, color: '#767676'}}>
-                    직접 입력하여 정확하게 표기를 할 수 있지만 실수할 경우 <br/>
-                    잘못 표기되니 잘 확인해 주세요!
+                    {inputMethod === 'manual' ?
+                        "직접 입력하여 정확하게 표기할 수 있지만 실수할 경우 잘못 표기되니 확인해 주세요!":
+                        "바코드를 촬영하여 정확한 입력을 할 수 있습니다."
+                        }
                 </p>
             </div>
             <div style={{width: 342, marginTop: 49}}>
@@ -258,10 +246,8 @@ const AddInput2 = () => {
                     alignItems: "center",
                     marginTop: 32
                 }}
-                className={`flex text-[#868686] rounded-xl self-stretch justify-center items-center w-[342px] h-14 cursor-pointer ${
-                    isEnabled ? 'bg-blue-500 text-white' : 'bg-[#D1D1D1]'
-                }`}
-                onClick={isEnabled ? saveBarcode : null} // 클릭 시 제출 함수 호출
+                className={`flex text-[#868686] rounded-xl self-stretch justify-center items-center w-[342px] h-14 cursor-pointer ${isEnabled ? 'bg-blue-500 text-white' : 'bg-[#D1D1D1]'}`}
+                onClick={isEnabled ? handleSave : null} // 클릭 시 제출 함수 호출
             >
                 <p style={{fontWeight: 500, fontSize: 16}}>냉장고 등록하기</p>
             </div>
