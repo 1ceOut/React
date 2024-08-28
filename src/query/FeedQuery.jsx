@@ -67,6 +67,15 @@ const updatePosting = async (postingId, data) => {
   return response.data;
 };
 
+//포스팅에 있는 유저 정보 가져오기
+export const usePostsByUser = (userId) => {
+  return useQuery({
+    queryKey: ["posts", userId],
+    queryFn: () => fetchPostsByUser(userId),
+    enabled: !!userId,
+  });
+};
+
 // React Query 훅들
 export const usePosts = () => {
   return useQuery({
