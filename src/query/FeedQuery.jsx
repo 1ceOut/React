@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 // API URL 설정
 const API_URL = import.meta.env.VITE_FOOD_IP || "http://localhost:17017";
 
-// 포스팅과 유저 정보를 함께 가져오는 함수
+// 게시물과 사용자 정보 가져오기
 const fetchPostWithUserDetails = async () => {
   const response = await axios.get(`${API_URL}/posting/listWithUser`, {
     withCredentials: true,
@@ -12,11 +12,19 @@ const fetchPostWithUserDetails = async () => {
   return response.data;
 };
 
-//포스팅에 있는 유저 정보 가져오는 함수
+// 게시물 목록 가져오기
 const fetchPostsByUser = async (userId) => {
   const response = await axios.get(`${API_URL}/posting/listByUser`, {
     withCredentials: true,
     params: { user_id: userId },
+  });
+  return response.data;
+};
+
+// 모든 사용자 정보 가져오기
+const fetchAllUsers = async () => {
+  const response = await axios.get(`${API_URL}/users`, {
+    withCredentials: true,
   });
   return response.data;
 };
@@ -67,7 +75,14 @@ const updatePosting = async (postingId, data) => {
   return response.data;
 };
 
-//포스팅에 있는 유저 정보 가져오기
+// React Query 훅들
+export const usePostsWithUserDetails = () => {
+  return useQuery({
+    queryKey: ["postsWithUser"],
+    queryFn: fetchPostWithUserDetails,
+  });
+};
+
 export const usePostsByUser = (userId) => {
   return useQuery({
     queryKey: ["posts", userId],
@@ -76,16 +91,10 @@ export const usePostsByUser = (userId) => {
   });
 };
 
-// React Query 훅들
-export const usePosts = () => {
+export const useAllUsers = () => {
   return useQuery({
-    queryKey: ["posts"],
-    queryFn: async () => {
-      const response = await axios.get(`${API_URL}/posting/listWithUser`, {
-        withCredentials: true,
-      });
-      return response.data;
-    },
+    queryKey: ["allUsers"],
+    queryFn: fetchAllUsers,
   });
 };
 
@@ -108,7 +117,7 @@ export const useAddPost = () => {
   return useMutation({
     mutationFn: addPosting,
     onSuccess: () => {
-      queryClient.invalidateQueries(["posts"]);
+      queryClient.invalidateQueries(["postsWithUser"]);
     },
   });
 };
@@ -118,7 +127,7 @@ export const useDeletePost = () => {
   return useMutation({
     mutationFn: deletePosting,
     onSuccess: () => {
-      queryClient.invalidateQueries(["posts"]);
+      queryClient.invalidateQueries(["postsWithUser"]);
     },
   });
 };
@@ -128,7 +137,7 @@ export const useUpdatePost = () => {
   return useMutation({
     mutationFn: updatePosting,
     onSuccess: () => {
-      queryClient.invalidateQueries(["posts"]);
+      queryClient.invalidateQueries(["postsWithUser"]);
     },
   });
 };
