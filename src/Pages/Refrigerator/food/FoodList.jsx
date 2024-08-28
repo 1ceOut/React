@@ -12,7 +12,7 @@ const FoodList = () => {
     // 바코드 목록을 가져오는 함수
     const fetchSavedBarcodes = async () => {
         try {
-            const response = await axios.get('/api/list');
+            const response = await axios.get('/api/food/list');
             setSavedBarcodes(response.data);
         } catch (error) {
             console.error('Error fetching saved barcodes', error);
@@ -26,7 +26,7 @@ const FoodList = () => {
     // 바코드 삭제 함수
     const deleteBarcode = async (productName) => {
         try {
-            await axios.delete(`/api/barcodes/${productName}`);
+            await axios.delete(`/api/food/barcodes/${productName}`);
             fetchSavedBarcodes();
             alert('상품 삭제함');
         } catch (error) {

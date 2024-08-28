@@ -20,7 +20,7 @@ export const uploadImageToNCP = async (imageDataUrl) => {
 
     try {
         // 서버의 이미지 업로드 엔드포인트를 올바르게 설정하세요
-        const response = await axios.post('http://localhost:9000/upload/barcode', formData, {
+        const response = await axios.post('http://localhost:9000/api/food/upload/barcode', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
