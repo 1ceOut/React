@@ -3,11 +3,11 @@ import FeedMenu from "../../components/Community/FeedDetail/FeedMenu";
 import FeedRecipe from "../../components/Community/FeedDetail/FeedRecipe";
 import FeedTags from "../../components/Community/FeedDetail/FeedTags";
 import FeedTitle from "../../components/Community/FeedDetail/FeedTitle";
-import { usePosts } from "../../query/FeedQuery";
+import { useAllUsers } from "../../query/FeedQuery";
 import MenuNavigate from "./../../components/Community/FeedDetail/MenuNavigate";
 
 const FeedDetailPage = () => {
-  const { data: post } = usePosts();
+  const { data: post } = useAllUsers();
 
   const userName = post?.userName || "Unknown User";
   const userProfile = post?.userProfile || "default-profile-url";
