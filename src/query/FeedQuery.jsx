@@ -1,23 +1,37 @@
 import axios from 'axios';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-// API URL 설정 (환경 변수가 없을 경우 기본 URL로 대체)
+// API URL 설정
 const API_URL = import.meta.env.VITE_FOOD_IP || 'http://localhost:17017';
 
-// 포스팅과 유저 정보를 함께 가져오는 함수
-const fetchPostWithUserDetails = async () => {
-    const response = await axios.get(`${API_URL}/posting/listWithUser`, {
+// 이미지 업로드
+const uploadImage = async (file) => {
+    const formData = new FormData();
+    formData.append('thumbnail', file);
+    const response = await axios.post(`${API_URL}/posting/upload`, formData, {
         withCredentials: true,
     });
-    return response.data;
+    return response.data.postingphoto; // 서버에서 반환하는 이미지 URL
 };
 
 // 게시물 추가
 const addPosting = async (data) => {
-    const response = await axios.post(`${API_URL}/posting/insert`, data, {
-        withCredentials: true,
-    });
-    return response.data;
+    try {
+        const response = await axios.post(
+            `${API_URL}/posting/insert`,
+            data,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                withCredentials: true,
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error("게시물 추가 실패:", error);
+        throw error;
+    }
 };
 
 // 게시물 삭제
@@ -40,7 +54,12 @@ const updatePosting = async (postingId, data) => {
 export const usePosts = () => {
     return useQuery({
         queryKey: ['posts'],
-        queryFn: fetchPostWithUserDetails, // 새로운 API 호출
+        queryFn: async () => {
+            const response = await axios.get(`${API_URL}/posting/listWithUser`, {
+                withCredentials: true,
+            });
+            return response.data;
+        },
     });
 };
 
@@ -87,3 +106,5 @@ export const useUpdatePost = () => {
         },
     });
 };
+
+export { uploadImage };
