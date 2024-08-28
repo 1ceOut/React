@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useAllUsers } from "../../query/FeedQuery";
+import { usePostsWithUserDetails } from "../../query/FeedQuery"; // 수정된 훅 이름
 
 const Community = () => {
   const navigate = useNavigate();
@@ -8,14 +8,22 @@ const Community = () => {
     navigate("/community/feed");
   };
 
-  const { data: posts } = useAllUsers();
+  // usePostsWithUserDetails 훅을 사용하여 게시물 데이터를 가져옵니다.
+  const { data: posts = [], isLoading, isError } = usePostsWithUserDetails();
 
+  // 데이터 로딩 중이거나 오류 발생 시 처리
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error loading posts</div>;
+
+  // 안전한 게시물 데이터 설정
   const safePosts = Array.isArray(posts) ? posts : [];
 
+  // 게시물 셔플 함수
   const shufflePosts = (array) => {
     return array.sort(() => Math.random() - 0.5);
   };
 
+  // 무작위 게시물 선택
   const randomPosts = shufflePosts(safePosts).slice(0, 3);
 
   return (
