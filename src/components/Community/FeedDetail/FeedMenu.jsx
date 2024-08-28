@@ -10,6 +10,8 @@ import { red } from "@mui/material/colors";
 const FeedMenu = ({ option }) => {
   const [isHidden, setIsHidden] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const closeHidden = () => {
     setIsHidden(false);
@@ -19,12 +21,21 @@ const FeedMenu = ({ option }) => {
     setIsHidden(true);
   };
 
+  const toggleFavorite = () => {
+    setIsFavorite(!isFavorite);
+    setIsAnimating(true);
+
+    setTimeout(() => {
+      setIsAnimating(false);
+    }, 300);
+  };
+
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setSelectedImage(reader.result); // 이미지 base64 저장
+        setSelectedImage(reader.result); // Save the image as base64
       };
       reader.readAsDataURL(file);
     }
@@ -34,15 +45,29 @@ const FeedMenu = ({ option }) => {
     <div className="self-stretch">
       <div className="flex flex-col font-medium text-[#767676]">
         <div className="flex items-center text-[12px] mb-[10px]">
-          <div className="flex justify-center items-center cursor-pointer mr-2">
-            <FavoriteIcon sx={{ color: red[500] }} className="mr-1" />
-            25
+          <div className="flex justify-center items-center mr-2">
+            <div
+              className={`flex justify-center items-center cursor-pointer mr-1 transition-transform duration-300 ${
+                isAnimating ? "scale-75" : "scale-100"
+              }`}
+              onClick={toggleFavorite}
+            >
+              {isFavorite ? (
+                <FavoriteIcon sx={{ color: red[500] }} className="mr-1" />
+              ) : (
+                <FavoriteBorderIcon className="mr-1" />
+              )}
+            </div>
+            <div>25</div>
           </div>
-          <div
-            className="flex justify-center items-center cursor-pointer"
-            onClick={showHidden}
-          >
-            <ChatBubbleOutlineIcon className="mr-1" />2
+          <div className="flex justify-center items-center">
+            <div
+              className="flex justify-center items-center cursor-pointer"
+              onClick={showHidden}
+            >
+              <ChatBubbleOutlineIcon className="mr-1" />
+            </div>
+            <div>2</div>
           </div>
         </div>
       </div>
@@ -116,7 +141,7 @@ const FeedMenu = ({ option }) => {
 };
 
 FeedMenu.propTypes = {
-  option: PropTypes.string.isrequired,
+  option: PropTypes.string.isRequired,
 };
 
 export default FeedMenu;
