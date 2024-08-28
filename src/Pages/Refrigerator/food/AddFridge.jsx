@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import useUserStore from "../../../store/useUserStore"; // zustand 상태 관리 라이브러리 import
+import useUserStore from "../../../store/useUserStore";
+import MenuNavigate from "../../../components/Common/MenuNavigate.jsx"; // zustand 상태 관리 라이브러리 import
 
 const AddFridge = () => {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ const AddFridge = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:9000/api/refri/insert",
+        "http://localhost:9000/api/food/refri/insert",
         product
       );
 
@@ -59,6 +60,7 @@ const AddFridge = () => {
 
   return (
     <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
+        <MenuNavigate option={"냉장고 추가"}/>
       <div
         style={{
           width: 342,

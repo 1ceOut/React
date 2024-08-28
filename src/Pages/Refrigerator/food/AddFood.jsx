@@ -15,20 +15,20 @@ const AddFood = () => {
             setAnimationClass('animate-slideOutDown');
         };
     }, []);
-    
-    // URL 쿼리 매개변수에서 냉장고 이름 추출
+
     const queryParams = new URLSearchParams(location.search);
-    const fridgeName = queryParams.get('fridge') || '일반 냉장고'; // 기본값 설정
+    const fridgeName = queryParams.get('fridge') || '일반 냉장고';
 
     const handleNavigate = () => {
-       // 페이지 이동 경로 설정
         navigate('/Refrigerator/food/AddBarcode', {
-            state: { refrigeratorName: fridgeName } // 상태로 냉장고 이름 전달
+            state: { refrigeratorName: fridgeName, inputMethod: 'barcode' } // 바코드 입력 선택
         });
     };
 
     const handleNavigation = () => {
-        navigate('/Refrigerator/food/AddInput');
+        navigate('/Refrigerator/food/AddInput2', {
+            state: { refrigeratorName: fridgeName, inputMethod: 'manual' } // 직접 입력 선택
+        });
     };
 
     return (

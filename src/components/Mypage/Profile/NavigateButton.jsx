@@ -16,7 +16,7 @@ const NavigateButton = () => {
                     <img className="w-7 h-7 mr-[10px]" src="/assets/cogwheel.png" alt="버튼 이미지"/>
                     냉장고 수정
                 </div>
-                <div className="flex justify-center items-center h-[50px] cursor-pointer" onClick={() => handleNavigate("/mypage/fridgeplus")}>
+                <div className="flex justify-center items-center h-[50px] cursor-pointer" onClick={() => handleNavigate("/Refrigerator/food/AddFridge")}>
                     <img className="w-7 h-7 mr-[10px]" src="/assets/iconrefridge.png" alt="버튼 이미지"/> 
                     냉장고 추가
                 </div>

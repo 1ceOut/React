@@ -6,11 +6,12 @@ import MenuNavigate from './../../components/Common/MenuNavigate';
 import SearchForm from '../../components/Refrigerator/Common/SearchForm';
 import FridgeSelect from '../../components/Refrigerator/FridgeManage/FridgeSelect';
 import CategoryFood from './../../components/Refrigerator/FridgeManage/CategoryFood';
+import { fetchSavedBarcodes } from '../../query/FoodListQuery';
 
 const FridgeManagePage = () => {
     const [showMore, setShowMore] = useState(false);
-    const [selectedFridge, setSelectedFridge] = useState(null); // 선택된 냉장고 상태
-    const [saveFoodList, setSaveFoodList] = useState([]); // 음식 목록 상태
+    const [selectedFridge, setSelectedFridge] = useState(null);
+    const [saveFoodList, setSaveFoodList] = useState([]);
 
     const handleShowMore = () => {
         setShowMore(true);
@@ -18,35 +19,36 @@ const FridgeManagePage = () => {
 
     useEffect(() => {
         if (selectedFridge) {
-            fetchSavedBarcodes(selectedFridge);
+            fetchSavedBarcodes(selectedFridge).then((response) => {
+                setSaveFoodList(response);
+            });
+        } else {
+            setSaveFoodList([]); // 냉장고가 선택되지 않았을 때 음식 목록 초기화
         }
     }, [selectedFridge]);
 
-    const fetchSavedBarcodes = async (selectedFridge) => {
-        try {
-            // 쿼리 파라미터에 selectedFridge를 올바르게 포함시키는지 확인
-            const response = await axios.get(`http://localhost:9000/api/list`, {
-                params: {
-                    refrigeratorName: selectedFridge
-                }
-            });
-            console.log(response.data);
-            setSaveFoodList(response.data);
-        } catch (error) {
-            console.error('Error fetching saved barcodes', error);
-        }
+    const groupByCategory = (foods) => {
+        return foods.reduce((acc, food) => {
+            if (!acc[food.lcategory]) {
+                acc[food.lcategory] = [];
+            }
+            acc[food.lcategory].push(food);
+            return acc;
+        }, {});
     };
+
+    const groupedFoodList = groupByCategory(saveFoodList);
 
     return (
         <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px]">
             <MenuNavigate option={"나의 냉장고"} alertPath="/addinfo/habit" />
-            <FridgeSelect onSelectFridge={setSelectedFridge} /> {/* 선택된 냉장고 업데이트 함수 전달 */}
+            <FridgeSelect onSelectFridge={setSelectedFridge} />
 
             <div className="self-stretch pt-[10px]">
                 <CreateButton
                     option={"음식 추가하기"}
-                    nextPath={`/Refrigerator/food/AddFood?fridge=${encodeURIComponent(selectedFridge)}`} // 선택된 냉장고 이름 포함
-                    selectedFridge={selectedFridge} // 선택된 냉장고 전달
+                    nextPath={`/Refrigerator/food/AddFood?fridge=${encodeURIComponent(selectedFridge)}`}
+                    selectedFridge={selectedFridge}
                 />
             </div>
 
@@ -54,26 +56,35 @@ const FridgeManagePage = () => {
                 <SearchForm />
             </div>
 
-            {/* 선택된 냉장고의 음식 목록을 동적으로 렌더링 */}
+            {/* 냉장고가 선택되지 않았을 때와 선택된 냉장고가 비어있을 때 메시지 표시 */}
             <div className="self-stretch pt-5">
-                {saveFoodList.map((food, index) => (
-                    <div key={index}>
-                        <CategoryFood option={food.lcategory} />
-                        <DetailButton
-                        productName={food.productName}
-                        expiryDate={food.expiryDate}
-                        count={food.count}
-                        productType={food.productType}
-                        createdDate={food.createdDate}
-                        lcategory={food.lcategory}
-                        scategory={food.scategory}
-                            option={food.productName}
-                        />
-                    </div>
-                ))}
+                {selectedFridge === null ? (
+                    <p>냉장고를 선택하면 해당 냉장고에 있는 음식이 나와요</p>
+                ) : Object.keys(groupedFoodList).length === 0 ? (
+                    <p>냉장고 텅텅텅텅 비었음, ㅋ</p>
+                ) : (
+                    Object.keys(groupedFoodList).map((category) => (
+                        <div key={category}>
+                            <CategoryFood option={category} />
+                            {groupedFoodList[category].map((food, index) => (
+                                <DetailButton
+                                    key={index}
+                                    productName={food.productName}
+                                    expiryDate={food.expiryDate}
+                                    count={food.count}
+                                    productType={food.productType}
+                                    createdDate={food.createdDate}
+                                    lcategory={food.lcategory}
+                                    scategory={food.scategory}
+                                    option={food.productName}
+                                />
+                            ))}
+                        </div>
+                    ))
+                )}
             </div>
 
-            {!showMore && (
+            {!showMore && selectedFridge && Object.keys(groupedFoodList).length > 0 && (
                 <div style={{ marginTop: 40, display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={handleShowMore}>
                     <span>더보기</span>
                     <img
@@ -84,22 +95,24 @@ const FridgeManagePage = () => {
                 </div>
             )}
 
-            {showMore && (
+            {showMore && selectedFridge && (
                 <div className="self-stretch pt-5">
-                    {/* 추가적인 음식 목록을 렌더링 */}
-                    {saveFoodList.map((food, index) => (
-                        <div key={index}>
-                            <CategoryFood option={food.lcategory} />
-                            <DetailButton
-                                productName={food.productName}
-                                expiryDate={food.expiryDate}
-                                count={food.count}
-                                productType={food.productType}
-                                createdDate={food.createdDate}
-                                lcategory={food.lcategory}
-                                scategory={food.scategory}
-                                option={food.productName}
-                            />
+                    {Object.keys(groupedFoodList).map((category) => (
+                        <div key={category}>
+                            <CategoryFood option={category} />
+                            {groupedFoodList[category].map((food, index) => (
+                                <DetailButton
+                                    key={index}
+                                    productName={food.productName}
+                                    expiryDate={food.expiryDate}
+                                    count={food.count}
+                                    productType={food.productType}
+                                    createdDate={food.createdDate}
+                                    lcategory={food.lcategory}
+                                    scategory={food.scategory}
+                                    option={food.productName}
+                                />
+                            ))}
                         </div>
                     ))}
                 </div>

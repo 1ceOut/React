@@ -4,6 +4,7 @@ import MenuNavigate from "../../../components/Common/MenuNavigate.jsx";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import axios from 'axios';
 import { uploadImageToNCP } from "../../../logic/bucket.js";
+import { recognizeTextWithUrl, fetchFoodSafetyInfo } from '../../../query/RefriQuery';
 
 
 const Barcode = () => {
@@ -43,15 +44,23 @@ const Barcode = () => {
 
     useEffect(() => {
         if (concatenatedText) {
-            fetchFoodSafetyInfo(concatenatedText);
+            fetchFoodSafetyInfo(concatenatedText).then((response)=>{
+                setFoodSafetyInfo(response);
+                if (response.C005.total_count !== '0') {
+                    const product = response.C005.row[0];
+                    setAdditionalInfo({
+                        productName: product.PRDLST_NM,
+                        expiryDate: product.POG_DAYCNT,
+                        companyName: product.BSSH_NM,
+                        address: product.SITE_ADDR,
+                        productType: product.PRDLST_DCNM,
+                        permissionDate: product.PRMS_DT,
+                    });
+                }
+            });
         }
     }, [concatenatedText]);
 
-    const videoConstraints = {
-        width: 1280,
-        height: 720,
-        facingMode: "user"
-    };
 
     const captureImage = () => {
         const video = videoRef.current;
@@ -68,42 +77,7 @@ const Barcode = () => {
         return null;
     };
 
-    const getBase64ImageBytes = (imageSrc) => {
-        // Data URL에서 실제 Base64 문자열 추출
-        const base64String = imageSrc.split(',')[1];
-
-        // Base64 문자열을 바이트 배열로 변환
-        const byteCharacters = atob(base64String);
-        const byteNumbers = new Array(byteCharacters.length);
-
-        for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-
-        // 바이트 배열을 Uint8Array로 변환
-        const byteArray = new Uint8Array(byteNumbers);
-
-        return byteArray;
-    };
-
-    const dataURLtoFile = (dataurl, filename) => {
-        // Data URL에서 MIME 타입과 Base64 데이터 추출
-        const arr = dataurl.split(',');
-        const mime = arr[0].match(/:(.*?);/)[1];
-        const bstr = atob(arr[1]);
-        let n = bstr.length;
-        const u8arr = new Uint8Array(n);
-
-        // Base64 데이터를 Uint8Array로 변환
-        while (n--) {
-            u8arr[n] = bstr.charCodeAt(n);
-        }
-
-        // Blob 생성 후 File 객체로 변환
-        return new File([u8arr], filename, { type: mime });
-    };
-
-    const recognizeText = async (images) => {
+    const recognizeText = async () => {
         const image = captureImage();
         if (!image) return;
         try {
@@ -112,12 +86,12 @@ const Barcode = () => {
             console.log("Image URL:", imageUrl);
 
             // 전체 URL 생성
-            const baseUrl = 'https://kr.object.ncloudstorage.com/barcode-reader-finalproject/';
+            const baseUrl = import.meta.env.VITE_APP_BASE_URL;
             const fullImageUrl = `${baseUrl}${imageUrl}`;
             console.log("Full image URL for OCR:", fullImageUrl);
 
             // OCR 인식 요청
-            const ocrResponse = await recognizeTextWithUrl(fullImageUrl);
+            const ocrResponse = await recognizeTextWithUrl(fullImageUrl); // 외부에서 가져온 함수 사용
             if (!ocrResponse || ocrResponse.images.length === 0 || ocrResponse.images[0].fields.length === 0) {
                 alert('텍스트를 인식하지 못했습니다. 다시 시도해 주세요.');
                 return;
@@ -129,37 +103,6 @@ const Barcode = () => {
             console.error("Error recognizing text:", error);
         }
     };
-
-    // 이미지 URL을 사용하는 OCR 인식 요청 함수
-    const recognizeTextWithUrl = async (imageUrl) => {
-
-        const ocrRequest = {
-            images: [
-                {
-                    format: 'png',
-                    name: 'barcodereader',
-                    url: imageUrl // 전체 이미지 URL
-                }
-            ],
-            requestId: 'string',
-            version: 'V2',
-            timestamp: Date.now(),
-        };
-
-        try {
-            const response = await axios.post('http://localhost:9000/api/ocr', ocrRequest, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            return response.data;
-        } catch (error) {
-            console.error("Error recognizing text:", error.response ? error.response.data : error.message);
-            throw error;
-        }
-    };
-
-
 
     const extractInferTexts = (ocrData) => {
         const texts = [];
@@ -187,28 +130,6 @@ const Barcode = () => {
         }, 500);
     };
 
-    const fetchFoodSafetyInfo = async (barcode) => {
-        const apiKey = '3369ab4c48b84f35a46c';
-        const apiUrl = `https://openapi.foodsafetykorea.go.kr/api/${apiKey}/C005/json/1/5/BAR_CD=${barcode}`;
-
-        try {
-            const response = await axios.get(apiUrl);
-            setFoodSafetyInfo(response.data);
-            if (response.data.C005.total_count !== '0') {
-                const product = response.data.C005.row[0];
-                setAdditionalInfo({
-                    productName: product.PRDLST_NM,
-                    expiryDate: product.POG_DAYCNT,
-                    companyName: product.BSSH_NM,
-                    address: product.SITE_ADDR,
-                    productType: product.PRDLST_DCNM,
-                    permissionDate: product.PRMS_DT,
-                });
-            }
-        } catch (error) {
-            console.error("Error fetching food safety info:", error);
-        }
-    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
