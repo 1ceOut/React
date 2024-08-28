@@ -27,12 +27,71 @@ const useFridgeOptions = (userId) => {
 };
 export default useFridgeOptions;
 
+export const masterUserList = async (userId) => {
+    try {
+        const response = await axios.get(`${API_URL}/api/food/refri/master/refrilist`, {
+            params: {
+                id: userId
+            }
+        });
+        console.log(response.data); // 여기서 response.data는 refrigerator 객체 리스트가 됨
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching master user list:", error);
+        throw error;
+    }
+}
+
+export const masterUserRefri = async ({ userId, data }) => {
+    console.log("userId:", userId);
+    console.log("data:", data);
+    try {
+        const response = await axios.post(`${API_URL}/api/food/refri/master/update`, {
+            userId: userId,
+            data: data
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error updating data:", error.response ? error.response.data : error.message);
+        throw error;
+    }
+}
+export const masterUserDelete = async (refrigerator_id) => {
+    console.log("너 값 뭐냐?", refrigerator_id);
+    try {
+        // `refrigerator_id`를 쿼리 파라미터로 전달
+        const response = await axios.post(
+            `${API_URL}/api/food/refri/delete`,
+            null, // 요청 본문은 빈 객체
+            {
+                params: { refrigerator_id } // 쿼리 파라미터로 전달
+                //withCredentials: true // 옵션으로 설정
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error("에러 그만떠 미친새끼야:", error);
+    }
+};
+
 
 
 
 export const saveBarcode = async (product, onSuccess) => {
+
+    console.log(product);
     try {
-        const response = await axios.post('http://localhost:9000/api/food/barcodes', product);
+        const response = await axios.post(`${API_URL}/api/food/barcodes`, product,{
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
         if (response.data.exists) {
             alert('중복된 바코드가 이미 존재합니다.');
         } else {
