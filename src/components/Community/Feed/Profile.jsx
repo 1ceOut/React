@@ -11,7 +11,7 @@ const Profile = () => {
   const scrollContainerRef = useRef(null);
 
   // 기본 프로필 목록
-  const profiles = Array.isArray(users) ? [...users] : [];
+  const profiles = Array.isArray(users) ? users : [];
 
   // 로그인한 사용자 프로필을 배열의 시작 부분으로 추가하고 중복 제거
   const uniqueProfiles = new Map();
@@ -29,7 +29,6 @@ const Profile = () => {
   // 프로필 목록을 Map에 추가하여 중복 제거
   profiles.forEach(profile => {
     uniqueProfiles.set(profile.userId, profile);
-    
   });
 
   // Map에서 값을 추출하여 배열로 변환하고, writeday를 기준으로 최신순 정렬
@@ -76,7 +75,7 @@ const Profile = () => {
             style={{ scrollBehavior: "smooth", scrollbarWidth: "none" }}
           >
             {finalProfiles.length > 0 ? (
-              finalProfiles.map((profile, index) => (
+              finalProfiles.map((profile) => (
                 <div
                   key={profile.userId}
                   className="flex flex-col items-center"

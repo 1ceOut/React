@@ -14,7 +14,7 @@ const CreateFeed = () => {
   const [steps, setSteps] = useState([]);
   const [isEnabled, setIsEnabled] = useState(false);
   const navigate = useNavigate();
-
+  
   // React Query 훅에서 mutation 가져오기
   const { mutate: addPost } = useAddPost();
   const { userId } = useUserStore(); // Zustand store에서 유저 ID 가져오기
@@ -33,21 +33,22 @@ const CreateFeed = () => {
     if (file) {
       try {
         const imageUrl = await uploadImage(file);
-        setSelectedImage(imageUrl); // 업로드된 이미지 URL을 저장
+        setSelectedImage(imageUrl); // 업로드된 이미지 URL을 상태에 저장합니다.
       } catch (error) {
         console.error("이미지 업로드 실패:", error);
       }
     }
   };
 
-  const handleStepImageChange = (event) => {
+  const handleStepImageChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setStepImage(reader.result); // 스텝 이미지 base64 저장
-      };
-      reader.readAsDataURL(file);
+      try {
+        const imageUrl = await uploadImage(file);
+        setStepImage(imageUrl); // 업로드된 스텝 이미지 URL을 상태에 저장합니다.
+      } catch (error) {
+        console.error("스텝 이미지 업로드 실패:", error);
+      }
     }
   };
 
@@ -78,8 +79,6 @@ const CreateFeed = () => {
         writeday: new Date().toISOString(), // 작성일자 추가 (ISO 형식)
         steps, // 스텝 데이터 추가
       };
-
-      console.log("Posting Data:", postingData); // 데이터 확인용 콘솔 로그
 
       try {
         await addPost(postingData);
@@ -190,9 +189,7 @@ const CreateFeed = () => {
           {steps.map((s, index) => (
             <div key={index} className="border rounded p-2 mb-2">
               <div className="flex items-start mb-2">
-                <span className="flex-1">{`Step ${index + 1}: ${
-                  s.description
-                }`}</span>
+                <span className="flex-1">{`Step ${index + 1}: ${s.description}`}</span>
                 {s.image && (
                   <img
                     src={s.image}

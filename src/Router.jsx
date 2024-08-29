@@ -95,7 +95,7 @@ const Router = () => {
 
                     {/* 커뮤니티 */}
                     <Route path="community/feed" element={<FeedPage />} />
-                    <Route path="community/feeddetail" element={<FeedDetailPage />} />
+                    <Route path="community/feeddetail/:postingId" element={<FeedDetailPage />} />
                     <Route path="community/feedcreate" element={<FeedCreatePage />} />
                     {/* <Route path="community/myfeed" element={<MyFeedPage />} /> */}
                     <Route path="community/myfeed/:userId" element={<MyFeedPage />} />

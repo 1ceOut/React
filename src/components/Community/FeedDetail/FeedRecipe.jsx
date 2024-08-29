@@ -1,25 +1,36 @@
+import React from 'react';
 
+const FeedRecipe = ({ steps, contents }) => {
+  return (
+    <div className="mt-12">
+      <div>
 
-const FeedRecipe = () => {
-    return (
-        <div className="mt-12">
-            <div>
-                재료  
+        <p>{contents}</p>
+      </div>
+      <br />
+      <div>
+        <h3>단계별 설명</h3>
+        {steps.length > 0 ? (
+          steps.map((step, index) => (
+            <div key={index} className="border rounded p-2 mb-2">
+              <div className="flex items-start mb-2">
+                <span className="flex-1">{`Step ${index + 1}: ${step.description}`}</span>
+                {step.image && (
+                  <img
+                    src={step.image}
+                    alt={`Step ${index + 1}`}
+                    className="w-16 h-16 object-cover ml-2"
+                  />
+                )}
+              </div>
             </div>
-            <br />
-            <div>
-                돼지고기 목살 130g, 신김치 390g
-                청양고추 2개, 대파 1/2개 물 540ml
-                간마늘 1큰술, 굵은 고춧가루 1큰술, 국간장 1큰술 새우젓 1큰술
-            </div>
-            <br />
-            <div>
-                신김치는 적당히 썰고 돼지고기 핏물을 빼고 대파와 청양고추는 어슷 또는 송송 썰어주고 양념을 준비해요
-                냄비에 돼지고기 새우젓을 넣고 강불에 끓여주고 끓으면 약불에서 준비한 김치와 야채를 넣어준후 2분 뒤
-                양념을 넣어주면 끝나요! 드시고 맛있으면 좋아요 눌러주세요~
-            </div>
-        </div>
-    );
+          ))
+        ) : (
+          <p>No steps available.</p>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default FeedRecipe;
