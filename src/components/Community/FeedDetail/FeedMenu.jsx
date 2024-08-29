@@ -1,17 +1,19 @@
 import { useState } from "react";
-import { AiOutlinePlus } from "react-icons/ai";
 import { PropTypes } from "prop-types";
-import Rating from "@mui/material/Rating";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { red } from "@mui/material/colors";
+import axios from "axios";
+import CommentModal from "./../Common/CommentModal";
 
 const FeedMenu = ({ option }) => {
   const [isHidden, setIsHidden] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [comment, setComment] = useState("");
+  const [rate, setRate] = useState(0);
 
   const closeHidden = () => {
     setIsHidden(false);
@@ -38,6 +40,26 @@ const FeedMenu = ({ option }) => {
         setSelectedImage(reader.result); // Save the image as base64
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const submitForm = async () => {
+    const data = {
+      userId: option,
+      heart: isFavorite,
+      rate: rate.toString(),
+      diff: "상중하",
+      comment: comment,
+      commentimg: selectedImage,
+      postingId: new Date().getTime(),
+    };
+
+    try {
+      const response = await axios.post("/api/likecomment", data);
+      console.log(response.data);
+      closeHidden();
+    } catch (error) {
+      console.error("Error saving comment:", error);
     }
   };
 
@@ -72,69 +94,17 @@ const FeedMenu = ({ option }) => {
         </div>
       </div>
       {isHidden && (
-        <div>
-          <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div
-              className="absolute inset-0 bg-black opacity-50"
-              onClick={closeHidden}
-            ></div>
-            <div className="relative bg-white w-[90%] max-w-lg p-5 rounded-lg shadow-lg">
-              <div className="flex justify-between text-lg">
-                <div className="w-6 h-6"></div>
-                <div className="flex">요리후기(리뷰)</div>
-                <div className="cursor-pointer w-6 h-6" onClick={closeHidden}>
-                  X
-                </div>
-              </div>
-              <div className="flex justify-center items-center">
-                요리사진, 메세지를 {option}님께 보냅니다!
-              </div>
-              <div className="flex flex-col justify-center items-center">
-                <Rating size="large" />
-                <div className="text-xs text-[#A8A8A8]">최고</div>
-              </div>
-              <div className="flex justify-center items-center">상중하</div>
-              <div className="border-[2px] w-full min-h-28 h-auto mt-2">
-                <input
-                  id="food"
-                  name="food"
-                  type="text"
-                  placeholder="감사의 한마디 부탁드려요!"
-                  className="block outline-none pl-3 text-gray-900 placeholder:text-[#A8A8A8]"
-                />
-              </div>
-              <div className="flex items-center mb-4 mt-1">
-                <label
-                  htmlFor="image-upload"
-                  className="relative cursor-pointer w-16 h-16 bg-gray-50 border-[1px] flex justify-center items-center overflow-hidden"
-                >
-                  {selectedImage ? (
-                    <img
-                      src={selectedImage}
-                      alt="Uploaded"
-                      className="object-cover w-full h-full"
-                    />
-                  ) : (
-                    <div className="flex flex-col items-center justify-center w-full h-full">
-                      <AiOutlinePlus size={20} className="text-gray-500" />
-                    </div>
-                  )}
-                  <input
-                    id="image-upload"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                  />
-                </label>
-              </div>
-              <div className="mb-4">직접 요리 후 작성하는 후기인가요?</div>
-              <div className="bg-blue-600 rounded-md cursor-pointer text-white flex justify-center items-center h-9">
-                요리후기 남기기
-              </div>
-            </div>
-          </div>
-        </div>
+        <CommentModal
+          closeHidden={closeHidden}
+          option={option}
+          rate={rate}
+          setRate={setRate}
+          comment={comment}
+          setComment={setComment}
+          selectedImage={selectedImage}
+          handleImageChange={handleImageChange}
+          submitForm={submitForm}
+        />
       )}
     </div>
   );
