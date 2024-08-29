@@ -86,7 +86,7 @@ const FeedMenu = ({ option }) => {
                   {selectedImage ? (
                     <img
                       src={selectedImage}
-                      alt="Uploaded"
+                      alt="업로드된 이미지"
                       className="object-cover w-full h-full"
                     />
                   ) : (
@@ -116,7 +116,7 @@ const FeedMenu = ({ option }) => {
 };
 
 FeedMenu.propTypes = {
-  option: PropTypes.string.isrequired,
+  option: PropTypes.string.isRequired, // 수정된 부분
 };
 
 export default FeedMenu;

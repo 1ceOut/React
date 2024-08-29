@@ -4,6 +4,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 // API URL 설정
 const API_URL = import.meta.env.VITE_FOOD_IP || "http://localhost:17017";
 
+// Axios 기본 설정 업데이트
+axios.defaults.withCredentials = true;
+
 // 게시물과 사용자 정보 가져오기
 const fetchPostWithUserDetails = async () => {
   const response = await axios.get(`${API_URL}/posting/listWithUser`, {
@@ -25,6 +28,15 @@ const fetchPostsByUser = async (userId) => {
 const fetchAllUsers = async () => {
   const response = await axios.get(`${API_URL}/users`, {
     withCredentials: true,
+  });
+  return response.data;
+};
+
+// 특정 게시물과 사용자 정보 가져오기
+const fetchPostDetailWithUser = async (postingId) => {
+  const response = await axios.get(`${API_URL}/posting/detailWithUser`, {
+    withCredentials: true,
+    params: { postingId },
   });
   return response.data;
 };
@@ -57,10 +69,15 @@ const addPosting = async (data) => {
 
 // 게시물 삭제
 const deletePosting = async (postingId) => {
-  await axios.delete(`${API_URL}/posting/delete`, {
-    params: { postingId },
-    withCredentials: true,
-  });
+  try {
+    await axios.delete(`${API_URL}/posting/delete`, {
+      withCredentials: true,
+      params: {postingId},
+    });
+  } catch (error) {
+    console.error("게시물 삭제 실패:", error.response ? error.response.data : error.message);
+    throw error; // 오류를 상위 컴포넌트에 전파하여 적절히 처리하도록 합니다.
+  }
 };
 
 // 게시물 수정
@@ -101,13 +118,7 @@ export const useAllUsers = () => {
 export const useDetailPost = (postingId) => {
   return useQuery({
     queryKey: ["postDetail", postingId],
-    queryFn: async () => {
-      const response = await axios.get(`${API_URL}/posting/detail`, {
-        params: { postingId },
-        withCredentials: true,
-      });
-      return response.data;
-    },
+    queryFn: () => fetchPostDetailWithUser(postingId),
     enabled: !!postingId,
   });
 };

@@ -1,16 +1,28 @@
+import PropTypes from "prop-types";
 
+const FeedTitle = ({ title, thumbnail }) => {
+  console.log("FeedTitle Props - Title:", title);
+  console.log("FeedTitle Props - Thumbnail:", thumbnail);
 
-const FeedTitle = () => {
-    return (
-        <div className="w-[390px] flex flex-col justify-center items-center">
-                <div className="flex justify-center items-center w-[390px]">
-                    <img src="/assets/kimchi.png" alt="김치찌개" className="w-[390px] h-auto"/>
-                </div>
-                <div className=" self-stretchmy-[14px] text-[15px] font-medium">
-                    자취생이 추천하는 초간단 김치찌개 레시피 공유한다
-                </div>
-        </div>
-    );
+  return (
+    <div className="w-[390px] flex flex-col justify-center items-center">
+      <div className="flex justify-center items-center w-[390px]">
+        <img
+          src={thumbnail}
+          alt="Thumbnail"
+          className="w-[390px] h-auto"
+        />
+      </div>
+      <div className="self-stretch my-[14px] text-[15px] font-medium">
+        {title}
+      </div>
+    </div>
+  );
+};
+
+FeedTitle.propTypes = {
+  title: PropTypes.string.isRequired,
+  thumbnail: PropTypes.string.isRequired,
 };
 
 export default FeedTitle;
