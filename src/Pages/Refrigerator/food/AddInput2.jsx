@@ -85,12 +85,26 @@ const AddInput2 = () => {
 
     const handleSave = async () => {
         try {
-            await saveBarcode(barcode, productName, expiryDate, count, selectedOption, additionalSelectValue, subcategoryValue, refrigeratorName, userId);
-            navigate('/fridge/fridgemanage');
+            // 상품 데이터를 하나의 객체로 묶어서 전달
+            const product = {
+                barcode,
+                productName,
+                expiryDate,
+                count,
+                productType: selectedOption,
+                lcategory:additionalSelectValue,
+                scategory:subcategoryValue,
+                refrigeratorName,
+
+            };
+
+            // saveBarcode 호출 시 객체와 성공 콜백을 전달
+            await saveBarcode(product, () => navigate('/fridge/fridgemanage'));
         } catch (error) {
             console.error('Save error:', error);
         }
     };
+
 
 
 

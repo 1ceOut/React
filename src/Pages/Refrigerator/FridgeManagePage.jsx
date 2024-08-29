@@ -12,22 +12,45 @@ const FridgeManagePage = () => {
     const [showMore, setShowMore] = useState(false);
     const [selectedFridge, setSelectedFridge] = useState(null);
     const [saveFoodList, setSaveFoodList] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const handleShowMore = () => {
         setShowMore(true);
     };
 
+    const handleSelectFridge = (fridge) => {
+        setSelectedFridge(fridge);
+        localStorage.setItem('selectedFridge', fridge); // localStorage에 저장
+    };
+
+    useEffect(() => {
+        const storedFridge = localStorage.getItem('selectedFridge');
+        if (storedFridge) {
+            setSelectedFridge(storedFridge);
+        }
+    }, []);
+
     useEffect(() => {
         if (selectedFridge) {
-            fetchSavedBarcodes(selectedFridge).then((response) => {
-                setSaveFoodList(response);
-            });
+            setLoading(true);
+            fetchSavedBarcodes(selectedFridge)
+                .then((response) => {
+                    setSaveFoodList(response || []);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
         } else {
             setSaveFoodList([]); // 냉장고가 선택되지 않았을 때 음식 목록 초기화
         }
     }, [selectedFridge]);
 
     const groupByCategory = (foods) => {
+        if (!Array.isArray(foods)) {
+            console.error('Expected an array but got', foods);
+            return {};
+        }
+
         return foods.reduce((acc, food) => {
             if (!acc[food.lcategory]) {
                 acc[food.lcategory] = [];
@@ -42,7 +65,7 @@ const FridgeManagePage = () => {
     return (
         <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px]">
             <MenuNavigate option={"나의 냉장고"} alertPath="/addinfo/habit" />
-            <FridgeSelect onSelectFridge={setSelectedFridge} />
+            <FridgeSelect onSelectFridge={handleSelectFridge} />
 
             <div className="self-stretch pt-[10px]">
                 <CreateButton
@@ -56,9 +79,10 @@ const FridgeManagePage = () => {
                 <SearchForm />
             </div>
 
-            {/* 냉장고가 선택되지 않았을 때와 선택된 냉장고가 비어있을 때 메시지 표시 */}
             <div className="self-stretch pt-5">
-                {selectedFridge === null ? (
+                {loading ? (
+                    <p>로딩 중...</p>
+                ) : selectedFridge === null ? (
                     <p>냉장고를 선택하면 해당 냉장고에 있는 음식이 나와요</p>
                 ) : Object.keys(groupedFoodList).length === 0 ? (
                     <p>냉장고 텅텅텅텅 비었음, ㅋ</p>
@@ -69,6 +93,7 @@ const FridgeManagePage = () => {
                             {groupedFoodList[category].map((food, index) => (
                                 <DetailButton
                                     key={index}
+                                    id={food.id}
                                     productName={food.productName}
                                     expiryDate={food.expiryDate}
                                     count={food.count}
@@ -103,6 +128,7 @@ const FridgeManagePage = () => {
                             {groupedFoodList[category].map((food, index) => (
                                 <DetailButton
                                     key={index}
+                                    id={food.id}
                                     productName={food.productName}
                                     expiryDate={food.expiryDate}
                                     count={food.count}
