@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
 const DetailButton = ({
+                        id,
                         expiryDate,
                         option,
                         count,
@@ -119,6 +120,7 @@ const DetailButton = ({
   const handleNavigation = () => {
     navigate('/Refrigerator/food/FoodDetail', {
       state: {
+        id,
         expiryDate,
         option,
         count,
@@ -150,6 +152,7 @@ const DetailButton = ({
 };
 
 DetailButton.propTypes = {
+  id:PropTypes.string.isRequired,
   expiryDate: PropTypes.string.isRequired,
   option: PropTypes.string.isRequired,
   count: PropTypes.string.isRequired,
