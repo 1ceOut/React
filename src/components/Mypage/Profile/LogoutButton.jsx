@@ -12,7 +12,7 @@ const LogoutButton = () => {
             if (response.status === 200){
                 LogoutStatus();
                 ClearUser();
-                navigate("/login")
+                navigate("/")
             }
         });
     }
