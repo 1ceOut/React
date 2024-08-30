@@ -1,4 +1,4 @@
-import axios from 'axios';
+import {uploadFile} from "../query/FoodListQuery.jsx";
 
 // Base64 데이터 URL을 Blob으로 변환하는 함수
 function dataURItoBlob(dataURI) {
@@ -19,30 +19,23 @@ export const uploadImageToNCP = async (imageDataUrl) => {
     formData.append('file', blob, 'image.png');
 
     try {
-        // 서버의 이미지 업로드 엔드포인트를 올바르게 설정하세요
-        const response = await axios.post('http://localhost:9000/api/food/upload/barcode', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
+        const responseData = await uploadFile(formData); // `uploadFile` 호출
 
         // 이미지 업로드 후 응답에서 URL을 추출합니다
-        console.log("Upload Response Data:", response.data);
+        console.log("Upload Response Data:", responseData);
 
         // 응답 데이터가 JSON 객체인지 단순 문자열인지 확인 후 처리
         let imageUrl;
-        if (typeof response.data === 'string') {
-            imageUrl = response.data; // 문자열 형태일 경우
-        } else if (response.data.url) {
-            imageUrl = response.data.url; // JSON 객체 형태일 경우
+        if (typeof responseData === 'string') {
+            imageUrl = responseData; // 문자열 형태일 경우
+        } else if (responseData.url) {
+            imageUrl = responseData.url; // JSON 객체 형태일 경우
         } else {
             throw new Error("Unexpected response format");
         }
 
         return imageUrl;
     } catch (error) {
-        console.error("File upload failed:", error.response ? error.response.data : error.message);
-        throw error;
+        throw error; // 오류를 호출한 쪽으로 전달
     }
 };
-
