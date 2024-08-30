@@ -15,6 +15,7 @@ const ShoppingHome = () => {
         queryFn: BestShoppingList,
         staleTime: Infinity,
         cacheTime: 86400000,
+        refetchOnReconnect: true,
         meta: {persist: true}
     });
 
@@ -23,6 +24,7 @@ const ShoppingHome = () => {
         queryFn: ShoppingHeader,
         staleTime: Infinity,
         cacheTime: 86400000,
+        refetchOnReconnect: true,
         meta: {persist: true}
     });
 
