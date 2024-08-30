@@ -73,5 +73,18 @@ export const updateCountByname = async (productName, id, count) => {
     }
 };
 
+export const uploadFile = async (formData) => {
+    try {
+        const response = await axios.post(`${API_URL}/api/food/upload/barcode`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data; // 서버 응답 데이터 반환
+    } catch (error) {
+        console.error("File upload failed:", error.response ? error.response.data : error.message);
+        throw error; // 오류를 호출한 쪽으로 전달
+    }
+};
 
 
