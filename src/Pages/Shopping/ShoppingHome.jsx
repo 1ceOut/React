@@ -18,6 +18,7 @@ const ShoppingHome = () => {
         refetchOnWindowFocus: false,
         refetchOnMount: false,
         refetchOnReconnect: false,
+        meta: {persist:true}
     });
 
     const { data: bannerdata } = useQuery({
@@ -28,6 +29,7 @@ const ShoppingHome = () => {
         refetchOnWindowFocus: false,
         refetchOnMount: false,
         refetchOnReconnect: false,
+        meta: {persist:true}
     });
 
     const [animationClass, setAnimationClass] = useState('animate-slideInUp');
