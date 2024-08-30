@@ -48,6 +48,20 @@ export const foodDelete = async (productName, id) => {
     }
 };
 
+export const addFridge = async (product) => {
+    try {
+        const response = await axios.post(
+            `${API_URL}/api/food/refri/insert`,
+            product
+        );
+        return response.data; // 응답 데이터 반환
+    } catch (error) {
+        console.error("Error adding fridge:", error);
+        throw error; // 에러를 다시 던져서 호출한 쪽에서 처리할 수 있게 함
+    }
+};
+
+
 export const updateCountByname = async (productName, id, count) => {
     console.log('Sending request with:', productName, id, count);
     try {
