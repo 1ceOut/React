@@ -10,13 +10,17 @@ import FeedMenu from "../../components/Community/FeedDetail/FeedMenu";
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
-  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1
+  const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 };
 
 const FeedPage = () => {
-  const { data: postsWithUserDetails, isLoading, isError } = usePostsWithUserDetails();
+  const {
+    data: postsWithUserDetails,
+    isLoading,
+    isError,
+  } = usePostsWithUserDetails();
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -27,23 +31,31 @@ const FeedPage = () => {
   }
 
   // postsWithUserDetails가 배열인지 확인
-  const safePosts = Array.isArray(postsWithUserDetails) ? postsWithUserDetails : [];
+  const safePosts = Array.isArray(postsWithUserDetails)
+    ? postsWithUserDetails
+    : [];
 
   // 각 사용자 ID에 대해 최신 게시물을 저장할 맵 생성
   const latestPostsMap = new Map();
 
   safePosts.forEach(({ posting }) => {
-    if (!latestPostsMap.has(posting.userId) || new Date(posting.writeday) > new Date(latestPostsMap.get(posting.userId).writeday)) {
+    if (
+      !latestPostsMap.has(posting.userId) ||
+      new Date(posting.writeday) >
+        new Date(latestPostsMap.get(posting.userId).writeday)
+    ) {
       latestPostsMap.set(posting.userId, {
         ...posting,
         userProfile: posting.userProfile,
-        userName: posting.userName
+        userName: posting.userName,
       });
     }
   });
 
   // 맵을 배열로 변환하고 writeday 기준으로 내림차순 정렬
-  const sortedProfiles = Array.from(latestPostsMap.values()).sort((a, b) => new Date(b.writeday) - new Date(a.writeday));
+  const sortedProfiles = Array.from(latestPostsMap.values()).sort(
+    (a, b) => new Date(b.writeday) - new Date(a.writeday)
+  );
 
   return (
     <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
@@ -67,7 +79,7 @@ const FeedPage = () => {
             />
 
             <div className="flex justify-between mt-2 text-sm text-gray-500"></div>
-            <FeedMenu />
+            <FeedMenu postingId={posting.postingId} userName={userName} />
           </div>
         ))
       ) : (
