@@ -8,10 +8,12 @@ const API_URL = import.meta.env.VITE_LIKECOMMENT_IP || "http://localhost:9090";
 axios.defaults.withCredentials = true;
 
 const getCommentsWithUserDetails = async (postingId) => {
-  const response = await axios.get(`${API_URL}/comment/listByUser`, {
-    withCredentials: true,
-    params: { user_id: postingId },
-  });
+  const response = await axios.get(
+    `${API_URL}/comment/listByUser/${postingId}`,
+    {
+      withCredentials: true,
+    }
+  );
   return response.data;
 };
 

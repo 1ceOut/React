@@ -1,6 +1,6 @@
 import { Rating } from "@mui/material";
 import { useState } from "react";
-import { useCommentsByPostingId } from "./../../../query/LikeCommentQuery";
+import { useCommentsWithUserDetails } from "./../../../query/LikeCommentQuery";
 import useUserStore from "./../../../store/useUserStore";
 import PropTypes from "prop-types";
 
@@ -8,10 +8,11 @@ const FeedComment = ({ postingId }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("");
   const {
-    data: comments,
+    data: comments = [],
     isLoading,
     isError,
-  } = useCommentsByPostingId(postingId);
+  } = useCommentsWithUserDetails(postingId);
+
   const { userId } = useUserStore((state) => state);
 
   const handleClick = () => {
@@ -24,7 +25,6 @@ const FeedComment = ({ postingId }) => {
 
   const handleFilterClick = (filter) => {
     setSelectedFilter(filter);
-    // Add logic to filter comments based on the selected filter
   };
 
   const getButtonClassNames = (filter) => {
@@ -59,15 +59,15 @@ const FeedComment = ({ postingId }) => {
               <div className="flex">
                 <div>
                   <img
-                    src={comment.userProfile}
-                    alt={`${comment.userName}'s profile`}
+                    src={comment.userProfile || "/assets/cha.png"}
+                    alt={`${comment.userName || "User"}'s profile`}
                     className="w-8 h-8 rounded-full"
                   />
                 </div>
                 <div className="ml-2">
                   <div className="w-[302px] rounded-xl h-auto bg-[#F5F5F5] p-[14px]">
                     <div className="flex space-x-4">
-                      <div>글쓴이</div>
+                      <div>{comment.userName || "Anonymous"}</div>
                       <div className="flex justify-center items-center">
                         <Rating size="small" readOnly value={comment.rate} />
                       </div>
