@@ -38,7 +38,12 @@ const UpdateForm = () => {
                 data: userData
             };
             const updatedData = await masterUserRefri(requestPayload);
-            console.log("Updated Data: ", updatedData);
+            const updatedNames = userData.map(refri => refri.refrigeratorName).join(', ');
+
+            alert(`"${updatedNames}"으로 수정되었습니다.`);
+            navigate("/mypage/profile");
+
+
         } catch (error) {
             console.error("Failed to update data", error);
         }

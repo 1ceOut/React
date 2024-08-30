@@ -141,7 +141,7 @@ const AddInput2 = () => {
                 >
                     <option value="" disabled>식품유형을 선택해주세요</option>
                     <option value="가공식품">가공식품</option>
-                    <option value="원자재성식품">원자재성식품</option>
+                    <option value="원자재성 식품">원자재성식품</option>
                 </select>
             </div>
             {showAdditionalSelect && (
