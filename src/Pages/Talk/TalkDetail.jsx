@@ -14,6 +14,8 @@ const TalkDetail = () => {
     const [announcement, setAnnouncement] = useState("이건 공지사항 띄울거임");
     const [newAnnouncement, setNewAnnouncement] = useState("");
     const [isAnnouncementVisible, setIsAnnouncementVisible] = useState(false);
+    const xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
 
     useEffect(() => {
         scrollToBottom();
@@ -33,17 +35,20 @@ const TalkDetail = () => {
     const stompClient = useRef(null);
 
     const api_server = import.meta.env.VITE_API_IP;
-    const ws_server = import.meta.env.VITE_WS_IP;
+
     const connect = () => {
         //const socket = new SockJS('http://localhost:8081/ws');
-        const socket = new SockJS(`${api_server}/ws`);
+        const socket = new SockJS(`${api_server}/ws`, null, {
+            transports: ['xhr-streaming', 'xhr-polling'],
+            xhr: () => xhr,
+        });
         stompClient.current = Stomp.over(socket);
 
         stompClient.current.connect({}, (frame) => {
             console.log("Connected: " + frame);
             console.log("WebSocket readyState:", stompClient.current.ws.readyState);
 
-            stompClient.current.subscribe(`${api_server}/topic/messages`, (message) => {
+            stompClient.current.subscribe(`/topic/messages`, (message) => {
                 console.log("Received message:", message.body);
                 try {
                     const newMessage = JSON.parse(message.body);  // 메시지를 JSON으로 파싱
@@ -59,7 +64,9 @@ const TalkDetail = () => {
     };
 
     const fetchMessages = () => {
-        axiosApi.get(`${api_server}/api/chatroom/${chatroomSeq}/messages`)
+        axiosApi.get(`${api_server}/api/chatroom/${chatroomSeq}/messages`,{
+            withCredentials:true
+        })
             .then((response) => {
                 console.log("Fetched messages:", response.data);
                 if (Array.isArray(response.data)) {
@@ -80,7 +87,7 @@ const TalkDetail = () => {
                 id: chatroomSeq,
                 senderSeq: Date.now()
             };
-            stompClient.current.send(`${api_server}/pub/message`, {}, JSON.stringify(messageObj));
+            stompClient.current.send(`/pub/message`, {}, JSON.stringify(messageObj));
             setNewMessage("");
         } else {
             console.error("WebSocket connection is not open.");
