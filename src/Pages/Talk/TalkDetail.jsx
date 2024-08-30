@@ -33,7 +33,8 @@ const TalkDetail = () => {
     const stompClient = useRef(null);
 
     const connect = () => {
-        const socket = new SockJS('http://localhost:8081/ws');
+        //const socket = new SockJS('http://localhost:8081/ws');
+        const socket = new SockJS('https://api.icebuckwheat.kro.kr/ws');
         stompClient.current = Stomp.over(socket);
 
         stompClient.current.connect({}, (frame) => {
