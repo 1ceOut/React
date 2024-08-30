@@ -7,6 +7,22 @@ const API_URL = import.meta.env.VITE_LIKECOMMENT_IP || "http://localhost:9090";
 // Axios 기본 설정 업데이트
 axios.defaults.withCredentials = true;
 
+const getCommentsWithUserDetails = async (postingId) => {
+  const response = await axios.get(`${API_URL}/comment/listByUser`, {
+    withCredentials: true,
+    params: { user_id: postingId },
+  });
+  return response.data;
+};
+
+export const useCommentsWithUserDetails = (postingId) => {
+  return useQuery({
+    queryKey: ["commentsWithUserDetails", postingId],
+    queryFn: () => getCommentsWithUserDetails(postingId),
+    enabled: !!postingId,
+  });
+};
+
 const fetchFavoritesCount = async (postingId) => {
   const response = await axios.get(`${API_URL}/favorite/count`, {
     withCredentials: true,
@@ -66,7 +82,7 @@ export const useCheckFavorite = (postingId, userId) => {
 
 const addComment = async (data) => {
   try {
-    const response = await axios.post(`${API_URL}/comment`, data, {
+    const response = await axios.post(`${API_URL}/comment/insert`, data, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -80,22 +96,26 @@ const addComment = async (data) => {
 };
 
 const getCommentById = async (commentId) => {
-  const response = await axios.get(`${API_URL}/comment/${commentId}`, {
+  const response = await axios.get(`${API_URL}/comment/list/${commentId}`, {
     withCredentials: true,
   });
   return response.data;
 };
 
 const updateComment = async ({ commentId, data }) => {
-  const response = await axios.put(`${API_URL}/comment/${commentId}`, data, {
-    withCredentials: true,
-  });
+  const response = await axios.put(
+    `${API_URL}/comment/update/${commentId}`,
+    data,
+    {
+      withCredentials: true,
+    }
+  );
   return response.data;
 };
 
 const deleteComment = async (commentId) => {
   try {
-    await axios.delete(`${API_URL}/comment/${commentId}`, {
+    await axios.delete(`${API_URL}/comment/delete/${commentId}`, {
       withCredentials: true,
     });
   } catch (error) {
