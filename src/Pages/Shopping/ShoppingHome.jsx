@@ -35,7 +35,6 @@ const ShoppingHome = () => {
     }).slice(0, 20) : [];
 
     const {userName} = useUserStore();
-    console.log(bannerdata)
 
     useEffect(() => {
         setAnimationClass('animate-slideInUp');
