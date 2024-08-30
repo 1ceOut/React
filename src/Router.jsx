@@ -35,12 +35,24 @@ import AddFridge from "./Pages/Refrigerator/food/AddFridge.jsx";
 import Barcode from "./Pages/Refrigerator/food/Barocde.jsx";
 import AddInput2 from "./Pages/Refrigerator/food/AddInput2.jsx";
 import SearchPage from "./Pages/Main/SearchPage.jsx";
+import {createAsyncStoragePersister} from "@tanstack/query-async-storage-persister";
+import {PersistQueryClientProvider} from "@tanstack/react-query-persist-client";
 
 const queryClient = new QueryClient();
 
+const asyncStoragePersister = createAsyncStoragePersister({
+    storage: window.localStorage,
+})
+
 const Router = () => {
     return (
-        <QueryClientProvider client={queryClient}>
+        <PersistQueryClientProvider client={queryClient} persistOptions={{
+            persister: asyncStoragePersister,
+            dehydrateOptions: {
+                shouldDehydrateQuery: (query)=>{
+                    return query.options.meta?.persist === true;
+                }}
+        }}>
             <BrowserRouter>
                 <Routes>
                     {/* 로그인  */}
@@ -112,7 +124,7 @@ const Router = () => {
                 </Routes>
             </BrowserRouter>
             <ReactQueryDevtools buttonPosition={"relative"}/>
-        </QueryClientProvider>
+        </PersistQueryClientProvider>
     );
 };
 
