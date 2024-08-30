@@ -32,16 +32,18 @@ const TalkDetail = () => {
     const chatEndRef = useRef(null);
     const stompClient = useRef(null);
 
+    const api_server = import.meta.env.VITE_API_IP;
+    const ws_server = import.meta.env.VITE_WS_IP;
     const connect = () => {
         //const socket = new SockJS('http://localhost:8081/ws');
-        const socket = new SockJS('https://api.icebuckwheat.kro.kr/ws');
+        const socket = new SockJS(`${api_server}/ws`);
         stompClient.current = Stomp.over(socket);
 
         stompClient.current.connect({}, (frame) => {
             console.log("Connected: " + frame);
             console.log("WebSocket readyState:", stompClient.current.ws.readyState);
 
-            stompClient.current.subscribe(`/topic/messages`, (message) => {
+            stompClient.current.subscribe(`${api_server}/topic/messages`, (message) => {
                 console.log("Received message:", message.body);
                 try {
                     const newMessage = JSON.parse(message.body);  // 메시지를 JSON으로 파싱
@@ -57,7 +59,7 @@ const TalkDetail = () => {
     };
 
     const fetchMessages = () => {
-        axiosApi.get(`/api/chatroom/${chatroomSeq}/messages`)
+        axiosApi.get(`${api_server}/api/chatroom/${chatroomSeq}/messages`)
             .then((response) => {
                 console.log("Fetched messages:", response.data);
                 if (Array.isArray(response.data)) {
@@ -78,7 +80,7 @@ const TalkDetail = () => {
                 id: chatroomSeq,
                 senderSeq: Date.now()
             };
-            stompClient.current.send(`/pub/message`, {}, JSON.stringify(messageObj));
+            stompClient.current.send(`${api_server}/pub/message`, {}, JSON.stringify(messageObj));
             setNewMessage("");
         } else {
             console.error("WebSocket connection is not open.");
