@@ -6,14 +6,19 @@ import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import useUserStore from "../../store/useUserStore.js";
 
+const formatDate = (date) => {
+    return date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+};
 const TalkDetail = () => {
-    const { userId, userName } = useUserStore();
+    const { userId, userName,userProfile } = useUserStore();
     const chatroomSeq = 13;
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const [announcement, setAnnouncement] = useState("이건 공지사항 띄울거임");
     const [newAnnouncement, setNewAnnouncement] = useState("");
     const [isAnnouncementVisible, setIsAnnouncementVisible] = useState(false);
+
+
 
     useEffect(() => {
         scrollToBottom();
@@ -22,6 +27,7 @@ const TalkDetail = () => {
     useEffect(() => {
         connect();
         fetchMessages();
+        return
     }, []);
 
     useEffect(() => {
@@ -75,8 +81,10 @@ const TalkDetail = () => {
                 chatroomSeq: chatroomSeq,
                 sender: userName,
                 message: newMessage,
-                id: chatroomSeq,
-                senderSeq: Date.now()
+                senderSeq: Date.now(),
+                userProfile:userProfile,
+                timestamp: new Date().toLocaleTimeString()
+
             };
             stompClient.current.send(`/pub/message`, {}, JSON.stringify(messageObj));
             setNewMessage("");
@@ -100,6 +108,20 @@ const TalkDetail = () => {
     const scrollToBottom = () => {
         chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
+
+    const groupMessagesByDate = (messages) => {
+        const grouped = messages.reduce((acc, message) => {
+            const date = new Date(message.timestamp).toLocaleDateString();
+            if (!acc[date]) {
+                acc[date] = [];
+            }
+            acc[date].push(message);
+            return acc;
+        }, {});
+        return grouped;
+    };
+
+    const groupedMessages = groupMessagesByDate(messages);
 
     return (
         <main className={`flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen`}>
@@ -137,25 +159,43 @@ const TalkDetail = () => {
                 )}
 
                 {/* 채팅 메시지 목록 */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50" style={{ maxHeight: 'calc(100vh - 176px)' }}>
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
+                     style={{maxHeight: 'calc(100vh - 176px)'}}>
+                    {Object.entries(groupedMessages).map(([date, messages]) => (
+                        <div key={date}>
                     {messages.map((msg, index) => (
-                        <div key={index} className={`flex flex-col ${msg.sender === userName ? 'items-end' : 'items-start'}`}>
-                            <div className={`text-x5 ${msg.sender === userName ? "text-blue-500" : "text-gray-500"} mb-1`}>
-                                {msg.sender}
-                            </div>
+                        <div key={index}
+                             className={`flex ${msg.sender === userName ? 'justify-end' : 'justify-start'} mb-4`}>
+                            {msg.sender !== userName && (
+                                <img src={msg.userProfile} alt="profile" className="w-8 h-8 rounded-full mr-2"/>
+                            )}
 
-                            <div className={`flex ${msg.sender === userName ? "justify-end" : "justify-start"}`}>
-                                {msg.sender === "other" && (
-                                    <img src="/assets/profile.png" alt="profile" className="w-8 h-8 rounded-full mr-2" />
-                                )}
-                                <div className={`max-w-xs rounded-lg p-2 text-sm ${msg.sender === userName ? "bg-blue-500 text-white" : "bg-gray-300 text-gray-700"}`}>
-                                    {msg.message}
+                            <div className={`flex flex-col ${msg.sender === userName ? 'items-end' : 'items-start'}`}>
+                                <div
+                                    className={`text-xs ${msg.sender === userName ? "text-blue-500" : "text-gray-500"} mb-1`}>
+                                    {msg.sender}
+                                </div>
+                                <div
+                                    className={`flex ${msg.sender === userName ? 'flex-row-reverse' : 'flex-row'} items-center`}>
+
+                                    <div
+                                        className={`max-w-xs rounded-lg p-2 text-sm ${msg.sender === userName ? "bg-blue-500 text-white" : "bg-gray-300 text-gray-700"} ${msg.sender === userName ? 'rounded-br-none' : 'rounded-bl-none'}`}>
+                                        {msg.message}
+                                    </div>
+                                    <span
+                                        className={`text-gray-400 text-xs ${msg.sender === userName ? 'mr-2' : 'ml-2'}`}>
+                                    {msg.timestamp}
+                                    </span>
                                 </div>
                             </div>
                         </div>
                     ))}
-                    <div ref={chatEndRef} />
+                        </div>
+
+                    ))}
+                    <div ref={chatEndRef}/>
                 </div>
+
 
                 {/* 입력 및 전송 버튼 */}
                 <div className="bottom-0 bg-white border-t border-gray-200 p-4">
