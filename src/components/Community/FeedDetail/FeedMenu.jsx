@@ -1,19 +1,58 @@
-import { useState } from "react";
-import { PropTypes } from "prop-types";
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { red } from "@mui/material/colors";
-import axios from "axios";
 import CommentModal from "./../Common/CommentModal";
+import useUserStore from "./../../../store/useUserStore";
+import {
+  useToggleFavorite,
+  useCheckFavorite,
+  useFavoritesCount,
+  useCommentsByPostingId,
+} from "../../../query/LikeCommentQuery";
 
-const FeedMenu = ({ option }) => {
+const FeedMenu = ({ postingId, userName }) => {
   const [isHidden, setIsHidden] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [isFavorite, setIsFavorite] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [comment, setComment] = useState("");
-  const [rate, setRate] = useState(0);
+  const userId = useUserStore((state) => state.userId);
+  const { mutate: toggleFavorite } = useToggleFavorite();
+  const { data: favoriteData, refetch: refetchFavoriteStatus } =
+    useCheckFavorite(postingId, userId);
+  const { data: favoritesCount, refetch: refetchFavoritesCount } =
+    useFavoritesCount(postingId);
+
+  const { data: commentsData } = useCommentsByPostingId(postingId);
+
+  const [localFavoriteStatus, setLocalFavoriteStatus] = useState(false);
+
+  useEffect(() => {
+    if (favoriteData !== undefined) {
+      setLocalFavoriteStatus(favoriteData);
+    }
+  }, [favoriteData]);
+
+  const handleToggleFavorite = async () => {
+    setIsAnimating(true);
+
+    setLocalFavoriteStatus((prevStatus) => !prevStatus);
+
+    try {
+      await toggleFavorite({ postingId, userId });
+
+      refetchFavoriteStatus();
+      refetchFavoritesCount();
+    } catch (error) {
+      console.error("Failed to toggle favorite:", error);
+
+      setLocalFavoriteStatus((prevStatus) => !prevStatus);
+    } finally {
+      setTimeout(() => {
+        setIsAnimating(false);
+      }, 300);
+    }
+  };
 
   const closeHidden = () => {
     setIsHidden(false);
@@ -23,45 +62,7 @@ const FeedMenu = ({ option }) => {
     setIsHidden(true);
   };
 
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-    setIsAnimating(true);
-
-    setTimeout(() => {
-      setIsAnimating(false);
-    }, 300);
-  };
-
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result); // Save the image as base64
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const submitForm = async () => {
-    const data = {
-      userId: option,
-      heart: isFavorite,
-      rate: rate.toString(),
-      diff: "상중하",
-      comment: comment,
-      commentimg: selectedImage,
-      postingId: new Date().getTime(),
-    };
-
-    try {
-      const response = await axios.post("/api/likecomment", data);
-      console.log(response.data);
-      closeHidden();
-    } catch (error) {
-      console.error("Error saving comment:", error);
-    }
-  };
+  const commentCount = commentsData ? commentsData.length : 0;
 
   return (
     <div className="self-stretch">
@@ -72,15 +73,15 @@ const FeedMenu = ({ option }) => {
               className={`flex justify-center items-center cursor-pointer mr-1 transition-transform duration-300 ${
                 isAnimating ? "scale-75" : "scale-100"
               }`}
-              onClick={toggleFavorite}
+              onClick={handleToggleFavorite}
             >
-              {isFavorite ? (
+              {localFavoriteStatus ? (
                 <FavoriteIcon sx={{ color: red[500] }} className="mr-1" />
               ) : (
                 <FavoriteBorderIcon className="mr-1" />
               )}
             </div>
-            <div>25</div>
+            <div>{favoritesCount || 0}</div>
           </div>
           <div className="flex justify-center items-center">
             <div
@@ -89,21 +90,15 @@ const FeedMenu = ({ option }) => {
             >
               <ChatBubbleOutlineIcon className="mr-1" />
             </div>
-            <div>2</div>
+            <div>{commentCount}</div>
           </div>
         </div>
       </div>
       {isHidden && (
         <CommentModal
+          userName={userName}
           closeHidden={closeHidden}
-          option={option}
-          rate={rate}
-          setRate={setRate}
-          comment={comment}
-          setComment={setComment}
-          selectedImage={selectedImage}
-          handleImageChange={handleImageChange}
-          submitForm={submitForm}
+          postingId={postingId}
         />
       )}
     </div>
@@ -111,7 +106,8 @@ const FeedMenu = ({ option }) => {
 };
 
 FeedMenu.propTypes = {
-  option: PropTypes.string.isRequired,
+  postingId: PropTypes.string.isRequired,
+  userName: PropTypes.string.isRequired,
 };
 
 export default FeedMenu;

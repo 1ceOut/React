@@ -1,18 +1,69 @@
+import { useState } from "react";
 import Rating from "@mui/material/Rating";
 import { AiOutlinePlus } from "react-icons/ai";
 import PropTypes from "prop-types";
+import useUserStore from "./../../../store/useUserStore";
+import { useAddComment } from "../../../query/LikeCommentQuery";
 
-const CommentModal = ({
-  closeHidden,
-  option,
-  rate,
-  setRate,
-  comment,
-  setComment,
-  selectedImage,
-  handleImageChange,
-  submitForm,
-}) => {
+const CommentModal = ({ closeHidden, postingId, userName }) => {
+  const { userId: currentUserId } = useUserStore((state) => ({
+    userId: state.userId,
+  }));
+
+  const [rate, setRate] = useState(0);
+  const [comment, setComment] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedQuality, setSelectedQuality] = useState("");
+
+  const { mutate: addComment } = useAddComment();
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedImage(URL.createObjectURL(file));
+    }
+  };
+
+  const getRatingText = (rate) => {
+    switch (rate) {
+      case 1:
+        return "별로에요";
+      case 2:
+        return "그저 그래요";
+      case 3:
+        return "보통이에요";
+      case 4:
+        return "좋아요";
+      case 5:
+        return "최고에요";
+      default:
+        return "";
+    }
+  };
+
+  const submitForm = () => {
+    const formData = new FormData();
+    formData.append("userId", currentUserId);
+    formData.append("postingId", postingId);
+    formData.append("rate", rate);
+    formData.append("comment", comment);
+    formData.append("diff", selectedQuality);
+    if (selectedImage) {
+      formData.append("image", selectedImage);
+    }
+
+    addComment(formData, {
+      onSuccess: () => {
+        alert("Comment submitted successfully!");
+        closeHidden();
+      },
+      onError: (error) => {
+        console.error("Failed to submit comment:", error);
+        alert("Failed to submit the comment. Please try again.");
+      },
+    });
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div
@@ -28,7 +79,7 @@ const CommentModal = ({
           </div>
         </div>
         <div className="flex justify-center items-center">
-          요리사진, 메세지를 {option}님께 보냅니다!
+          요리사진, 메세지를 {userName}님께 보냅니다!
         </div>
         <div className="flex flex-col justify-center items-center">
           <Rating
@@ -38,9 +89,22 @@ const CommentModal = ({
               setRate(newValue);
             }}
           />
-          <div className="text-xs text-[#A8A8A8]">최고</div>
+          <div className="text-xs text-[#A8A8A8]">{getRatingText(rate)}</div>
         </div>
-        <div className="flex justify-center items-center">상중하</div>
+        <div className="flex justify-center items-center mt-2">
+          <select
+            value={selectedQuality}
+            onChange={(e) => setSelectedQuality(e.target.value)}
+            className="border p-2 rounded-md"
+          >
+            <option value="" disabled>
+              상중하 선택
+            </option>
+            <option value="상">상</option>
+            <option value="중">중</option>
+            <option value="하">하</option>
+          </select>
+        </div>
         <div className="border-[2px] w-full min-h-28 h-auto mt-2">
           <input
             id="food"
@@ -77,7 +141,6 @@ const CommentModal = ({
             />
           </label>
         </div>
-        <div className="mb-4">직접 요리 후 작성하는 후기인가요?</div>
         <div
           className="bg-blue-600 rounded-md cursor-pointer text-white flex justify-center items-center h-9"
           onClick={submitForm}
@@ -91,14 +154,8 @@ const CommentModal = ({
 
 CommentModal.propTypes = {
   closeHidden: PropTypes.func.isRequired,
-  option: PropTypes.string.isRequired,
-  rate: PropTypes.number.isRequired,
-  setRate: PropTypes.func.isRequired,
-  comment: PropTypes.string.isRequired,
-  setComment: PropTypes.func.isRequired,
-  selectedImage: PropTypes.string,
-  handleImageChange: PropTypes.func.isRequired,
-  submitForm: PropTypes.func.isRequired,
+  userName: PropTypes.string.isRequired,
+  postingId: PropTypes.string.isRequired,
 };
 
 export default CommentModal;
