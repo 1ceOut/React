@@ -9,6 +9,7 @@ import InviteButton from './../../components/Mypage/UserInvite/InviteButton';
 const UserInvitePage = () => {
 
     const [animationClass, setAnimationClass] = useState('animate-slideInUp');
+    const [refrigeratorId, setRefrigeratorId] = useState(null);
 
     useEffect(() => {
         setAnimationClass('animate-slideInUp');
@@ -17,13 +18,13 @@ const UserInvitePage = () => {
             setAnimationClass('animate-slideOutDown');
         };
     }, []);
-
+console.log(refrigeratorId);
     return (
         <main className={`${animationClass} flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen`}>
             <MenuNavigate option="초대코드"/>
             <Header/>
-            <MyInviteCode/>
-            <InvitedUser/>
+            <MyInviteCode setRefrigeratorId={setRefrigeratorId}/>
+            <InvitedUser refrigeratorId={refrigeratorId}/>
             <InviteButton/>
         </main>
     );

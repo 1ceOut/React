@@ -10,7 +10,8 @@ export const fetchSavedBarcodes = async (selectedFridge) => {
 
             params: {
                 refrigeratorName: selectedFridge
-            }
+            },
+            withCredentials: true // 옵션으로 설정
         });
         console.log(response.data);
         return response.data;
@@ -24,7 +25,8 @@ export const listFromLcategory = async (selectedFridge, category) => {
             params : {
                 refrigeratorName: selectedFridge,
                 lcategory : category
-            }
+            },
+            withCredentials: true // 옵션으로 설정
         });
         console.log(response.data);
         return response.data;

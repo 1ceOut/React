@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import useUserStore from "../../../store/useUserStore.js";
 import { useNavigate } from "react-router-dom";
 
-const MyInviteCode = () => {
+const MyInviteCode = ({ setRefrigeratorId }) => {
     const [userData, setUserData] = useState([]);
     const { userId, isLogin, LoginSuccessStatus } = useUserStore();
     const navigate = useNavigate();
@@ -51,6 +51,7 @@ const MyInviteCode = () => {
                             className="block w-full p-1 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out text-sm mb-2"
                             value={refri.refrigerator_id}
                             readOnly
+                            onClick={() => setRefrigeratorId(refri.refrigerator_id)}
                         />
                         <button
                             onClick={() => navigator.clipboard.writeText(refri.refrigerator_id)}
