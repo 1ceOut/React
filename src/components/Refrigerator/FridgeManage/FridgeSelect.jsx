@@ -17,7 +17,7 @@ const FridgeSelect = ({ onSelectFridge }) => { // onSelectFridge prop 추가
             LoginSuccessStatus(savedToken);
         }
         if (!userId) {
-            navigate('/login');
+            navigate('/');
         }
     }, [userId, isLogin, navigate, LoginSuccessStatus]);
 

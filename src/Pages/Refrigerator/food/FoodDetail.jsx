@@ -4,9 +4,11 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { fetchNutritionInfo } from '../../../query/FoodDataSearch';
 import ConfirmModal from '../../../components/Mypage/FridgeDelete/ConfirmModal.jsx';
 import { foodDelete, updateCountByname } from "../../../query/FoodListQuery.jsx";
+import { getCategoryImage } from '../../../components/Refrigerator/FridgeManage/CategoryImage.jsx';  // 여기서 임포트
 
 const FoodDetail = () => {
     const { state } = useLocation();
+    const basic = 100;
     const {
         id,
         expiryDate,
@@ -18,7 +20,7 @@ const FoodDetail = () => {
         scategory
     } = state || {};
 
-    const [count, setCount] = useState(initialCount); // 상태 초기화
+    const [count, setCount] = useState(initialCount);
     const [nutritionInfo, setNutritionInfo] = useState(null);
     const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,10 +42,7 @@ const FoodDetail = () => {
 
     const handleSave = async () => {
         try {
-            // 서버에 상태를 업데이트
             await updateCountByname(option, id, count);
-
-            // 알림 창 띄우기
             alert(`저장된 갯수: ${count}`);
             setCount(count);
             navigate('/fridge/fridgemanage');
@@ -54,16 +53,15 @@ const FoodDetail = () => {
     };
 
     const handleDeleteClick = () => {
-        setIsModalOpen(true); // 모달 열기
+        setIsModalOpen(true);
     };
 
     const handleCloseModal = () => {
-        setIsModalOpen(false); // 모달 닫기
+        setIsModalOpen(false);
     };
 
     const handleConfirmDelete = async () => {
-        setIsModalOpen(false); // 모달 닫기
-
+        setIsModalOpen(false);
         await foodDelete(option, id);
         navigate('/fridge/fridgemanage');
     };
@@ -74,7 +72,7 @@ const FoodDetail = () => {
             <div className="relative w-[342px] h-[60px] mt-5 flex items-center rounded-xl">
                 <div className="flex items-center">
                     <div className="flex items-center justify-center w-[60px] h-[60px] rounded-xl bg-[#F0F0F0]">
-                        <img src="/assets/milkcow.png" alt="" className="w-[40px] h-[40px]"/>
+                        <img src={getCategoryImage(lcategory)} alt="" className="w-[40px] h-[40px]"/>
                     </div>
                     <div>
                         <div className="text-[#767676] text-[14px] font-normal ml-3">{productType}</div>
@@ -86,7 +84,7 @@ const FoodDetail = () => {
                         src="/assets/trashbox.png"
                         alt="Trashbox"
                         className="w-[28px] h-[28px]"
-                        onClick={handleDeleteClick} // 삭제 클릭 시 모달 열기
+                        onClick={handleDeleteClick}
                     />
                 </div>
             </div>
@@ -94,8 +92,8 @@ const FoodDetail = () => {
                 <p className="text-[16px]">갯수</p>
                 <input
                     type="text"
-                    value={count} // value를 count로 설정
-                    onChange={(e) => setCount(e.target.value)} // 상태를 업데이트
+                    value={count}
+                    onChange={(e) => setCount(e.target.value)}
                     className="w-[342px] h-[56px] rounded-xl mt-3 border border-[#E1E1E1] text-[16px] px-5 box-border block leading-[19px]"
                 />
             </div>
@@ -121,8 +119,8 @@ const FoodDetail = () => {
                     <div className="text-left">
                         <h2 className="text-[1.5em] mb-2">영양정보</h2>
                         <p style={{ margin: "5px 0", fontSize: "0.9em", color: "#aaa" }}>
-                            총 내용량 {nutritionInfo.personal * count}g
-                            ({nutritionInfo.personal}{nutritionInfo.personal_unit} x {count}개)
+                            총 내용량 {nutritionInfo.personal * count || basic * count}g
+                            ({nutritionInfo.personal || basic}{nutritionInfo.personal_unit} x {count}개)
                         </p>
                     </div>
 
@@ -130,49 +128,49 @@ const FoodDetail = () => {
                         <thead>
                         <tr>
                             <th className="text-left text-[0.8em] text-[#777] pb-1 border-b border-[#ddd]">영양소</th>
-                            <th className="text-right text-[0.8em] text-[#777] pb-1 border-b border-[#ddd]">{nutritionInfo.personal}({nutritionInfo.personal_unit})당 영양성분</th>
+                            <th className="text-right text-[0.8em] text-[#777] pb-1 border-b border-[#ddd]">{nutritionInfo.personal || basic}({nutritionInfo.personal_unit || "g"})당 영양성분</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
                             <td className="p-2 border-b border-[#eee]">열량</td>
-                            <td className="p-2 border-b border-[#eee] text-right">{Math.floor(nutritionInfo.kcal) || '정보 없음'}</td>
+                            <td className="p-2 border-b border-[#eee] text-right">{Math.floor(nutritionInfo.kcal)}(kcal)</td>
                         </tr>
                         <tr>
                             <td className="p-2 border-b border-[#eee]">수분</td>
-                            <td className="p-2 border-b border-[#eee] text-right">{Math.floor(nutritionInfo.water) || '정보 없음'}</td>
+                            <td className="p-2 border-b border-[#eee] text-right">{Math.floor(nutritionInfo.water)}(g)</td>
                         </tr>
                         <tr>
                             <td className="p-2 border-b border-[#eee]">탄수화물</td>
-                            <td className="p-2 border-b border-[#eee] text-right">{Math.floor(nutritionInfo.carbon) || '정보 없음'}</td>
+                            <td className="p-2 border-b border-[#eee] text-right">{Math.floor(nutritionInfo.carbon)}(g)</td>
                         </tr>
                         <tr>
                             <td className="p-2 border-b border-[#eee]">단백질</td>
-                            <td className="p-2 border-b border-[#eee] text-right">{Math.floor(nutritionInfo.protein) || '정보 없음'}</td>
+                            <td className="p-2 border-b border-[#eee] text-right">{Math.floor(nutritionInfo.protein)}(g)</td>
                         </tr>
                         <tr>
                             <td className="p-2 border-b border-[#eee]">당분</td>
-                            <td className="p-2 border-b border-[#eee] text-right">{nutritionInfo.sugar || '정보 없음'}</td>
+                            <td className="p-2 border-b border-[#eee] text-right">{Math.floor(nutritionInfo.sugar)}(g)</td>
                         </tr>
                         <tr>
                             <td className="p-2 border-b border-[#eee]">지방</td>
-                            <td className="p-2 border-b border-[#eee] text-right">{Math.floor(nutritionInfo.fat) || '정보 없음'}</td>
+                            <td className="p-2 border-b border-[#eee] text-right">{Math.floor(nutritionInfo.fat)}(g)</td>
                         </tr>
                         <tr>
                             <td className="p-2 border-b border-[#eee]">콜레스테롤</td>
-                            <td className="p-2 border-b border-[#eee] text-right">{Math.floor(nutritionInfo.cholesterol) || '정보 없음'}</td>
+                            <td className="p-2 border-b border-[#eee] text-right">{Math.floor(nutritionInfo.cholesterol)}(mg)</td>
                         </tr>
                         <tr>
                             <td className="p-2 border-b border-[#eee]">나트륨</td>
-                            <td className="p-2 border-b border-[#eee] text-right">{Math.floor(nutritionInfo.salt) || '정보 없음'}</td>
+                            <td className="p-2 border-b border-[#eee] text-right">{Math.floor(nutritionInfo.salt)}(mg)</td>
                         </tr>
                         <tr>
-                            <td className="p-2 border-b border-[#eee]">섬유질</td>
-                            <td className="p-2 border-b border-[#eee] text-right">{Math.floor(nutritionInfo.fiber) || '정보 없음'}</td>
+                            <td className="p-2 border-b border-[#eee]">식이 섬유</td>
+                            <td className="p-2 border-b border-[#eee] text-right">{Math.floor(nutritionInfo.fiber)}(g)</td>
                         </tr>
                         <tr>
-                            <td className="p-2 border-b border-[#eee]">칼슘</td>
-                            <td className="p-2 border-b border-[#eee] text-right">{Math.floor(nutritionInfo.calcium) || '정보 없음'}</td>
+                            <td className="p-2 border-b border-[#eee]">칼륨</td>
+                            <td className="p-2 border-b border-[#eee] text-right">{Math.floor(nutritionInfo.calcium)}(mg)</td>
                         </tr>
                         </tbody>
                     </table>

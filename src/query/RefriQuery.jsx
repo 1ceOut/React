@@ -27,6 +27,22 @@ const useFridgeOptions = (userId) => {
 };
 export default useFridgeOptions;
 
+export const inviteRefri = async (userId, refrigeratorId) => {
+    try {
+        const response = await axios.post(`${API_URL}/api/food/refri/invite/user`,{
+            params:{
+                userId : userId,
+                refrigeratorId:refrigeratorId
+            }
+        });
+        return response.data;
+    }catch (e) {
+        console.log("추가에서 에러나는거임?~~₩",e)
+    }
+
+}
+
+//마스터 사용자가 만든 냉장고 조회
 export const masterUserList = async (userId) => {
     try {
         const response = await axios.get(`${API_URL}/api/food/refri/master/refrilist`, {
@@ -42,6 +58,7 @@ export const masterUserList = async (userId) => {
     }
 }
 
+//마스터 냉장고 사용자가 이름 변경
 export const masterUserRefri = async ({ userId, data }) => {
     console.log("userId:", userId);
     console.log("data:", data);
@@ -61,6 +78,8 @@ export const masterUserRefri = async ({ userId, data }) => {
         throw error;
     }
 }
+
+//마스터 냉장고 사용자가 냉장고 삭제
 export const masterUserDelete = async (refrigerator_id) => {
     console.log("너 값 뭐냐?", refrigerator_id);
     try {
@@ -82,9 +101,8 @@ export const masterUserDelete = async (refrigerator_id) => {
 
 
 
-
+//음식추가
 export const saveBarcode = async (product, onSuccess) => {
-
     console.log(product);
     try {
         const response = await axios.post(`${API_URL}/api/food/barcodes`, product,{
@@ -95,7 +113,7 @@ export const saveBarcode = async (product, onSuccess) => {
         if (response.data.exists) {
             alert('중복된 바코드가 이미 존재합니다.');
         } else {
-            alert(`${product.productName}이 성공적으로 저장되었습니다.`);
+            alert(`${product.productName} 재료가 성공적으로 저장되었습니다.`);
             if (onSuccess) onSuccess();
         }
     } catch (error) {

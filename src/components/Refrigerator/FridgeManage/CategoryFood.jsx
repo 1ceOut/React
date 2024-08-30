@@ -6,8 +6,8 @@ const CategoryFood = ({option}) => {
     const navigate = useNavigate();
 
     const handleNavigation = () => {
-        navigate('/Refrigerator/food/FoodList');
-      };
+        navigate('/Refrigerator/food/FoodList', { state: { category: option } });
+    };
     return (
         <div className="self-stretch flex items-center justify-between w-[342px]">
              <div className="text-xl">

@@ -23,7 +23,7 @@ const AddFridge = () => {
       LoginSuccessStatus(savedToken); // 토큰이 있다면 로그인 상태 초기화
     }
     if (!userId) {
-      navigate("/login"); // 로그인 안되어 있으면 로그인 페이지로 이동
+      navigate("/"); // 로그인 안되어 있으면 로그인 페이지로 이동
     }
   }, [userId, isLogin, navigate, LoginSuccessStatus]);
 
@@ -125,7 +125,7 @@ const AddFridge = () => {
         }`}
         onClick={isEnabled ? handleSubmit : null} // 클릭 시 제출 함수 호출
       >
-        <p style={{ fontWeight: 500, fontSize: 16 }}>냉장고 등록하기</p>
+        <div style={{ fontWeight: 500, fontSize: 16 }}>냉장고 등록하기</div>
       </div>
     </main>
   );

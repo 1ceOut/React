@@ -18,6 +18,21 @@ export const fetchSavedBarcodes = async (selectedFridge) => {
         console.error('Error fetching saved barcodes', error);
     }
 };
+export const listFromLcategory = async (selectedFridge, category) => {
+    try {
+        const response = await axios.get(`${API_URL}/api/food/list/category`,{
+            params : {
+                refrigeratorName: selectedFridge,
+                lcategory : category
+            }
+        });
+        console.log(response.data);
+        return response.data;
+    }catch (e) {
+        console.log("리스트 에러임",e);
+    }
+
+}
 
 export const foodDelete = async (productName, id) => {
     console.log("ㅂㅂㅂㅂㅂㅂㅂ",productName);

@@ -3,43 +3,40 @@ import axios from 'axios';
 import DetailButton from "../../../components/Common/DetailButton";
 import MenuNavigate from "../../../components/Common/MenuNavigate";
 import SearchForm from "../../../components/Refrigerator/Common/SearchForm";
+import { useLocation } from "react-router-dom";
+import { listFromLcategory } from "../../../query/FoodListQuery.jsx";
 
 const FoodList = () => {
+    const location = useLocation();
+    const category = location.state?.category;
+    const [foodList, setFoodList] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
-    const [selectedOption, setSelectedOption] = useState(null); // 선택된 옵션 상태 추가
-    const [savedBarcodes, setSavedBarcodes] = useState([]);
-
-    // 바코드 목록을 가져오는 함수
-    const fetchSavedBarcodes = async () => {
-        try {
-            const response = await axios.get('/api/food/list');
-            setSavedBarcodes(response.data);
-        } catch (error) {
-            console.error('Error fetching saved barcodes', error);
-        }
-    };
+    const [selectedOption, setSelectedOption] = useState(null);
 
     useEffect(() => {
-        fetchSavedBarcodes();
-    }, []);
+        const fetchFoodList = async () => {
+            setLoading(true);
+            const refrigeratorName = localStorage.getItem('selectedFridge'); // 로컬 스토리지에서 refrigeratorName 가져오기
+            try {
+                const data = await listFromLcategory(refrigeratorName, category);
+                setFoodList(data); // 데이터 설정
+            } catch (error) {
+                console.error('Failed to fetch food list:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    // 바코드 삭제 함수
-    const deleteBarcode = async (productName) => {
-        try {
-            await axios.delete(`/api/food/barcodes/${productName}`);
-            fetchSavedBarcodes();
-            alert('상품 삭제함');
-        } catch (error) {
-            console.error('Error deleting barcode', error);
-        }
-    };
+        fetchFoodList();
+    }, [category]);
 
     // 팝업 토글 함수
     const togglePopup = () => setShowPopup(!showPopup);
 
     // 옵션 클릭 핸들러
     const handleOptionClick = (option) => {
-        setSelectedOption(option); // 버튼 클릭 시 선택된 옵션 업데이트
+        setSelectedOption(option);
     };
 
     // 버튼 스타일
@@ -70,116 +67,87 @@ const FoodList = () => {
 
     return (
         <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
-            <MenuNavigate option="유제품 전체보기" alertPath="/addinfo/habit" />
+            <MenuNavigate option={`${category} 전체보기`} alertPath="/addinfo/habit" />
 
             <div className="self-stretch pt-8">
                 <SearchForm />
             </div>
 
-            {savedBarcodes.length === 0 ? (
-                <p>등록된 상품 없음</p>
-            ) : (
+            <div
+                style={{
+                    width: 342,
+                    height: 33,
+                    position: 'relative',
+                    marginTop: '32px'
+                }}
+            >
                 <div
                     style={{
-                        width: 342,
-                        height: 33,
-                        position: 'relative',
-                        marginTop: '32px'
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        height: '100%'
                     }}
                 >
+                    <div style={{ fontWeight: 500, fontSize: 28 }}>{category}</div>
                     <div
                         style={{
                             display: 'flex',
-                            justifyContent: 'space-between',
                             alignItems: 'center',
-                            height: '100%'
+                            position: 'absolute',
+                            right: 0,
+                            bottom: 0
                         }}
                     >
-                        <div style={{ fontWeight: 500, fontSize: 28 }}>유제품</div>
                         <div
                             style={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                position: 'absolute',
-                                right: 0,
-                                bottom: 0
+                                marginRight: 8
                             }}
                         >
                             <div
                                 style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    marginRight: 8
+                                    marginRight: 4,
+                                    fontWeight: 500,
+                                    fontSize: 14
                                 }}
                             >
-                                <div
-                                    style={{
-                                        marginRight: 4,
-                                        fontWeight: 500,
-                                        fontSize: 14
-                                    }}
-                                >
-                                    총
-                                </div>
-                                <div style={{ fontWeight: 500, fontSize: 14 }}>20개</div>
+                                총
                             </div>
-                            <img
-                                src="/assets/filter.png"
-                                alt="Filter"
-                                style={{ width: 16, height: 14, cursor: 'pointer' }}
-                                onClick={togglePopup}
-                            />
+                            <div style={{ fontWeight: 500, fontSize: 14 }}>{foodList.length}개</div>
                         </div>
+                        <img
+                            src="/assets/filter.png"
+                            alt="Filter"
+                            style={{ width: 16, height: 14, cursor: 'pointer' }}
+                            onClick={togglePopup}
+                        />
                     </div>
                 </div>
-            )}
+            </div>
 
             <div className="self-stretch pt-5 mt-[16px]">
-                <DetailButton
-                    foodCategory="cheese"
-                    expireDate="2024.08.20"
-                    option="서울우유 체다치즈"
-                />
-                <DetailButton
-                    foodCategory="milkcow"
-                    expireDate="2024.08.20"
-                    option="서울우유 플레인 요거트 순수무가당"
-                />
-                <DetailButton
-                    foodCategory="milkcow"
-                    expireDate="2024.08.20"
-                    option="매일유업 매일바이오 제로 요구르트"
-                />
-                <DetailButton
-                    foodCategory="cheese"
-                    expireDate="2024.08.15"
-                    option="서울우유 체다치즈"
-                />
-                <DetailButton
-                    foodCategory="milkcow"
-                    expireDate="2024.08.15"
-                    option="서울우유 플레인 요거트 순수무가당"
-                />
-                <DetailButton
-                    foodCategory="milkcow"
-                    expireDate="2024.08.15"
-                    option="매일유업 매일바이오 제로 요구르트"
-                />
-                <DetailButton
-                    foodCategory="cheese"
-                    expireDate="2024.08.12"
-                    option="서울우유 체다치즈"
-                />
-                <DetailButton
-                    foodCategory="milkcow"
-                    expireDate="2024.08.12"
-                    option="서울우유 플레인 요거트 순수무가당"
-                />
-                <DetailButton
-                    foodCategory="milkcow"
-                    expireDate="2024.08.12"
-                    option="매일유업 매일바이오 제로 요구르트"
-                />
+                {loading ? (
+                    <p>로딩 중...</p>
+                ) : foodList.length === 0 ? (
+                    <p>{category}에 해당하는 음식이 없습니다.</p>
+                ) : (
+                    foodList.map((food, index) => (
+                        <DetailButton
+                            key={index}
+                            id={food.id}
+                            productName={food.productName}
+                            expiryDate={food.expiryDate}
+                            count={food.count}
+                            productType={food.productType}
+                            createdDate={food.createdDate}
+                            lcategory={food.lcategory}
+                            scategory={food.scategory}
+                            option={food.productName}
+                        />
+                    ))
+                )}
             </div>
 
             {showPopup && (

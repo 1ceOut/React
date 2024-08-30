@@ -14,19 +14,19 @@ export const fetchNutritionInfo = async (productName, scategory, productType) =>
 
         // productType에 따라 적절한 엔드포인트 및 요청 본문 설정
         if (normalizedProductType === '가공식품') {
-            endpoint = `${API_URL}/api/food/recipe/detail`; // 수정된 부분
+            endpoint = `${API_URL}/api/food/recipe/detail`;
             requestBody = {
                 recipe_name: productName,
                 scategory: scategory
             };
         } else if (normalizedProductType === '원자재성 식품') {
-            endpoint = `${API_URL}/api/food/food/detail`; // 수정된 부분
+            endpoint = `${API_URL}/api/food/food/detail`;
             requestBody = {
                 mcategory: productName,
                 scategory: scategory
             };
         } else {
-            throw new Error(`알 수 없는 제품 유형: ${productType}`); // 문제의 유형을 로그로 확인
+            throw new Error(`알 수 없는 제품 유형: ${productType}`);
         }
 
         // API 요청 보내기
