@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
-const HomeTopContent = ({headerData}) => {
+const HomeTopContent = ({headerData=[]}) => {
     const [currentIndex, setCurrentIndex] = useState(0); // 초기값 설정
 
     const renderSlides = headerData.map((image, idx) => (
