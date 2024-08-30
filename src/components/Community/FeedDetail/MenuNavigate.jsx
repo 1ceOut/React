@@ -1,15 +1,13 @@
-// MenuNavigate.jsx
-
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { useDeletePost } from "../../../query/FeedQuery"; 
+import { useDeletePost } from "../../../query/FeedQuery";
 
-const MenuNavigate = ({ userName, userProfile, writeDay, postingId }) => {
+const MenuNavigate = ({ userName, userProfile, writeDay, postingId, isOwner }) => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { mutate: deletePost } = useDeletePost(); // useDeletePost 훅 사용
-  
+  const { mutate: deletePost } = useDeletePost();
+
   const goBack = () => {
     navigate(-1);
   };
@@ -24,13 +22,13 @@ const MenuNavigate = ({ userName, userProfile, writeDay, postingId }) => {
 
   const confirmAction = async () => {
     try {
-      await deletePost(postingId); // useDeletePost 훅을 사용하여 게시물 삭제
+      await deletePost(postingId);
       console.log("게시물 삭제 성공");
-      closeModal(); // 모달 닫기
-      navigate(-1); // 이전 페이지로 이동
+      closeModal();
+      navigate(-1);
     } catch (error) {
       console.error("게시물 삭제 실패:", error.response ? error.response.data : error.message);
-      closeModal(); // 오류 발생 시 모달 닫기
+      closeModal();
     }
   };
 
@@ -57,9 +55,11 @@ const MenuNavigate = ({ userName, userProfile, writeDay, postingId }) => {
           </div>
         </div>
       </div>
-      <div className="w-6 h-6 cursor-pointer" onClick={openModal}>
-        . . .
-      </div>
+      {isOwner && ( // 게시물 작성자인 경우에만 표시
+        <div className="w-6 h-6 cursor-pointer" onClick={openModal}>
+          . . .
+        </div>
+      )}
 
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -93,7 +93,8 @@ MenuNavigate.propTypes = {
   userName: PropTypes.string.isRequired,
   userProfile: PropTypes.string.isRequired,
   writeDay: PropTypes.string.isRequired,
-  postingId: PropTypes.string // postingId prop 추가
+  postingId: PropTypes.string.isRequired,
+  isOwner: PropTypes.bool.isRequired, // isOwner prop 추가
 };
 
 export default MenuNavigate;
