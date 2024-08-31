@@ -7,24 +7,6 @@ const API_URL = import.meta.env.VITE_LIKECOMMENT_IP || "http://localhost:9090";
 // Axios 기본 설정 업데이트
 axios.defaults.withCredentials = true;
 
-const getCommentsWithUserDetails = async (postingId) => {
-  const response = await axios.get(
-    `${API_URL}/comment/listByUser/${postingId}`,
-    {
-      withCredentials: true,
-    }
-  );
-  return response.data;
-};
-
-export const useCommentsWithUserDetails = (postingId) => {
-  return useQuery({
-    queryKey: ["commentsWithUserDetails", postingId],
-    queryFn: () => getCommentsWithUserDetails(postingId),
-    enabled: !!postingId,
-  });
-};
-
 const fetchFavoritesCount = async (postingId) => {
   const response = await axios.get(`${API_URL}/favorite/count`, {
     withCredentials: true,
@@ -98,26 +80,22 @@ const addComment = async (data) => {
 };
 
 const getCommentById = async (commentId) => {
-  const response = await axios.get(`${API_URL}/comment/list/${commentId}`, {
+  const response = await axios.get(`${API_URL}/comment/${commentId}`, {
     withCredentials: true,
   });
   return response.data;
 };
 
 const updateComment = async ({ commentId, data }) => {
-  const response = await axios.put(
-    `${API_URL}/comment/update/${commentId}`,
-    data,
-    {
-      withCredentials: true,
-    }
-  );
+  const response = await axios.put(`${API_URL}/comment/${commentId}`, data, {
+    withCredentials: true,
+  });
   return response.data;
 };
 
 const deleteComment = async (commentId) => {
   try {
-    await axios.delete(`${API_URL}/comment/delete/${commentId}`, {
+    await axios.delete(`${API_URL}/comment/${commentId}`, {
       withCredentials: true,
     });
   } catch (error) {
@@ -130,8 +108,9 @@ const deleteComment = async (commentId) => {
 };
 
 const getCommentsByPostingId = async (postingId) => {
-  const response = await axios.get(`${API_URL}/comment/posting/${postingId}`, {
+  const response = await axios.get(`${API_URL}/comment/listByUser`, {
     withCredentials: true,
+    params: { postingId },
   });
   return response.data;
 };

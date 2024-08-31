@@ -1,19 +1,19 @@
-import { Rating } from "@mui/material";
 import { useState } from "react";
-import { useCommentsWithUserDetails } from "./../../../query/LikeCommentQuery";
-import useUserStore from "./../../../store/useUserStore";
+import { useCommentsByPostingId } from "./../../../query/LikeCommentQuery";
 import PropTypes from "prop-types";
+import CommentList from "./../Common/CommentList";
 
 const FeedComment = ({ postingId }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("");
   const {
-    data: comments = [],
+    data: response = {},
     isLoading,
     isError,
-  } = useCommentsWithUserDetails(postingId);
+  } = useCommentsByPostingId(postingId);
 
-  const { userId } = useUserStore((state) => state);
+  // Assuming response.comments is the array of comments
+  const comments = response.comments || [];
 
   const handleClick = () => {
     setIsModalVisible(true);
@@ -41,6 +41,8 @@ const FeedComment = ({ postingId }) => {
     return <div>Error loading comments</div>;
   }
 
+  console.log("Comments data:", comments);
+
   return (
     <div className="self-stretch">
       <div className="my-5 cursor-pointer flex" onClick={handleClick}>
@@ -54,34 +56,13 @@ const FeedComment = ({ postingId }) => {
 
       <div className="mt-4">
         {comments.length > 0 ? (
-          comments.map((comment) => (
-            <div key={comment.commentId} className="mb-4">
-              <div className="flex">
-                <div>
-                  <img
-                    src={comment.userProfile || "/assets/cha.png"}
-                    alt={`${comment.userName || "User"}'s profile`}
-                    className="w-8 h-8 rounded-full"
-                  />
-                </div>
-                <div className="ml-2">
-                  <div className="w-[302px] rounded-xl h-auto bg-[#F5F5F5] p-[14px]">
-                    <div className="flex space-x-4">
-                      <div>{comment.userName || "Anonymous"}</div>
-                      <div className="flex justify-center items-center">
-                        <Rating size="small" readOnly value={comment.rate} />
-                      </div>
-                      <div>{comment.diff}</div>
-                    </div>
-                    <br />
-                    <div>{comment.comment}</div>
-                  </div>
-                  <div className="flex space-x-5 font-normal text-[12px] text-[#767676]">
-                    <div>1시간</div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          comments.map((comment, userProfile, userName) => (
+            <CommentList
+              key={comment.commentId}
+              comment={comment}
+              userProfile={userProfile}
+              userName={userName}
+            />
           ))
         ) : (
           <div>No comments available</div>
