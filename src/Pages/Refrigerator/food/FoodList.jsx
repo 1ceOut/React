@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios';
 import DetailButton from "../../../components/Common/DetailButton";
 import MenuNavigate from "../../../components/Common/MenuNavigate";
 import SearchForm from "../../../components/Refrigerator/Common/SearchForm";
@@ -17,7 +16,7 @@ const FoodList = () => {
     useEffect(() => {
         const fetchFoodList = async () => {
             setLoading(true);
-            const refrigeratorName = localStorage.getItem('selectedFridge'); // 로컬 스토리지에서 refrigeratorName 가져오기
+            const refrigeratorName = sessionStorage.getItem('selectedFridge'); // 세션 스토리지에서 refrigeratorName 가져오기
             try {
                 const data = await listFromLcategory(refrigeratorName, category);
                 setFoodList(data); // 데이터 설정
