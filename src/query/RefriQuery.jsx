@@ -28,21 +28,32 @@ const useFridgeOptions = (userId) => {
 };
 export default useFridgeOptions;
 
+// export const inviteRefri = async (userId, refrigeratorId) => {
+//     try {
+//         const response = await axios.post(`${API_URL}/api/food/refri/invite/user`,{
+//             params:{
+//                 userId : userId,
+//                 refrigeratorId:refrigeratorId
+//             },
+//             withCredentials: true // 옵션으로 설정
+//         });
+//         return response.data;
+//     }catch (e) {
+//         console.log("추가에서 에러나는거임?~~₩",e)
+//     }
+// }
 export const inviteRefri = async (userId, refrigeratorId) => {
     try {
-        const response = await axios.post(`${API_URL}/api/food/refri/invite/user`,{
-            params:{
-                userId : userId,
-                refrigeratorId:refrigeratorId
-            },
-            withCredentials: true // 옵션으로 설정
-        });
+        const response = await axios.post(`${API_URL}/api/food/refri/invite/user`,
+            { userId, refrigeratorId },
+            { withCredentials: true }
+        );
         return response.data;
-    }catch (e) {
-        console.log("추가에서 에러나는거임?~~₩",e)
+    } catch (e) {
+        console.log("추가에서 에러나는거임?~~₩", e);
+        throw e;
     }
-
-}
+};
 
 //마스터 사용자가 만든 냉장고 조회
 export const masterUserList = async (userId) => {
