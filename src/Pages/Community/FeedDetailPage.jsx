@@ -55,7 +55,7 @@ const FeedDetailPage = () => {
   const isOwner = post.userId === currentUserId;
 
   return (
-    <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
+    <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-auto">
       <MenuNavigate
         userName={userName}
         userProfile={userProfile}
@@ -63,11 +63,12 @@ const FeedDetailPage = () => {
         postingId={postingId}
         isOwner={isOwner} // 게시물 소유 여부 전달
       />
+      <FeedTitle title={post.title} thumbnail={post.thumbnail} />
       <FeedRecipe steps={post.steps} contents={post.contents} />
       <FeedTags tags={post.tags} />
-      <FeedTitle title={post.title} thumbnail={post.thumbnail} />
-      <FeedMenu />
-      <FeedComment />
+    
+      <FeedMenu postingId={post.postingId} userName={userName} />
+      <FeedComment postingId={post.postingId} />
     </main>
   );
 };
