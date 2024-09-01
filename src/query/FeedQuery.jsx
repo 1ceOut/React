@@ -26,7 +26,7 @@ const fetchPostsByUser = async (userId) => {
 
 // 모든 사용자 정보 가져오기
 const fetchAllUsers = async () => {
-  const response = await axios.get(`${API_URL}/users`, {
+  const response = await axios.get(`${API_URL}/posting/users`, {
     withCredentials: true,
   });
   return response.data;
