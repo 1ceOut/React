@@ -70,5 +70,16 @@ const Logout_Action = async () => {
     }
 }
 
-export {Kakao_GetAccessToken,Naver_GetAccessToken,Google_GetAccessToken,Auto_Login,Logout_Action};
+const addinfo = async (data) => {
+    try {
+        return await axios.post(`${server_ip}/api/login/addinfo`, data, {
+            withCredentials: true,
+        })
+    } catch (error) {
+        console.log("전송오류")
+        throw error;
+    }
+}
+
+export {Kakao_GetAccessToken,Naver_GetAccessToken,Google_GetAccessToken,Auto_Login,Logout_Action,addinfo};
 
