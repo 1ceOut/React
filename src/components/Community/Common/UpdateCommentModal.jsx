@@ -2,18 +2,30 @@ import { useState } from "react";
 import Rating from "@mui/material/Rating";
 import PropTypes from "prop-types";
 import useUserStore from "./../../../store/useUserStore";
-import { useAddComment } from "../../../query/LikeCommentQuery";
+import {
+  useAddComment,
+  useUpdateComment,
+} from "../../../query/LikeCommentQuery";
 
-const CommentModal = ({ closeHidden, postingId, userName }) => {
+const UpdateCommentModal = ({
+  closeHidden,
+  postingId,
+  userName,
+  commentId,
+  initialRate,
+  initialComment,
+  initialDiff,
+}) => {
   const { userId: currentUserId } = useUserStore((state) => ({
     userId: state.userId,
   }));
 
-  const [rate, setRate] = useState(0);
-  const [comment, setComment] = useState("");
-  const [selectedQuality, setSelectedQuality] = useState("");
+  const [rate, setRate] = useState(initialRate || 0);
+  const [comment, setComment] = useState(initialComment || "");
+  const [selectedQuality, setSelectedQuality] = useState(initialDiff || "");
 
   const { mutate: addComment } = useAddComment();
+  const { mutate: updateComment } = useUpdateComment();
 
   const getRatingText = (rate) => {
     switch (rate) {
@@ -40,16 +52,32 @@ const CommentModal = ({ closeHidden, postingId, userName }) => {
     formData.append("comment", comment);
     formData.append("diff", selectedQuality);
 
-    addComment(formData, {
-      onSuccess: () => {
-        alert("Comment submitted successfully!");
-        closeHidden();
-      },
-      onError: (error) => {
-        console.error("Failed to submit comment:", error);
-        alert("Failed to submit the comment. Please try again.");
-      },
-    });
+    if (commentId) {
+      updateComment(
+        { commentId, data: formData },
+        {
+          onSuccess: () => {
+            alert("Comment updated successfully!");
+            closeHidden();
+          },
+          onError: (error) => {
+            console.error("Failed to update comment:", error);
+            alert("Failed to update the comment. Please try again.");
+          },
+        }
+      );
+    } else {
+      addComment(formData, {
+        onSuccess: () => {
+          alert("Comment submitted successfully!");
+          closeHidden();
+        },
+        onError: (error) => {
+          console.error("Failed to submit comment:", error);
+          alert("Failed to submit the comment. Please try again.");
+        },
+      });
+    }
   };
 
   return (
@@ -108,17 +136,29 @@ const CommentModal = ({ closeHidden, postingId, userName }) => {
           className="bg-blue-600 rounded-md cursor-pointer text-white flex justify-center items-center h-9"
           onClick={submitForm}
         >
-          요리후기 남기기
+          {commentId ? "요리후기 수정하기" : "요리후기 남기기"}
         </div>
       </div>
     </div>
   );
 };
 
-CommentModal.propTypes = {
+UpdateCommentModal.propTypes = {
   closeHidden: PropTypes.func.isRequired,
   userName: PropTypes.string.isRequired,
   postingId: PropTypes.string.isRequired,
+  commentId: PropTypes.number,
+  initialRate: PropTypes.number,
+  initialComment: PropTypes.string,
+  initialDiff: PropTypes.string,
 };
 
-export default CommentModal;
+UpdateCommentModal.defaultProps = {
+  commentId: null,
+  initialRate: 0,
+  initialComment: "",
+  initialDiff: "",
+  initialImage: null,
+};
+
+export default UpdateCommentModal;
