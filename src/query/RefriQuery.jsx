@@ -185,13 +185,14 @@ export const recognizeTextWithUrl = async (imageUrl) => {
         version: 'V2',
         timestamp: Date.now(),
     };
-
+    console.log(ocrRequest);
     try {
         const response = await axios.post(`${API_URL}/api/food/ocr`, ocrRequest, {
             headers: {
                 'Content-Type': 'application/json',
             },
         });
+        console.log(response.data);
         return response.data;
     } catch (error) {
         console.error("Error recognizing text:", error.response ? error.response.data : error.message);
@@ -199,13 +200,16 @@ export const recognizeTextWithUrl = async (imageUrl) => {
     }
 };
 
-const FOOD_SAFETY_API_URL = `https://openapi.foodsafetykorea.go.kr/api/${API_KEY}/C005/json/1/5/`;
+
+
 
 export const fetchFoodSafetyInfo = async (barcode) => {
-    const apiUrl = `${FOOD_SAFETY_API_URL}BAR_CD=${barcode}`;
-
     try {
-        const response = await axios.get(apiUrl);
+        const response = await axios.get(`${API_URL}/api/food/barcode/result`, {
+            params: {
+                barcode: barcode
+            }
+        });
         return response.data;
     } catch (error) {
         console.error("Error fetching food safety info:", error);

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import DetailButton from './../../components/Common/DetailButton';
 import CreateButton from './../../components/Common/CreateButton';
 import MenuNavigate from './../../components/Common/MenuNavigate';
 import SearchForm from '../../components/Refrigerator/Common/SearchForm';
 import FridgeSelect from '../../components/Refrigerator/FridgeManage/FridgeSelect';
 import CategoryFood from './../../components/Refrigerator/FridgeManage/CategoryFood';
 import { fetchSavedBarcodes } from '../../query/FoodListQuery';
+import DetailButton from "../../components/Common/DetailButton.jsx";
 
 const FridgeManagePage = () => {
     const [showMore, setShowMore] = useState(false);
@@ -18,13 +17,9 @@ const FridgeManagePage = () => {
         setShowMore(true);
     };
 
-    const handleSelectFridge = (fridge) => {
-        setSelectedFridge(fridge);
-        localStorage.setItem('selectedFridge', fridge); // localStorage에 저장
-    };
-
+    // 세션 스토리지에서 냉장고 정보 가져오기
     useEffect(() => {
-        const storedFridge = localStorage.getItem('selectedFridge');
+        const storedFridge = sessionStorage.getItem('selectedFridge');
         if (storedFridge) {
             setSelectedFridge(storedFridge);
         }
@@ -64,9 +59,11 @@ const FridgeManagePage = () => {
 
     return (
         <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px]">
-            <MenuNavigate option={"나의 냉장고"} alertPath="/addinfo/habit" />
-            <FridgeSelect onSelectFridge={handleSelectFridge} />
-
+            <MenuNavigate option={"나의 냉장고"} alertPath="/addinfo/habit"/>
+            <FridgeSelect onSelectFridge={setSelectedFridge}/>
+            <div className="self-stretch pt-3 text-lg font-semibold">
+                {selectedFridge ? `선택된 냉장고: ${selectedFridge}` : '냉장고를 선택해주세요'}
+            </div>
             <div className="self-stretch pt-[10px]">
                 <CreateButton
                     option={"음식 추가하기"}
@@ -76,7 +73,7 @@ const FridgeManagePage = () => {
             </div>
 
             <div className="self-stretch pt-8">
-                <SearchForm />
+                <SearchForm/>
             </div>
 
             <div className="self-stretch pt-5">
@@ -89,7 +86,7 @@ const FridgeManagePage = () => {
                 ) : (
                     Object.keys(groupedFoodList).map((category) => (
                         <div key={category}>
-                            <CategoryFood option={category} />
+                            <CategoryFood option={category}/>
                             {groupedFoodList[category].map((food, index) => (
                                 <DetailButton
                                     key={index}
@@ -110,12 +107,13 @@ const FridgeManagePage = () => {
             </div>
 
             {!showMore && selectedFridge && Object.keys(groupedFoodList).length > 0 && (
-                <div style={{ marginTop: 40, display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={handleShowMore}>
+                <div style={{marginTop: 40, display: 'flex', alignItems: 'center', cursor: 'pointer'}}
+                     onClick={handleShowMore}>
                     <span>더보기</span>
                     <img
                         src="/assets/downarrow.png"
                         alt='down arrow'
-                        style={{ marginLeft: 8 }}
+                        style={{marginLeft: 8}}
                     />
                 </div>
             )}
@@ -124,7 +122,7 @@ const FridgeManagePage = () => {
                 <div className="self-stretch pt-5">
                     {Object.keys(groupedFoodList).map((category) => (
                         <div key={category}>
-                            <CategoryFood option={category} />
+                            <CategoryFood option={category}/>
                             {groupedFoodList[category].map((food, index) => (
                                 <DetailButton
                                     key={index}
