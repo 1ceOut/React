@@ -87,16 +87,18 @@ const getCommentById = async (commentId) => {
 };
 
 const updateComment = async ({ commentId, data }) => {
-  const response = await axios.put(`${API_URL}/comment/${commentId}`, data, {
+  const response = await axios.put(`${API_URL}/comment/update`, data, {
     withCredentials: true,
+    params: { id: commentId },
   });
   return response.data;
 };
 
 const deleteComment = async (commentId) => {
   try {
-    await axios.delete(`${API_URL}/comment/${commentId}`, {
+    await axios.delete(`${API_URL}/comment/delete`, {
       withCredentials: true,
+      params: { id: commentId },
     });
   } catch (error) {
     console.error(
