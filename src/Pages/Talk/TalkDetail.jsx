@@ -25,7 +25,6 @@ const TalkDetail = () => {
     const xhr = new XMLHttpRequest();
     xhr.withCredentials = true;
 
-
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
