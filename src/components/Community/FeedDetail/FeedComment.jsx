@@ -6,14 +6,9 @@ import CommentList from "./../Common/CommentList";
 const FeedComment = ({ postingId }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("");
-  const {
-    data: response = {},
-    isLoading,
-    isError,
-  } = useCommentsByPostingId(postingId);
+  const { data, isLoading, isError } = useCommentsByPostingId(postingId);
 
-  // Assuming response.comments is the array of comments
-  const comments = response.comments || [];
+  //const comments = response.comments || [];
 
   const handleClick = () => {
     setIsModalVisible(true);
@@ -41,8 +36,6 @@ const FeedComment = ({ postingId }) => {
     return <div>Error loading comments</div>;
   }
 
-  console.log("Comments data:", comments);
-
   return (
     <div className="self-stretch">
       <div className="my-5 cursor-pointer flex" onClick={handleClick}>
@@ -55,14 +48,16 @@ const FeedComment = ({ postingId }) => {
       </div>
 
       <div className="mt-4">
-        {comments.length > 0 ? (
-          comments.map((comment, userProfile, userName) => (
-            <CommentList
-              key={comment.commentId}
-              comment={comment}
-              userProfile={userProfile}
-              userName={userName}
-            />
+        {data.comments.length > 0 ? (
+          data.comments.map((comment) => (
+            <div key={comment.comment.commentId}>
+              <CommentList
+                key={comment.commentId}
+                comment={comment.comment}
+                userProfile={comment.userProfile}
+                userName={comment.userName}
+              />
+            </div>
           ))
         ) : (
           <div>No comments available</div>
