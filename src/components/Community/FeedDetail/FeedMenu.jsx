@@ -23,8 +23,7 @@ const FeedMenu = ({ postingId, userName }) => {
   const { data: favoritesCount, refetch: refetchFavoritesCount } =
     useFavoritesCount(postingId);
 
-  const { data: commentsData } = useCommentsByPostingId(postingId);
-
+  const { data: commentsByPostingId } = useCommentsByPostingId(postingId);
   const [localFavoriteStatus, setLocalFavoriteStatus] = useState(false);
 
   useEffect(() => {
@@ -62,7 +61,8 @@ const FeedMenu = ({ postingId, userName }) => {
     setIsHidden(true);
   };
 
-  const commentCount = commentsData ? commentsData.length : 0;
+  const commentsArray = commentsByPostingId ? commentsByPostingId.comments : [];
+  const commentCount = commentsArray.length;
 
   return (
     <div className="self-stretch">

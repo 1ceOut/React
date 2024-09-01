@@ -5,6 +5,7 @@ import Profile from "../../components/Community/Feed/Profile";
 import FeedTitle from "../../components/Community/Feed/FeedTitle";
 import FeedProfile from "../../components/Community/Feed/FeedProfile";
 import FeedMenu from "../../components/Community/FeedDetail/FeedMenu";
+import FeedComment from "../../components/Community/FeedDetail/FeedComment";
 
 // 날짜를 'YYYY-MM-DD' 형식으로 포맷팅하는 헬퍼 함수
 const formatDate = (dateString) => {
@@ -80,6 +81,7 @@ const FeedPage = () => {
 
             <div className="flex justify-between mt-2 text-sm text-gray-500"></div>
             <FeedMenu postingId={posting.postingId} userName={userName} />
+            <FeedComment postingId={posting.postingId} />
           </div>
         ))
       ) : (
