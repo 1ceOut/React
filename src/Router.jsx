@@ -35,6 +35,8 @@ import AddFridge from "./Pages/Refrigerator/food/AddFridge.jsx";
 import Barcode from "./Pages/Refrigerator/food/Barocde.jsx";
 import AddInput2 from "./Pages/Refrigerator/food/AddInput2.jsx";
 import SearchPage from "./Pages/Main/SearchPage.jsx";
+import UpdateFeed from "./Pages/Community/FeedUpdatePage.jsx";
+import FeedUpdatePage from "./Pages/Community/FeedUpdatePage.jsx";
 
 const queryClient = new QueryClient();
 
@@ -94,11 +96,12 @@ const Router = () => {
                     <Route path="/mypage/userdelete" element={<UserDeletePage/>}/>
 
                     {/* 커뮤니티 */}
-                    <Route path="community/feed" element={<FeedPage />} />
-                    <Route path="community/feeddetail/:postingId" element={<FeedDetailPage />} />
-                    <Route path="community/feedcreate" element={<FeedCreatePage />} />
+                    <Route path="/community/feed" element={<FeedPage />} />
+                    <Route path="/community/feeddetail/:postingId" element={<FeedDetailPage />} />
+                    <Route path="/community/feedcreate" element={<FeedCreatePage />} />
+                    <Route path="/community/feedupdate" element={<FeedUpdatePage/>}/>
                     {/* <Route path="community/myfeed" element={<MyFeedPage />} /> */}
-                    <Route path="community/myfeed/:userId" element={<MyFeedPage />} />
+                    <Route path="/community/myfeed/:userId" element={<MyFeedPage />} />
 
                     {/* 채팅방 */}
                     <Route path="Talk/TalkList" element={<TalkList/>}/>

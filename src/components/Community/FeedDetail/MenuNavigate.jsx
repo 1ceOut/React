@@ -20,14 +20,21 @@ const MenuNavigate = ({ userName, userProfile, writeDay, postingId, isOwner }) =
     setIsModalOpen(false);
   };
 
+  const updatePosting = () => {
+    navigate('/community/feedupdate', {
+      state: { postingId } // 필요한 데이터는 `UpdateFeed`에서 조회함
+    });
+  };
+
   const confirmAction = async () => {
     try {
       await deletePost(postingId);
       console.log("게시물 삭제 성공");
-      closeModal();
       navigate(-1);
     } catch (error) {
       console.error("게시물 삭제 실패:", error.response ? error.response.data : error.message);
+      // Optional: Display user-friendly error message
+    } finally {
       closeModal();
     }
   };
@@ -55,7 +62,7 @@ const MenuNavigate = ({ userName, userProfile, writeDay, postingId, isOwner }) =
           </div>
         </div>
       </div>
-      {isOwner && ( // 게시물 작성자인 경우에만 표시
+      {isOwner && (
         <div className="w-6 h-6 cursor-pointer" onClick={openModal}>
           . . .
         </div>
@@ -70,7 +77,7 @@ const MenuNavigate = ({ userName, userProfile, writeDay, postingId, isOwner }) =
             </div>
             <div className="flex justify-end space-x-4">
               <button
-                onClick={closeModal}
+                onClick={updatePosting}
                 className="w-[146px] h-14 border-[1px] rounded-xl"
               >
                 수정
@@ -94,7 +101,7 @@ MenuNavigate.propTypes = {
   userProfile: PropTypes.string.isRequired,
   writeDay: PropTypes.string.isRequired,
   postingId: PropTypes.string.isRequired,
-  isOwner: PropTypes.bool.isRequired, // isOwner prop 추가
+  isOwner: PropTypes.bool.isRequired,
 };
 
 export default MenuNavigate;

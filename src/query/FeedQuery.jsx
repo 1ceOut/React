@@ -67,6 +67,27 @@ const addPosting = async (data) => {
   }
 };
 
+// 게시물 수정 함수
+const updatePosting = async (postingId, data) => {
+  try {
+    console.log(typeof data)
+    const response = await axios.put(
+      `${API_URL}/posting/update/${postingId}`,  // postingId를 URL 경로에 포함
+       data,  // data를 본문(body)로 전달
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,  // 요청 시 쿠키를 포함
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error updating posting:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
+
 // 게시물 삭제
 const deletePosting = async (postingId) => {
   try {
@@ -80,17 +101,6 @@ const deletePosting = async (postingId) => {
   }
 };
 
-// 게시물 수정
-const updatePosting = async (postingId, data) => {
-  const response = await axios.put(
-    `${API_URL}/posting/update/${postingId}`,
-    data,
-    {
-      withCredentials: true,
-    }
-  );
-  return response.data;
-};
 
 // React Query 훅들
 export const usePostsWithUserDetails = () => {
@@ -153,4 +163,4 @@ export const useUpdatePost = () => {
   });
 };
 
-export { uploadImage };
+export { uploadImage,updatePosting };
