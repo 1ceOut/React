@@ -66,7 +66,7 @@ export const useCheckFavorite = (postingId, userId) => {
 
 const addComment = async (data) => {
   try {
-    const response = await axios.post(`${API_URL}/comment`, data, {
+    const response = await axios.post(`${API_URL}/comment/insert`, data, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -108,8 +108,9 @@ const deleteComment = async (commentId) => {
 };
 
 const getCommentsByPostingId = async (postingId) => {
-  const response = await axios.get(`${API_URL}/comment/posting/${postingId}`, {
+  const response = await axios.get(`${API_URL}/comment/listByUser`, {
     withCredentials: true,
+    params: { postingId },
   });
   return response.data;
 };
