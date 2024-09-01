@@ -5,6 +5,7 @@ import axiosApi from "./axiosApi.js";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import useUserStore from "../../store/useUserStore.js";
+import {useLocation} from "react-router-dom";
 
 const formatDate = (date) => {
   return date.toLocaleDateString("ko-KR", {
@@ -14,27 +15,23 @@ const formatDate = (date) => {
   });
 };
 const TalkDetail = () => {
-  const { userId, userName, userProfile } = useUserStore();
-  const chatroomSeq = "f5b4c2a1-7101-4ea1-adc6-8fd21bd93573";
-  const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState("");
-  const [announcement, setAnnouncement] = useState("이건 공지사항 띄울거임");
-  const [newAnnouncement, setNewAnnouncement] = useState("");
-  const [isAnnouncementVisible, setIsAnnouncementVisible] = useState(false);
-  const xhr = new XMLHttpRequest();
-  xhr.withCredentials = true;
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const refrigeratorId = queryParams.get('id');
+    const chatroomSeq = refrigeratorId;
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    const {userName,userProfile } = useUserStore();
+    const [messages, setMessages] = useState([]);
+    const [newMessage, setNewMessage] = useState("");
+    const [announcement, setAnnouncement] = useState("이건 공지사항 띄울거임");
+    const [newAnnouncement, setNewAnnouncement] = useState("");
+    const [isAnnouncementVisible, setIsAnnouncementVisible] = useState(false);
+    const xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
 
-  useEffect(() => {
-    connect();
-    fetchMessages();
-    return;
-  }, []);
-
-  useEffect(() => {}, [newMessage]);
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
 
   const chatEndRef = useRef(null);
   const stompClient = useRef(null);
@@ -64,23 +61,37 @@ const TalkDetail = () => {
             console.error("Failed to parse incoming message:", error);
           }
         });
-      },
-      (error) => {
-        console.error("STOMP error:", error);
-        setTimeout(connect, 1000);
-      }
-    );
-  };
+    };
 
-  const fetchMessages = () => {
-    axiosApi
-      .get(`${api_server}/api/chatroom/${chatroomSeq}/messages`, {
-        withCredentials: true,
-      })
-      .then((response) => {
-        console.log("Fetched messages:", response.data);
-        if (Array.isArray(response.data)) {
-          setMessages(response.data);
+    const fetchMessages = () => {
+        //axiosApi.get(`/api/chatroom/${chatroomSeq}/messages`,{
+        axiosApi.get(`${api_server}/api/chatroom/${chatroomSeq}/messages`,{
+            withCredentials:true
+        })
+            .then((response) => {
+                console.log("Fetched messages:", response.data);
+                if (Array.isArray(response.data)) {
+                    setMessages(response.data);
+                } else {
+                    console.error("Unexpected data format for messages:", response.data);
+                }
+            })
+            .catch((error) => console.error("Failed to fetch chat messages.", error));
+    };
+
+    const sendMessage = () => {
+        if (stompClient.current && stompClient.current.ws.readyState === WebSocket.OPEN) {
+            const messageObj = {
+                chatroomSeq: chatroomSeq,
+                sender: userName,
+                message: newMessage,
+                senderSeq: Date.now(),
+                userProfile:userProfile,
+                timestamp: new Date().toLocaleTimeString()
+
+            };
+            stompClient.current.send(`/pub/message`, {}, JSON.stringify(messageObj));
+            setNewMessage("");
         } else {
           console.error("Unexpected data format for messages:", response.data);
         }

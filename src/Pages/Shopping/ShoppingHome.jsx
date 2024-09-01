@@ -7,6 +7,8 @@ import HomeTopContent from "../../components/Shopping/ShoppingHome/HomeTopConten
 import useUserStore from "../../store/useUserStore.js";
 import {BestShoppingList, ShoppingHeader} from "../../query/ShopQuery.js";
 import LoadingBar from "../../components/Login/LoadingBar.jsx";
+import dummyListData from "../../testdata/shopingdata.json"
+import dummyBannerData from "../../testdata/banner.json"
 
 const ShoppingHome = () => {
 
@@ -30,9 +32,10 @@ const ShoppingHome = () => {
 
     const [animationClass, setAnimationClass] = useState('animate-slideInUp');
     const userList = []; // 사용자 기반 추천 목록
-    const best_list = storedata?.length ? storedata.slice(0, 20) : [];
-    const discount_list = storedata?.length ? storedata.filter((a) => a.discount_percent !== null).sort((a, b) => Number(b.discount_percent.replace("%", "")) - Number(a.discount_percent.replace("%", ""))).slice(0, 20) : [];
-    const review_list = storedata?.length ? storedata.filter((a) => a.review_count !== null).sort((a, b) => {
+    const data = storedata?.length === 0?dummyListData:storedata;
+    const best_list = data?.length ? data.slice(0, 20) : [];
+    const discount_list = data?.length ? data.filter((a) => a.discount_percent !== null).sort((a, b) => Number(b.discount_percent.replace("%", "")) - Number(a.discount_percent.replace("%", ""))).slice(0, 20) : [];
+    const review_list = data?.length ? data.filter((a) => a.review_count !== null).sort((a, b) => {
         return Number(a.price.replace(/[^\d]+/g, "")) - Number(b.price.replace(/[^\d]+/g, ""));
     }).slice(0, 20) : [];
 
@@ -58,7 +61,7 @@ const ShoppingHome = () => {
             <div className="flex justify-center items-center">
                 <MenuNavigate option={"쇼핑"} alertPath="/addinfo/habit"/>
             </div>
-            <HomeTopContent headerData={bannerdata}/>
+            <HomeTopContent headerData={bannerdata?.length===0 ? dummyBannerData : bannerdata}/>
             {userName === "" ? null : <HomeMainContent options={"user"} data={userList}/>}
             <HomeMainContent options={"best"} data={best_list}/>
             <HomeMainContent options={"discount"} data={discount_list}/>

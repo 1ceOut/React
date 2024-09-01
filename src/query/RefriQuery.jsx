@@ -28,21 +28,32 @@ const useFridgeOptions = (userId) => {
 };
 export default useFridgeOptions;
 
+// export const inviteRefri = async (userId, refrigeratorId) => {
+//     try {
+//         const response = await axios.post(`${API_URL}/api/food/refri/invite/user`,{
+//             params:{
+//                 userId : userId,
+//                 refrigeratorId:refrigeratorId
+//             },
+//             withCredentials: true // 옵션으로 설정
+//         });
+//         return response.data;
+//     }catch (e) {
+//         console.log("추가에서 에러나는거임?~~₩",e)
+//     }
+// }
 export const inviteRefri = async (userId, refrigeratorId) => {
     try {
-        const response = await axios.post(`${API_URL}/api/food/refri/invite/user`,{
-            params:{
-                userId : userId,
-                refrigeratorId:refrigeratorId
-            },
-            withCredentials: true // 옵션으로 설정
-        });
+        const response = await axios.post(`${API_URL}/api/food/refri/invite/user`,
+            { userId, refrigeratorId },
+            { withCredentials: true }
+        );
         return response.data;
-    }catch (e) {
-        console.log("추가에서 에러나는거임?~~₩",e)
+    } catch (e) {
+        console.log("추가에서 에러나는거임?~~₩", e);
+        throw e;
     }
-
-}
+};
 
 //마스터 사용자가 만든 냉장고 조회
 export const masterUserList = async (userId) => {
@@ -185,13 +196,14 @@ export const recognizeTextWithUrl = async (imageUrl) => {
         version: 'V2',
         timestamp: Date.now(),
     };
-
+    console.log(ocrRequest);
     try {
         const response = await axios.post(`${API_URL}/api/food/ocr`, ocrRequest, {
             headers: {
                 'Content-Type': 'application/json',
             },
         });
+        console.log(response.data);
         return response.data;
     } catch (error) {
         console.error("Error recognizing text:", error.response ? error.response.data : error.message);
@@ -199,13 +211,16 @@ export const recognizeTextWithUrl = async (imageUrl) => {
     }
 };
 
-const FOOD_SAFETY_API_URL = `https://openapi.foodsafetykorea.go.kr/api/${API_KEY}/C005/json/1/5/`;
+
+
 
 export const fetchFoodSafetyInfo = async (barcode) => {
-    const apiUrl = `${FOOD_SAFETY_API_URL}BAR_CD=${barcode}`;
-
     try {
-        const response = await axios.get(apiUrl);
+        const response = await axios.get(`${API_URL}/api/food/barcode/result`, {
+            params: {
+                barcode: barcode
+            }
+        });
         return response.data;
     } catch (error) {
         console.error("Error fetching food safety info:", error);
