@@ -36,7 +36,6 @@ const TalkDetail = () => {
 
     }, [newMessage]);
 
-
     const chatEndRef = useRef(null);
     const stompClient = useRef(null);
 
