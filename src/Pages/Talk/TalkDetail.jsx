@@ -5,13 +5,18 @@ import axiosApi from "./axiosApi.js";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import useUserStore from "../../store/useUserStore.js";
+import {useLocation} from "react-router-dom";
 
 const formatDate = (date) => {
     return date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
 };
 const TalkDetail = () => {
-    const { userId, userName,userProfile } = useUserStore();
-    const chatroomSeq = 13;
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const refrigeratorId = queryParams.get('id');
+    const chatroomSeq = refrigeratorId;
+
+    const {userName,userProfile } = useUserStore();
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const [announcement, setAnnouncement] = useState("이건 공지사항 띄울거임");
@@ -19,8 +24,6 @@ const TalkDetail = () => {
     const [isAnnouncementVisible, setIsAnnouncementVisible] = useState(false);
     const xhr = new XMLHttpRequest();
     xhr.withCredentials = true;
-
-
 
     useEffect(() => {
         scrollToBottom();
@@ -69,6 +72,7 @@ const TalkDetail = () => {
     };
 
     const fetchMessages = () => {
+        //axiosApi.get(`/api/chatroom/${chatroomSeq}/messages`,{
         axiosApi.get(`${api_server}/api/chatroom/${chatroomSeq}/messages`,{
             withCredentials:true
         })
