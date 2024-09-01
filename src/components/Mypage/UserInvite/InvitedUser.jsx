@@ -25,7 +25,7 @@ const InvitedUser = ({ refrigeratorId }) => {
                     const data = await inviteUserList(userId, refrigeratorId);
                     setUserData(data || []);
                 } catch (error) {
-                    console.error("Failed to fetch invited user data", error);
+                    console.error("초대된 사용자 데이터를 가져오는 데 실패했습니다", error);
                     setUserData([]);
                 }
             }
@@ -35,19 +35,20 @@ const InvitedUser = ({ refrigeratorId }) => {
     }, [refrigeratorId, userId]);
 
     return (
-        <div>
-            <div className="self-stretch flex items-center justify-between w-[342px] text-[#333D4B] font-medium text-[16px] mb-[18px]">
-                위 냉장고를 선택하면 해당 냉장고의 초대코드로 입장한 구성원을 확인 할 수있음ㅇㅇㅇ
+        <div className="w-full max-w-[800px] mx-auto p-4 pb-16">
+            <div className="text-[#333D4B] font-medium text-[18px] mb-6">
+                선택한 냉장고의 초대 구성원
             </div>
-            <div className="flex flex-col items-start">
+            <div className="text-[#6C757D] text-[14px] mb-4">
+                아래는 해당 냉장고의 초대코드로 입장한 구성원 목록입니다.
+            </div>
+            <div className="grid gap-4">
                 {userData.map((user, index) => (
-                    <div key={index} className="flex items-center mb-4">
-                        <div>
-                            <img src={user.photo} alt="테스트 사진" className="w-[34px] h-[34px] mr-3" />
-                        </div>
-                        <div>
-                            <div className="font-normal text-[13px] text-[#767676]">{user.name}</div>
-                            <div className="font-semibold text-[13px] text-[#333D4B]">{user.email}</div>
+                    <div key={index} className="flex items-center p-4 border rounded-lg shadow-sm bg-white">
+                        <img src={user.photo} alt="사용자 사진" className="w-[50px] h-[50px] rounded-full mr-4 object-cover" />
+                        <div className="flex-1">
+                            <div className="text-[#333D4B] font-semibold text-[16px]">{user.name}</div>
+                            <div className="text-[#6C757D] text-[14px]">{user.email}</div>
                         </div>
                     </div>
                 ))}

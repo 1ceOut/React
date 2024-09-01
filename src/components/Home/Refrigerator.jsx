@@ -32,6 +32,7 @@ const Refrigerator = () => {
         if (userId) {
             fetchUserData();
         }
+
     }, [userId]);
 
     const { data: fridgeOptions = [], isLoading, error } = useFridgeOptions(userId);
@@ -60,17 +61,41 @@ const Refrigerator = () => {
                     <p className="cursor-pointer" onClick={handleNavigate}>전체보기</p>
                 </div>
             </div>
+            {
+                !userId &&
+                <div>
+                    <p>로그인하셈ㅋ</p>
+                </div>
+            }
             {fridgeOptions.map((item, index) => (
                 <div
                     key={index}
-                    className="flex gap-3 mt-7 text-base font-medium tracking-tight text-gray-700"
-                    onClick={() => handleFridgeClick(item.refrigeratorName)} // 클릭 이벤트 핸들러 추가
+                    className="flex gap-3 mt-7 text-base font-medium tracking-tight text-gray-700 hover:bg-gray-100 rounded-lg p-2 transition duration-200 ease-in-out cursor-pointer"
+                    onClick={() => handleFridgeClick(item.refrigeratorName)}
                 >
-                    <img loading="lazy" src={"/assets/iconrefridge.png"} alt={item.refrigeratorName} className="shrink-0 rounded-lg aspect-square w-[34px]" />
+                    <img
+                        loading="lazy"
+                        src={"/assets/iconrefridge.png"}
+                        alt={item.refrigeratorName}
+                        className="shrink-0 rounded-lg aspect-square w-[34px]"
+                    />
                     <div className="flex-auto my-auto">{item.refrigeratorName}</div>
-                    <img src={"/assets/cogwheel.png"} className="shrink-0 rounded-lg aspect-square w-[25px] h-[25px]" onClick={editNavigate} />
+                    <div
+                        className="shrink-0 rounded-lg aspect-square w-[25px] h-[25px] cursor-pointer"
+                        onClick={(e) => {
+                            e.stopPropagation(); // 클릭 이벤트의 전파를 막음
+                            editNavigate();
+                        }}
+                    >
+                        <img
+                            src={"/assets/cogwheel.png"}
+                            alt="Edit"
+                            className="w-full h-full"
+                        />
+                    </div>
                 </div>
             ))}
+
         </section>
     );
 };
