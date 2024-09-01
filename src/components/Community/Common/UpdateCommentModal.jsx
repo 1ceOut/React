@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Rating from "@mui/material/Rating";
 import PropTypes from "prop-types";
 import useUserStore from "./../../../store/useUserStore";
@@ -15,7 +15,6 @@ const UpdateCommentModal = ({
   initialRate,
   initialComment,
   initialDiff,
-  initialImage,
 }) => {
   const { userId: currentUserId } = useUserStore((state) => ({
     userId: state.userId,
@@ -23,17 +22,10 @@ const UpdateCommentModal = ({
 
   const [rate, setRate] = useState(initialRate || 0);
   const [comment, setComment] = useState(initialComment || "");
-  const [selectedImage, setSelectedImage] = useState(initialImage || null);
   const [selectedQuality, setSelectedQuality] = useState(initialDiff || "");
 
   const { mutate: addComment } = useAddComment();
   const { mutate: updateComment } = useUpdateComment();
-
-  useEffect(() => {
-    if (initialImage) {
-      setSelectedImage(initialImage);
-    }
-  }, [initialImage]);
 
   const getRatingText = (rate) => {
     switch (rate) {
@@ -59,9 +51,6 @@ const UpdateCommentModal = ({
     formData.append("rate", rate);
     formData.append("comment", comment);
     formData.append("diff", selectedQuality);
-    if (selectedImage) {
-      formData.append("image", selectedImage);
-    }
 
     if (commentId) {
       updateComment(
@@ -162,7 +151,6 @@ UpdateCommentModal.propTypes = {
   initialRate: PropTypes.number,
   initialComment: PropTypes.string,
   initialDiff: PropTypes.string,
-  initialImage: PropTypes.string,
 };
 
 UpdateCommentModal.defaultProps = {
