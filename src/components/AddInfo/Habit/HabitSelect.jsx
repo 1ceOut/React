@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import NextButton from './../Common/NextButton';
+import useAddInfo from "../../../store/useAddInfo.js";
 
 const HabbitSelect = () => {
   const [selectedOption, setSelectedOption] = useState(null);
+  const {setHabit} = useAddInfo();
 
   const handleSelection = (option) => {
     setSelectedOption(option);
+    setHabit(option)
   };
+
 
   const options = [
     '식습관을 잘 지키는 편이에요',

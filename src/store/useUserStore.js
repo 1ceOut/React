@@ -25,7 +25,10 @@ const store = (set) => ({
             userId: jwt.sub
         });
     },
-    LogoutStatus: () => set(initState)
+    LogoutStatus: () => set(initState),
+    AddinfoSuccessStatus: () => {
+        set({userRole: "ROLE_USER"})
+    }
 });
 
 // persist 미들웨어를 사용하여 상태를 로컬 스토리지에 저장
