@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import useUserStore from "../../../store/useUserStore";
-import MenuNavigate from "../../../components/Common/MenuNavigate.jsx"; // zustand 상태 관리 라이브러리 import
+import MenuNavigate from "../../../components/Common/MenuNavigate.jsx";
+import {addFridge} from "../../../query/FoodListQuery.jsx"; // zustand 상태 관리 라이브러리 import
 
 const AddFridge = () => {
   const navigate = useNavigate();
@@ -32,31 +33,27 @@ const AddFridge = () => {
     setForm((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log(userId);
-    const product = { ...form, userId }; // userId를 포함한 데이터
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log(userId);
 
-    try {
-      const response = await axios.post(
-        "http://localhost:9000/api/food/refri/insert",
-        product
-      );
+        const product = { ...form, userId }; // userId를 포함한 데이터
 
-      if (response.data.exists) {
-        alert("중복된 이름의 냉장고가 이미 존재합니다.");
-      } else {
-        alert(
-          `${product.refrigeratorName} 냉장고가 성공적으로 생성되었습니다.`
-        );
-        setForm({ refrigeratorName: "" }); // 폼 초기화
-        navigate("/fridge/fridgemanage"); // 냉장고 관리 페이지로 이동
-      }
-    } catch (error) {
-      console.log(userId);
-      console.error("DB에 냉장고를 저장하는 중 오류 발생", error);
-    }
-  };
+        try {
+            const responseData = await addFridge(product); // addFridge 호출
+
+            if (responseData.exists) {
+                alert("중복된 이름의 냉장고가 이미 존재합니다.");
+            } else {
+                alert(`${product.refrigeratorName} 냉장고가 성공적으로 생성되었습니다.`);
+                setForm({ refrigeratorName: "" }); // 폼 초기화
+                navigate("/fridge/fridgemanage"); // 냉장고 관리 페이지로 이동
+            }
+        } catch (error) {
+            console.log(userId);
+            console.error("DB에 냉장고를 저장하는 중 오류 발생", error);
+        }
+    };
 
   return (
     <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">

@@ -22,7 +22,7 @@ const UserDeletePage = () => {
             <MenuNavigate option="구성원 삭제"/>
             <Header/>
             <FridgeUser/>
-            <UserSelect/>
+
         </main>
     );
 };

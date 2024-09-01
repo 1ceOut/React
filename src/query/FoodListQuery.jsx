@@ -10,7 +10,8 @@ export const fetchSavedBarcodes = async (selectedFridge) => {
 
             params: {
                 refrigeratorName: selectedFridge
-            }
+            },
+            withCredentials: true // 옵션으로 설정
         });
         console.log(response.data);
         return response.data;
@@ -24,7 +25,8 @@ export const listFromLcategory = async (selectedFridge, category) => {
             params : {
                 refrigeratorName: selectedFridge,
                 lcategory : category
-            }
+            },
+            withCredentials: true // 옵션으로 설정
         });
         console.log(response.data);
         return response.data;
@@ -46,6 +48,20 @@ export const foodDelete = async (productName, id) => {
     }
 };
 
+export const addFridge = async (product) => {
+    try {
+        const response = await axios.post(
+            `${API_URL}/api/food/refri/insert`,
+            product
+        );
+        return response.data; // 응답 데이터 반환
+    } catch (error) {
+        console.error("Error adding fridge:", error);
+        throw error; // 에러를 다시 던져서 호출한 쪽에서 처리할 수 있게 함
+    }
+};
+
+
 export const updateCountByname = async (productName, id, count) => {
     console.log('Sending request with:', productName, id, count);
     try {
@@ -57,5 +73,18 @@ export const updateCountByname = async (productName, id, count) => {
     }
 };
 
+export const uploadFile = async (formData) => {
+    try {
+        const response = await axios.post(`${API_URL}/api/food/upload/barcode`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data; // 서버 응답 데이터 반환
+    } catch (error) {
+        console.error("File upload failed:", error.response ? error.response.data : error.message);
+        throw error; // 오류를 호출한 쪽으로 전달
+    }
+};
 
 

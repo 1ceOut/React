@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import qs from 'qs';
 
 
 const API_URL = import.meta.env.VITE_API_REFRI;
@@ -33,7 +34,8 @@ export const inviteRefri = async (userId, refrigeratorId) => {
             params:{
                 userId : userId,
                 refrigeratorId:refrigeratorId
-            }
+            },
+            withCredentials: true // 옵션으로 설정
         });
         return response.data;
     }catch (e) {
@@ -48,7 +50,8 @@ export const masterUserList = async (userId) => {
         const response = await axios.get(`${API_URL}/api/food/refri/master/refrilist`, {
             params: {
                 id: userId
-            }
+            },
+            withCredentials: true // 옵션으로 설정
         });
         console.log(response.data); // 여기서 response.data는 refrigerator 객체 리스트가 됨
         return response.data;
@@ -88,8 +91,8 @@ export const masterUserDelete = async (refrigerator_id) => {
             `${API_URL}/api/food/refri/delete`,
             null, // 요청 본문은 빈 객체
             {
-                params: { refrigerator_id } // 쿼리 파라미터로 전달
-                //withCredentials: true // 옵션으로 설정
+                params: { refrigerator_id } ,// 쿼리 파라미터로 전달
+                withCredentials: true // 옵션으로 설정
             }
         );
 
@@ -98,6 +101,28 @@ export const masterUserDelete = async (refrigerator_id) => {
         console.error("에러 그만떠 미친새끼야:", error);
     }
 };
+
+
+
+
+export const inviteUserDelete = async (userId, refrigerator_id) => {
+    try {
+        const response = await axios.delete(`${API_URL}/api/food/refri/invite/delete`, {
+            params: {
+                userId: userId,
+                refrigerator_id: refrigerator_id
+            },
+            paramsSerializer: params => {
+                return qs.stringify(params, { arrayFormat: 'repeat' });
+            },
+            withCredentials: true // 옵션으로 설정
+        });
+        return response.data;
+    } catch (e) {
+        console.log(e);
+    }
+};
+
 
 
 
@@ -120,6 +145,29 @@ export const saveBarcode = async (product, onSuccess) => {
         console.error('DB에 제품을 저장하는 중 오류 발생', error);
     }
 };
+
+
+
+export const inviteUserList = async (userId, refrigeratorId) => {
+    console.log("Sending request with userId:", userId, "and refrigeratorId:", refrigeratorId);
+    try {
+        const response = await axios.post(
+            `${API_URL}/api/food/refri/invite/userlist`,
+            { userId, refrigerator_id: refrigeratorId }, // 요청 본문에 데이터 전달
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                withCredentials: true // 옵션으로 설정
+            }
+        );
+        return response.data;
+    } catch (e) {
+        console.error("Error in inviteUserList:", e);
+        throw e; // 에러를 상위로 전달
+    }
+};
+
 
 
 

@@ -3,7 +3,7 @@ import Items from "../Items.jsx";
 import PropTypes from "prop-types";
 
 
-const HomeMainContent = ({options,data}) => {
+const HomeMainContent = ({options,data=[]}) => {
     const {userName} = useUserStore();
 
     return (

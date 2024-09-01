@@ -1,33 +1,31 @@
-import { useState, useEffect } from 'react';
-import { useQuery } from "@tanstack/react-query";
+import {useState, useEffect} from 'react';
+import {useQuery} from "@tanstack/react-query";
 import BarNavigate from "../../components/Common/BarNavigate";
 import MenuNavigate from "../../components/Common/MenuNavigate";
 import HomeMainContent from "../../components/Shopping/ShoppingHome/HomeMainContent";
 import HomeTopContent from "../../components/Shopping/ShoppingHome/HomeTopContent";
 import useUserStore from "../../store/useUserStore.js";
-import { BestShoppingList, ShoppingHeader } from "../../query/ShopQuery.js";
+import {BestShoppingList, ShoppingHeader} from "../../query/ShopQuery.js";
 import LoadingBar from "../../components/Login/LoadingBar.jsx";
 
 const ShoppingHome = () => {
 
-    const { data: storedata, isLoading, isError } = useQuery({
+    const {data: storedata, isLoading, isError} = useQuery({
         queryKey: ["BestShoppingList"],
         queryFn: BestShoppingList,
         staleTime: Infinity,
         cacheTime: 86400000,
-        refetchOnWindowFocus: false,
-        refetchOnMount: false,
-        refetchOnReconnect: false,
+        refetchOnReconnect: true,
+        meta: {persist: true}
     });
 
-    const { data: bannerdata } = useQuery({
+    const {data: bannerdata} = useQuery({
         queryKey: ["ShoppingHeader"],
         queryFn: ShoppingHeader,
         staleTime: Infinity,
         cacheTime: 86400000,
-        refetchOnWindowFocus: false,
-        refetchOnMount: false,
-        refetchOnReconnect: false,
+        refetchOnReconnect: true,
+        meta: {persist: true}
     });
 
     const [animationClass, setAnimationClass] = useState('animate-slideInUp');
@@ -38,7 +36,7 @@ const ShoppingHome = () => {
         return Number(a.price.replace(/[^\d]+/g, "")) - Number(b.price.replace(/[^\d]+/g, ""));
     }).slice(0, 20) : [];
 
-    const { userName } = useUserStore();
+    const {userName} = useUserStore();
 
     useEffect(() => {
         setAnimationClass('animate-slideInUp');
@@ -48,7 +46,7 @@ const ShoppingHome = () => {
     }, []);
 
     if (isLoading) {
-        return <LoadingBar />;
+        return <LoadingBar/>;
     }
 
     if (isError) {
@@ -58,13 +56,13 @@ const ShoppingHome = () => {
     return (
         <main className={`${animationClass} flex overflow-hidden flex-col pt-5 mx-auto w-full max-w-[390px]`}>
             <div className="flex justify-center items-center">
-                <MenuNavigate option={"쇼핑"} alertPath="/addinfo/habit" />
+                <MenuNavigate option={"쇼핑"} alertPath="/addinfo/habit"/>
             </div>
-            <HomeTopContent headerData={bannerdata} />
-            {userName === "" ? null : <HomeMainContent options={"user"} data={userList} />}
-            <HomeMainContent options={"best"} data={best_list} />
-            <HomeMainContent options={"discount"} data={discount_list} />
-            <HomeMainContent options={"reviews"} data={review_list} />
+            <HomeTopContent headerData={bannerdata}/>
+            {userName === "" ? null : <HomeMainContent options={"user"} data={userList}/>}
+            <HomeMainContent options={"best"} data={best_list}/>
+            <HomeMainContent options={"discount"} data={discount_list}/>
+            <HomeMainContent options={"reviews"} data={review_list}/>
             <BarNavigate
                 shoppingsrc="/assets/shoppingselect.png"
                 homesrc="/assets/home.png"
