@@ -10,46 +10,6 @@ const Profile = () => {
   const { userProfile, userName, userId, isLogin } = useUserStore();
   const scrollContainerRef = useRef(null);
 
-  // 기본 프로필 목록
-  const profiles = Array.isArray(users) ? users : [];
-
-  // 로그인한 사용자 프로필을 배열의 시작 부분으로 추가하고 중복 제거
-  const uniqueProfiles = new Map();
-
-  // 현재 로그인한 사용자의 프로필을 배열의 첫 번째로 추가
-  if (isLogin) {
-    uniqueProfiles.set(userId, {
-      userId,
-      name: userName,
-      photo: userProfile,
-      writeday: new Date().toISOString() // 로그인 시점을 최신으로 간주
-    });
-  }
-
-  // 프로필 목록을 Map에 추가하여 중복 제거
-  profiles.forEach(profile => {
-    uniqueProfiles.set(profile.userId, profile);
-  });
-
-  // Map에서 값을 추출하여 배열로 변환하고, writeday를 기준으로 최신순 정렬
-  const finalProfiles = Array.from(uniqueProfiles.values()).sort((a, b) => new Date(b.writeday) - new Date(a.writeday));
-
-  const handleProfileClick = (userId) => {
-    navigate(`/community/myfeed/${userId}`); // 클릭된 사용자의 피드로 이동
-  };
-
-  const scrollLeft = () => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: -200, behavior: "smooth" });
-    }
-  };
-
-  const scrollRight = () => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: 200, behavior: "smooth" });
-    }
-  };
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -58,24 +18,56 @@ const Profile = () => {
     return <div>Error loading users</div>;
   }
 
+  // 기본 프로필 목록
+  const profiles = Array.isArray(users) ? users : [];
+
+  // 로그인한 사용자 프로필을 배열의 시작 부분으로 추가
+  const userProfileInfo = isLogin ? {
+    userId,
+    name: userName,
+    photo: userProfile,
+    writeday: new Date().toISOString() // 로그인 시점을 최신으로 간주
+  } : null;
+
+  // 프로필 목록을 중복 제거
+  const uniqueProfiles = new Map();
+
+  // 로그인한 사용자의 프로필을 배열의 첫 번째로 추가
+  if (userProfileInfo) {
+    uniqueProfiles.set(userId, userProfileInfo);
+  }
+
+  // 프로필 목록을 Map에 추가하여 중복 제거
+  profiles.forEach(profile => {
+    uniqueProfiles.set(profile.userId, profile);
+  });
+
+  // Map에서 값을 추출하여 배열로 변환
+  const finalProfiles = Array.from(uniqueProfiles.values());
+
+  // 로그인한 사용자의 프로필을 제외한 나머지 프로필을 랜덤으로 섞기
+  const [loggedInProfile, ...otherProfiles] = finalProfiles;
+  const shuffledProfiles = otherProfiles.sort(() => Math.random() - 0.5);
+
+  // 로그인한 사용자의 프로필을 배열의 첫 번째로 유지
+  const profilesToDisplay = [loggedInProfile, ...shuffledProfiles];
+
+  const handleProfileClick = (userId) => {
+    navigate(`/community/myfeed/${userId}`);
+  };
+
   return (
     <div>
       <div className="self-stretch max-w-[342px] mt-6 relative">
         <div className="flex items-center">
-          <button
-            onClick={scrollLeft}
-            className="absolute left-2 z-10 p-1 bg-white rounded-full shadow-md"
-          >
-            &#8249;
-          </button>
-
+          
           <div
             ref={scrollContainerRef}
             className="flex overflow-x-auto space-x-5 scrollbar-hide"
             style={{ scrollBehavior: "smooth", scrollbarWidth: "none" }}
           >
-            {finalProfiles.length > 0 ? (
-              finalProfiles.map((profile) => (
+            {profilesToDisplay.length > 0 ? (
+              profilesToDisplay.map((profile) => (
                 <div
                   key={profile.userId}
                   className="flex flex-col items-center"
@@ -112,12 +104,7 @@ const Profile = () => {
             )}
           </div>
 
-          <button
-            onClick={scrollRight}
-            className="absolute right-2 z-10 p-1 bg-white rounded-full shadow-md"
-          >
-            &#8250;
-          </button>
+          
         </div>
       </div>
       <div className="mt-[14px] mb-8">

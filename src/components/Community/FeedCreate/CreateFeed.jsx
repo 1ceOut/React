@@ -132,15 +132,14 @@ const CreateFeed = () => {
         />
       </div>
       <div className="self-stretch border rounded-[12px] w-[342px] h-[300px] flex justify-center my-8">
-        <input
-          id="content"
-          name="content"
-          type="text"
-          placeholder="컨텐츠를 적어주세요."
-          className="block outline-none w-[302px] h-14 text-gray-900 placeholder:text-[#A8A8A8]"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
+      <textarea
+    id="content"
+    name="content"
+    placeholder="컨텐츠를 적어주세요."
+    className="block outline-none w-[302px] h-[300px] p-4 text-gray-900 placeholder:text-[#A8A8A8] resize-none"
+    value={content}
+    onChange={(e) => setContent(e.target.value)}
+  />
       </div>
       <div className="self-stretch border rounded-[12px] w-[342px] flex justify-center items-center mt-4">
         <input

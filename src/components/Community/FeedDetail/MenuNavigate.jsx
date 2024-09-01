@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { useDeletePost } from "../../../query/FeedQuery";
 
@@ -7,6 +7,8 @@ const MenuNavigate = ({ userName, userProfile, writeDay, postingId, isOwner }) =
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { mutate: deletePost } = useDeletePost();
+  
+  const modalRef = useRef(null); // 모달의 ref
 
   const goBack = () => {
     navigate(-1);
@@ -22,7 +24,7 @@ const MenuNavigate = ({ userName, userProfile, writeDay, postingId, isOwner }) =
 
   const updatePosting = () => {
     navigate('/community/feedupdate', {
-      state: { postingId } // 필요한 데이터는 `UpdateFeed`에서 조회함
+      state: { postingId } // 필요한 데이터는 UpdateFeed에서 조회함
     });
   };
 
@@ -38,6 +40,20 @@ const MenuNavigate = ({ userName, userProfile, writeDay, postingId, isOwner }) =
       closeModal();
     }
   };
+
+  // 모달 외부 클릭 시 모달 닫기
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        closeModal();
+      }
+    };
+
+    if (isModalOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isModalOpen]);
 
   return (
     <div className="self-stretch flex items-center justify-between w-[342px] h-14 mt-[50px]">
@@ -70,7 +86,10 @@ const MenuNavigate = ({ userName, userProfile, writeDay, postingId, isOwner }) =
 
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 w-[342px]">
+          <div 
+            className="bg-white rounded-lg p-6 w-[342px]"
+            ref={modalRef} // 모달에 ref를 설정
+          >
             <div className="text-lg font-semibold mb-8 flex flex-col justify-center items-center">
               <img src="/assets/confirm.png" alt="삭제확인" className="mb-3" />
               수정/삭제
