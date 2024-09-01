@@ -36,6 +36,17 @@ const MyInviteCode = ({ setRefrigeratorId }) => {
         }
     }, [userId]);
 
+    const handleCopy = (text) => {
+        navigator.clipboard.writeText(text)
+            .then(() => {
+                alert('초대 코드가 클립보드에 복사되었습니다!');
+            })
+            .catch((error) => {
+                console.error('복사 실패:', error);
+                alert('복사하는 데 실패했습니다.');
+            });
+    };
+
     return (
         <div className="p-4">
             <div className="space-y-4">
@@ -54,7 +65,7 @@ const MyInviteCode = ({ setRefrigeratorId }) => {
                             onClick={() => setRefrigeratorId(refri.refrigerator_id)}
                         />
                         <button
-                            onClick={() => navigator.clipboard.writeText(refri.refrigerator_id)}
+                            onClick={() => handleCopy(refri.refrigerator_id)}
                             className="text-sm font-semibold text-blue-600 border border-blue-600 rounded-md px-4 py-2 hover:bg-blue-100 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 ease-in-out"
                         >
                             복사하기

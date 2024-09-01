@@ -24,6 +24,7 @@ const InviteButton = () => {
             const result = await inviteRefri(userId, code);
             console.log("초대 결과:", result);
             alert(`초대 코드: ${code}`);
+            navigate("/");
         } catch (error) {
             console.error("초대 실패:", error);
         }
@@ -35,36 +36,23 @@ const InviteButton = () => {
     };
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 bg-white p-4 border-t border-gray-200 shadow-lg">
-            <div className="w-full max-w-[342px] mx-auto rounded-xl border flex flex-col items-center font-medium text-[16px]">
-                <input
-                    id="userinvite"
-                    name="userinvite"
-                    type="text"
-                    value={code}
-                    placeholder="초대코드를 입력해주세요"
-                    className="block outline-none w-full max-w-[302px] h-14 border-y-[1px] text-gray-900 placeholder:text-[#A8A8A8] mt-4 px-2"
-                    onChange={handleChange}
-                />
-                <div
-                    style={{
-                        width: '100%',
-                        maxWidth: 342,
-                        height: 56,
-                        borderRadius: 12,
-                        border: "1px solid #E1E1E1",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginTop: 16,
-                    }}
-                    className={`flex text-[#868686] rounded-xl justify-center items-center cursor-pointer ${
-                        isEnabled ? "bg-blue-500 text-white" : "bg-[#D1D1D1]"
-                    }`}
-                    onClick={isEnabled ? handleSubmit : null}
-                >
-                    <div style={{ fontWeight: 500, fontSize: 16 }}>냉장고 등록하기</div>
-                </div>
+        <div className="w-full max-w-[342px] mx-auto my-4 p-4 rounded-lg border border-gray-200 shadow-lg bg-white flex flex-col items-center">
+            <input
+                id="userinvite"
+                name="userinvite"
+                type="text"
+                value={code}
+                placeholder="초대코드를 입력해주세요"
+                className="block w-full h-12 px-4 border rounded-lg text-gray-900 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                onChange={handleChange}
+            />
+            <div
+                className={`w-full h-12 rounded-lg mt-4 flex items-center justify-center cursor-pointer transition-transform duration-300 ease-in-out ${
+                    isEnabled ? "bg-gradient-to-r from-blue-500 to-teal-500 text-white shadow-md hover:scale-105" : "bg-gray-300 text-gray-500"
+                }`}
+                onClick={isEnabled ? handleSubmit : null}
+            >
+                <span className="font-medium text-lg">냉장고 등록하기</span>
             </div>
         </div>
     );

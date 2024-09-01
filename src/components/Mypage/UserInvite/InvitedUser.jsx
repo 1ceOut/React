@@ -35,7 +35,7 @@ const InvitedUser = ({ refrigeratorId }) => {
     }, [refrigeratorId, userId]);
 
     return (
-        <div className="w-full max-w-[800px] mx-auto p-4 pb-16">
+        <div className="w-full max-w-[800px] mx-auto p-4">
             <div className="text-[#333D4B] font-medium text-[18px] mb-6">
                 선택한 냉장고의 초대 구성원
             </div>
