@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useSearchStore from '../../store/useSearchStore.js';
-import SearchAllFood from '../../query/FoodListQuery.jsx';
+
 import useUserStore from "../../store/useUserStore.js";
 
 
