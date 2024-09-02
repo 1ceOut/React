@@ -90,6 +90,9 @@ const updateComment = async ({ commentId, data }) => {
   const response = await axios.put(`${API_URL}/comment/update`, data, {
     withCredentials: true,
     params: { id: commentId },
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
   return response.data;
 };
