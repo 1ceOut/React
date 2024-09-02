@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCommentsByPostingId } from "./../../../query/LikeCommentQuery";
 import PropTypes from "prop-types";
 import CommentList from "./../Common/CommentList";
 
 const FeedComment = ({ postingId }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("latest");
+  const [sortDirection, setSortDirection] = useState({
+    latest: "desc",
+    best: "desc",
+    difficulty: "asc",
+  });
+  const [clickedFilter, setClickedFilter] = useState(null);
   const { data, isLoading, isError } = useCommentsByPostingId(postingId);
+  const [sortedComments, setSortedComments] = useState([]);
 
   const handleClick = () => {
     setIsModalVisible(true);
@@ -16,8 +23,17 @@ const FeedComment = ({ postingId }) => {
     setIsModalVisible(false);
   };
 
+  const toggleSortDirection = (filter) => {
+    setSortDirection((prev) => ({
+      ...prev,
+      [filter]: prev[filter] === "asc" ? "desc" : "asc",
+    }));
+  };
+
   const handleFilterClick = (filter) => {
     setSelectedFilter(filter);
+    toggleSortDirection(filter);
+    setClickedFilter(filter);
   };
 
   const getButtonClassNames = (filter) => {
@@ -25,6 +41,41 @@ const FeedComment = ({ postingId }) => {
       ? "w-[108px] h-[56px] flex justify-center items-center rounded-xl border-[1px] border-[#2377EF] text-[#2377EF]"
       : "w-[108px] h-[56px] flex justify-center items-center rounded-xl border-[1px] border-[#E1E1E1]";
   };
+
+  useEffect(() => {
+    if (data && data.comments) {
+      let sortedData = [...data.comments];
+
+      switch (selectedFilter) {
+        case "latest":
+          sortedData.sort((a, b) =>
+            sortDirection.latest === "desc"
+              ? new Date(b.comment.writeday) - new Date(a.comment.writeday)
+              : new Date(a.comment.writeday) - new Date(b.comment.writeday)
+          );
+          break;
+        case "best":
+          sortedData.sort((a, b) =>
+            sortDirection.best === "desc"
+              ? b.comment.rate - a.comment.rate
+              : a.comment.rate - b.comment.rate
+          );
+          break;
+        case "difficulty":
+          sortedData.sort((a, b) => {
+            const diffOrder = { 상: 1, 중: 2, 하: 3 };
+            return sortDirection.difficulty === "asc"
+              ? diffOrder[a.comment.diff] - diffOrder[b.comment.diff]
+              : diffOrder[b.comment.diff] - diffOrder[a.comment.diff];
+          });
+          break;
+        default:
+          break;
+      }
+
+      setSortedComments(sortedData);
+    }
+  }, [data, selectedFilter, sortDirection]);
 
   if (isLoading) {
     return <div>Loading comments...</div>;
@@ -34,8 +85,9 @@ const FeedComment = ({ postingId }) => {
     return <div>Error loading comments</div>;
   }
 
-  const commentsArray = data ? data.comments : [];
-  const comments = commentsArray.length;
+  const getArrowIcon = (filter) => {
+    return sortDirection[filter] === "asc" ? "arrowup.png" : "downarrow.png";
+  };
 
   return (
     <div className="self-stretch">
@@ -49,8 +101,8 @@ const FeedComment = ({ postingId }) => {
       </div>
 
       <div className="mt-4">
-        {comments > 0 ? (
-          data.comments.map((comment) => (
+        {sortedComments.length > 0 ? (
+          sortedComments.map((comment) => (
             <div key={comment.comment.commentId}>
               <CommentList
                 commentId={comment.commentId}
@@ -61,7 +113,7 @@ const FeedComment = ({ postingId }) => {
             </div>
           ))
         ) : (
-          <div></div>
+          <div>No comments available</div>
         )}
       </div>
 
@@ -85,21 +137,45 @@ const FeedComment = ({ postingId }) => {
                 onClick={() => handleFilterClick("latest")}
               >
                 최신순
+                {clickedFilter === "latest" && (
+                  <img
+                    src={`/assets/${getArrowIcon("latest")}`}
+                    alt="화살표"
+                    className="ml-1"
+                  />
+                )}
               </div>
               <div
-                className={getButtonClassNames("all")}
-                onClick={() => handleFilterClick("all")}
+                className={getButtonClassNames("difficulty")}
+                onClick={() => handleFilterClick("difficulty")}
               >
-                모든 댓글
+                난이도순
+                {clickedFilter === "difficulty" && (
+                  <img
+                    src={`/assets/${getArrowIcon("difficulty")}`}
+                    alt="화살표"
+                    className="ml-1"
+                  />
+                )}
               </div>
               <div
                 className={getButtonClassNames("best")}
                 onClick={() => handleFilterClick("best")}
               >
-                베스트 댓글
+                베스트순
+                {clickedFilter === "best" && (
+                  <img
+                    src={`/assets/${getArrowIcon("best")}`}
+                    alt="화살표"
+                    className="ml-1"
+                  />
+                )}
               </div>
             </div>
-            <div className="mt-6 w-[342px] h-[56px] cursor-pointer rounded-xl text-white flex justify-center items-center bg-[#2377EF]">
+            <div
+              className="mt-6 w-[342px] h-[56px] cursor-pointer rounded-xl text-white flex justify-center items-center bg-[#2377EF]"
+              onClick={closeModal}
+            >
               조회
             </div>
           </div>
