@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import DetailItems from "./ShoppingDetail/DetailItems.jsx";
 
 const Items = ({item}) => {
     const click_function = () => {
@@ -29,7 +30,15 @@ const Items = ({item}) => {
 }
 
 Items.propTypes = {
-    itemList: PropTypes.object
+    item: PropTypes.shape({
+        url: PropTypes.string,
+        image: PropTypes.string,
+        title: PropTypes.string,
+        subtitle: PropTypes.string,
+        review_count: PropTypes.string,
+        discount_percent: PropTypes.string,
+        origin_price: PropTypes.string,
+    }),
 };
 
 export default Items;
