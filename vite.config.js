@@ -13,13 +13,6 @@ export default defineConfig({
     //   },
     //   // 추가적으로 다른 프록시 설정이 필요한 경우 여기에 추가
     // },
-    proxy: {
-      '/api/likecomment': {
-        target: 'http://localhost:9090',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/likecomment/, ''),
-      },
-    },
   },
    build: {
     target: 'esnext',
