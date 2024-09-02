@@ -4,7 +4,13 @@ import { useState } from "react";
 import { useDeleteComment } from "./../../../query/LikeCommentQuery";
 import UpdateCommentModal from "./UpdateCommentModal";
 
-const CommentList = ({ commentId, comment, userProfile, userName }) => {
+const CommentList = ({
+  commentId,
+  comment,
+  userProfile,
+  userName,
+  isOwner,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const { mutate: deletecomment } = useDeleteComment();
@@ -85,12 +91,14 @@ const CommentList = ({ commentId, comment, userProfile, userName }) => {
                 </div>
                 <div>{comment.diff}</div>
               </div>
-              <div
-                className="flex justify-center items-center"
-                onClick={openModal}
-              >
-                . . .
-              </div>
+              {isOwner && (
+                <div
+                  className="flex justify-center items-center cursor-pointer"
+                  onClick={openModal}
+                >
+                  . . .
+                </div>
+              )}
             </div>
             <br />
             <div>{comment.comment}</div>
@@ -150,6 +158,7 @@ CommentList.propTypes = {
   userProfile: PropTypes.string,
   userName: PropTypes.string,
   commentId: PropTypes.number,
+  isOwner: PropTypes.bool.isRequired,
 };
 
 CommentList.defaultProps = {
