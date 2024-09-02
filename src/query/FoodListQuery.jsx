@@ -88,7 +88,6 @@ export const uploadFile = async (formData) => {
 };
 
 export const SearchAllFood = async (userid, productName) => {
-    
     try {
         const response = await axios.post(`${API_URL}/api/food/keyword/all/search`, null, {
             params: {

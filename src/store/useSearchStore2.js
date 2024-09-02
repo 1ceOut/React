@@ -1,13 +1,18 @@
 import create from 'zustand';
 
-const useSearchStore2 = create((set) => ({
-    recentSearches: [], // 최근 검색어 목록 초기화
-    addSearch: (search) => set((state) => ({
-        recentSearches: [...state.recentSearches, search]
+const useSearchStore = create((set) => ({
+    recentSearches: [],
+    foodData: [], // 검색 결과를 저장할 상태
+    addSearch: (searchTerm) => set((state) => ({
+        recentSearches: [...state.recentSearches, searchTerm]
     })),
-    removeSearch: (searchToRemove) => set((state) => ({
-        recentSearches: state.recentSearches.filter(search => search !== searchToRemove)
+    removeSearch: (searchTerm) => set((state) => ({
+        recentSearches: state.recentSearches.filter(term => term !== searchTerm)
     })),
+    setFoodData: (data) => set(() => ({
+        foodData: data
+    })),
+    getFoodData: () => set((state) => state.foodData) // 검색 결과를 가져오는 액션
 }));
 
-export default useSearchStore2;
+export default useSearchStore;
