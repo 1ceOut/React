@@ -4,8 +4,9 @@ import { usePostsWithUserDetails } from "../../query/FeedQuery"; // 수정된 �
 const Community = () => {
   const navigate = useNavigate();
 
-  const communityNavigation = () => {
-    navigate("/community/feed");
+  // communityDetail 함수 수정: postingId를 파라미터로 받음
+  const communityDetail = (postingId) => {
+    navigate(`/community/feeddetail/${postingId}`);
   };
 
   // usePostsWithUserDetails 훅을 사용하여 게시물 데이터를 가져옵니다.
@@ -34,21 +35,31 @@ const Community = () => {
         </h2>
         <div
           className="text-sm tracking-tight text-neutral-500 underline cursor-pointer"
-          onClick={communityNavigation}
+          onClick={() => navigate("/community/feed")}
         >
           전체보기
         </div>
       </div>
       <div className="mt-4">
         {randomPosts.length > 0 ? (
-          randomPosts.map(({ posting }) => (
-            <div key={posting.posting_id} className="mb-6 flex justify-between">
-              <div>{posting.title}</div>
-              <div className="font-normal text-[12px] text-[#767676]">
-                {posting.writeday}
+          randomPosts.map(({ posting }) => {
+            // Date 객체를 사용하여 날짜 포맷팅
+            const date = new Date(posting.writeday);
+            const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
+            return (
+              <div 
+                key={posting.postingId} 
+                className="mb-6 flex justify-between cursor-pointer"
+                onClick={() => communityDetail(posting.postingId)}
+              >
+                <div>{posting.title}</div>
+                <div className="font-normal text-[12px] text-[#767676]">
+                  {formattedDate}
+                </div>
               </div>
-            </div>
-          ))
+            );
+          })
         ) : (
           <div>No posts available</div>
         )}

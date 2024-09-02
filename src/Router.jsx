@@ -75,7 +75,7 @@ const Router = () => {
                     />
                     <Route path="/addinfo/habit" element={<HabitPage/>}/>
                     <Route path="/addinfo/favorite" element={<FavoritePage/>}/>
-                    <Route path="/addinfo/allergic" element={<AllergicPage/>}/>
+                    <Route path="/addinfo/bodyinfo" element={<AllergicPage/>}/>
                     <Route
                         path="/login/signupcomplete"
                         element={<SignUpCompletePage/>}

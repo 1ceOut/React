@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AiOutlinePlus } from 'react-icons/ai';
-import { uploadImage, useDetailPost,updatePosting } from '../../../query/FeedQuery';
+import { uploadImage, useDetailPost, updatePosting } from '../../../query/FeedQuery';
 import useUserStore from '../../../store/useUserStore'; 
 
 const UpdateFeed = () => {
@@ -94,7 +94,7 @@ const UpdateFeed = () => {
       console.log("Submitting data:", postingData);
     
       try {
-        await updatePosting(postingId,postingData);
+        await updatePosting(postingId, postingData);
         navigate("/community/feed");
       } catch (err) {
         console.error("Error updating post:", err.response?.data || err);
@@ -142,34 +142,38 @@ const UpdateFeed = () => {
           name="title"
           type="text"
           placeholder="30글자 이내로 제목을 입력해 주세요"
-          className="block outline-none w-[302px] h-14 text-gray-900 placeholder:text-[#A8A8A8] px-4"
+          className="block outline-none w-[302px] h-14 text-gray-900 placeholder:text-[#A8A8A8]"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
       </div>
-      <textarea
-        id="content"
-        name="content"
-        placeholder="내용을 입력해 주세요"
-        className="block outline-none w-full h-40 text-gray-900 placeholder:text-[#A8A8A8] px-4 mt-4"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-      />
-      <input
-        id="tags"
-        name="tags"
-        type="text"
-        placeholder="태그를 입력해 주세요"
-        className="block outline-none w-full h-12 text-gray-900 placeholder:text-[#A8A8A8] px-4 mt-4"
-        value={tag}
-        onChange={(e) => setTag(e.target.value)}
-      />
+      <div className="self-stretch border rounded-[12px] w-[342px] h-[300px] flex justify-center my-8">
+        <textarea
+          id="content"
+          name="content"
+          placeholder="내용을 입력해 주세요"
+          className="block outline-none w-[302px] h-[300px] p-4 text-gray-900 placeholder:text-[#A8A8A8] resize-none"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+        />
+      </div>
+      <div className="self-stretch border rounded-[12px] w-[342px] flex justify-center items-center mt-4">
+        <input
+          id="tags"
+          name="tags"
+          type="text"
+          placeholder="# 해시태그"
+          className="block outline-none w-[302px] h-14 text-gray-900 placeholder:text-[#A8A8A8]"
+          value={tag}
+          onChange={(e) => setTag(e.target.value)}
+        />
+      </div>
       <div className="self-stretch border rounded-[12px] w-[342px] p-4 my-8">
         <input
           id="step-description"
           name="step-description"
           type="text"
-          placeholder="스텝 설명을 입력해 주세요"
+          placeholder="단계 설명을 입력해 주세요."
           className="block outline-none w-full h-12 text-gray-900 placeholder:text-[#A8A8A8] mb-4"
           value={stepDescription}
           onChange={(e) => setStepDescription(e.target.value)}

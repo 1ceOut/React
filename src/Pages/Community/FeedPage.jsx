@@ -6,6 +6,7 @@ import FeedTitle from "../../components/Community/Feed/FeedTitle";
 import FeedProfile from "../../components/Community/Feed/FeedProfile";
 import FeedMenu from "../../components/Community/FeedDetail/FeedMenu";
 import FeedComment from "../../components/Community/FeedDetail/FeedComment";
+import BarNavigate from "../../components/Common/BarNavigate";
 
 // 날짜를 'YYYY-MM-DD' 형식으로 포맷팅하는 헬퍼 함수
 const formatDate = (dateString) => {
@@ -58,12 +59,17 @@ const FeedPage = () => {
     (a, b) => new Date(b.writeday) - new Date(a.writeday)
   );
 
+  // 모든 게시물을 최신순으로 정렬
+  const sortedPosts = safePosts.sort((a, b) => new Date(b.posting.writeday) - new Date(a.posting.writeday));
+
   return (
-    <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
-      <MenuNavigate />
+    <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-auto">
+      
+      <MenuNavigate option="커뮤니티"/>
+      
       <Profile profiles={sortedProfiles} /> {/* 최신 프로필 데이터 전달 */}
-      {safePosts.length > 0 ? (
-        safePosts.map(({ posting, userProfile, userName }) => (
+      {sortedPosts.length > 0 ? (
+        sortedPosts.map(({ posting, userProfile, userName }) => (
           <div key={posting.posting_id} className="mb-6">
             <FeedProfile
               userName={userName}
@@ -82,11 +88,17 @@ const FeedPage = () => {
             <div className="flex justify-between mt-2 text-sm text-gray-500"></div>
             <FeedMenu postingId={posting.postingId} userName={userName} />
             <FeedComment postingId={posting.postingId} />
+            
           </div>
         ))
       ) : (
         <div>No posts available</div>
       )}
+      <BarNavigate 
+                shoppingsrc="/assets/shopping.png"
+                homesrc="/assets/homeselect.png"
+                searchsrc="/assets/search.png"
+            />
     </main>
   );
 };

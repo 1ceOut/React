@@ -1,28 +1,33 @@
-import React, {useEffect, useState} from "react";
-import {inviteRefri} from "../../../query/RefriQuery.jsx";
+import React, { useEffect, useState } from "react";
+import { inviteRefri } from "../../../query/RefriQuery.jsx";
 import useUserStore from "../../../store/useUserStore.js";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const InviteButton = () => {
     const [code, setCode] = useState('');
-    const [isEnabled, setIsEnabled] = useState(false); // 상태 추가
+    const [isEnabled, setIsEnabled] = useState(false);
     const navigate = useNavigate();
-    //로그인 userid 가져오고, 로그인 상태확인
     const { userId, isLogin, LoginSuccessStatus } = useUserStore();
 
     useEffect(() => {
         const savedToken = localStorage.getItem("accessToken");
         if (savedToken && !isLogin) {
-            LoginSuccessStatus(savedToken); // 토큰이 있다면 로그인 상태 초기화
+            LoginSuccessStatus(savedToken);
         }
         if (!userId) {
-            navigate("/"); // 로그인 안되어 있으면 로그인 페이지로 이동
+            navigate("/");
         }
     }, [userId, isLogin, navigate, LoginSuccessStatus]);
 
     const handleSubmit = async () => {
-        await inviteRefri(userId,code)
-        alert(`초대 코드: ${code}`);
+        try {
+            const result = await inviteRefri(userId, code);
+            console.log("초대 결과:", result);
+            alert(`초대 코드: ${code}`);
+            navigate("/");
+        } catch (error) {
+            console.error("초대 실패:", error);
+        }
     };
 
     const handleChange = (event) => {
@@ -31,33 +36,23 @@ const InviteButton = () => {
     };
 
     return (
-        <div className="w-[342px] h-auto bottom-[100px] absolute rounded-xl border-[1px] flex flex-col items-center font-medium text-[16px]">
+        <div className="w-full max-w-[342px] mx-auto my-4 p-4 rounded-lg border border-gray-200 shadow-lg bg-white flex flex-col items-center">
             <input
                 id="userinvite"
                 name="userinvite"
                 type="text"
                 value={code}
                 placeholder="초대코드를 입력해주세요"
-                className="block outline-none w-[302px] h-14 border-y-[1px] text-gray-900 placeholder:text-[#A8A8A8] mt-4"
-                onChange={handleChange} // 수정된 부분
+                className="block w-full h-12 px-4 border rounded-lg text-gray-900 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                onChange={handleChange}
             />
             <div
-                style={{
-                    width: 342,
-                    height: 56,
-                    borderRadius: 12,
-                    border: "1px solid #E1E1E1",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginTop: 16, // 버튼과 입력박스 사이의 간격 조정
-                }}
-                className={`flex text-[#868686] rounded-xl justify-center items-center cursor-pointer ${
-                    isEnabled ? "bg-blue-500 text-white" : "bg-[#D1D1D1]"
+                className={`w-full h-12 rounded-lg mt-4 flex items-center justify-center cursor-pointer transition-transform duration-300 ease-in-out ${
+                    isEnabled ? "bg-gradient-to-r from-blue-500 to-teal-500 text-white shadow-md hover:scale-105" : "bg-gray-300 text-gray-500"
                 }`}
-                onClick={isEnabled ? handleSubmit : null} // 클릭 시 제출 함수 호출
+                onClick={isEnabled ? handleSubmit : null}
             >
-                <div style={{ fontWeight: 500, fontSize: 16 }}>냉장고 등록하기</div>
+                <span className="font-medium text-lg">냉장고 등록하기</span>
             </div>
         </div>
     );

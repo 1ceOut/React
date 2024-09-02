@@ -8,8 +8,6 @@ const FeedComment = ({ postingId }) => {
   const [selectedFilter, setSelectedFilter] = useState("");
   const { data, isLoading, isError } = useCommentsByPostingId(postingId);
 
-  //const comments = response.comments || [];
-
   const handleClick = () => {
     setIsModalVisible(true);
   };
@@ -36,6 +34,9 @@ const FeedComment = ({ postingId }) => {
     return <div>Error loading comments</div>;
   }
 
+  const commentsArray = data ? data.comments : [];
+  const comments = commentsArray.length;
+
   return (
     <div className="self-stretch">
       <div className="my-5 cursor-pointer flex" onClick={handleClick}>
@@ -48,11 +49,11 @@ const FeedComment = ({ postingId }) => {
       </div>
 
       <div className="mt-4">
-        {data.comments.length > 0 ? (
+        {comments > 0 ? (
           data.comments.map((comment) => (
             <div key={comment.comment.commentId}>
               <CommentList
-                key={comment.commentId}
+                commentId={comment.commentId}
                 comment={comment.comment}
                 userProfile={comment.userProfile}
                 userName={comment.userName}
@@ -60,7 +61,7 @@ const FeedComment = ({ postingId }) => {
             </div>
           ))
         ) : (
-          <div>No comments available</div>
+          <div></div>
         )}
       </div>
 
