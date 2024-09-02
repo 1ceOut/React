@@ -1,9 +1,14 @@
 import { useState } from "react";
 import useSearchStore from '../../store/useSearchStore.js';
 
+import useUserStore from "../../store/useUserStore.js";
+
+
 const SearchForm = () => {
     const [inputValue, setInputValue] = useState('');
     const addSearch = useSearchStore((state) => state.addSearch);
+
+    const {userId} =useUserStore();
 
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
