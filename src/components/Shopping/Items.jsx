@@ -9,10 +9,10 @@ const Items = ({item}) => {
     return (
         <div className="mt-4 mr-4 my-3" onClick={()=>click_function()}>
             <img src={item.image} className="rounded-lg mb-2" alt="Apple"/>
-            <p className="w-[153px] h-[42px] font-normal text-sm text-[#333D4B]">
-                {item.title}<br/>
+            <p className="w-[153px] h-[21px] font-normal text-sm text-[#333D4B] overflow-hidden text-ellipsis whitespace-nowrap">
+                {item.title}
             </p>
-            <p className="font-normal text-xs text text-[#333D4B]">{item.subtitle===null?"":item.subtitle}</p>
+            <p className="w-[153px] font-normal text-xs text text-[#333D4B] overflow-hidden text-ellipsis whitespace-nowrap">{item.subtitle===null?"":item.subtitle}</p>
             <div className="relative">
                 {
                     item.discount_percent !== null ? (
