@@ -45,16 +45,17 @@ const UpdateCommentModal = ({
   };
 
   const submitForm = () => {
-    const formData = new FormData();
-    formData.append("userId", currentUserId);
-    formData.append("postingId", postingId);
-    formData.append("rate", rate);
-    formData.append("comment", comment);
-    formData.append("diff", selectedQuality);
+    const data = {
+      userId: currentUserId,
+      postingId,
+      rate,
+      comment,
+      diff: selectedQuality,
+    };
 
     if (commentId) {
       updateComment(
-        { commentId, data: formData },
+        { commentId, data },
         {
           onSuccess: () => {
             alert("Comment updated successfully!");
@@ -67,7 +68,7 @@ const UpdateCommentModal = ({
         }
       );
     } else {
-      addComment(formData, {
+      addComment(data, {
         onSuccess: () => {
           alert("Comment submitted successfully!");
           closeHidden();
