@@ -3,6 +3,21 @@ import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_REFRI;
 
+export const keywordSearchFood = async (refrigeratorName, productName) => {
+    try {
+        const response = await axios.post(`${API_URL}/api/food/keyword/search?refrigeratorName=${refrigeratorName}&productName=${productName}`, null, {
+            withCredentials: true
+        });
+        console.log(response.data);
+        return response.data;
+    } catch (e) {
+        console.log("검색할때 에러나는듯?ㅋ", e);
+    }
+}
+
+
+
+
 // Elasticsearch에서 영양 정보를 가져오는 함수 정의
 export const fetchNutritionInfo = async (productName, scategory, productType) => {
     try {
