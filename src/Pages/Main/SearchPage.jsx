@@ -6,6 +6,8 @@ import BarNavigate from './../../components/Common/BarNavigate';
 
 const SearchPage = () => {
 
+    
+
     const [animationClass, setAnimationClass] = useState('animate-slideInUp');
 
     useEffect(() => {
@@ -18,8 +20,7 @@ const SearchPage = () => {
 
     return (
         <main className={`${animationClass} flex flex-col items-center px-6 pt-5 pb-32 mx-auto w-full max-w-[390px] min-h-[844px] h-auto relative`}>
-            <SearchForm/>
-            <RecentSearch/>
+            <SearchForm/>   
             <BarNavigate
                 shoppingsrc="/assets/shopping.png"
                 homesrc="/assets/home.png"
