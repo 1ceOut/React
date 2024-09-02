@@ -11,9 +11,15 @@ import useUserStore from "./../../store/useUserStore";
 
 const HomePage = () => {
   const [animationClass, setAnimationClass] = useState("animate-slideInUp");
+  const navigate = useNavigate();
+  const { userRole } = useUserStore();
 
   useEffect(() => {
     setAnimationClass("animate-slideInUp");
+
+    if (userRole === "ROLE_NEED_INSERT") {
+      navigate("/addinfo/habit");
+    }
 
     return () => {
       setAnimationClass("animate-slideOutDown");
@@ -41,14 +47,6 @@ const HomePage = () => {
       meta: { persist: true },
     });
   }, [queryClient]);
-
-  const navigate = useNavigate();
-  const { userRole } = useUserStore();
-
-  if (userRole === "ROLE_NEED_INSERT") {
-    navigate("/addinfo/habit");
-    return null;
-  }
 
   return (
     <main
