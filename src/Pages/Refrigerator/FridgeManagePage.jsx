@@ -73,7 +73,10 @@ const FridgeManagePage = () => {
             </div>
 
             <div className="self-stretch pt-8">
-                <SearchForm/>
+                <SearchForm
+                    selectedFridge={selectedFridge}
+
+                />
             </div>
 
             <div className="self-stretch pt-5">
