@@ -15,17 +15,20 @@ const formatDate = (date) => {
 const TalkDetail = () => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
-    const refrigeratorId = queryParams.get('id');
+    const refrigeratorId = queryParams.get('refri_id');
+    const masterId = queryParams.get('id');
     const refrigeratorName = queryParams.get('name');
     const chatroomSeq = refrigeratorId;
 
-    const { userName, userProfile } = useUserStore();
+    console.log("masterId--"+masterId);
+    const { userName, userProfile, userId: currentUserId} = useUserStore();
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const [announcement, setAnnouncement] = useState("이건 공지사항 띄울거임");
     const [newAnnouncement, setNewAnnouncement] = useState("");
     const [isAnnouncementVisible, setIsAnnouncementVisible] = useState(false);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false); // 이모지 선택기 상태
+    const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 추가
     const xhr = new XMLHttpRequest();
     xhr.withCredentials = true;
 
@@ -45,7 +48,7 @@ const TalkDetail = () => {
     const api_server = import.meta.env.VITE_API_IP;
 
     const connect = () => {
-
+        //const socket = new SockJS(`http://localhost:8081/ws`,null);
         const socket = new SockJS(`${api_server}/ws`, null, {
             transports: ['xhr-streaming', 'xhr-polling'],
             xhr: () => xhr,
@@ -73,6 +76,7 @@ const TalkDetail = () => {
 
     const fetchMessages = () => {
         axiosApi.get(`${api_server}/api/chatroom/${chatroomSeq}/messages`, {
+        //axiosApi.get(`/api/chatroom/${chatroomSeq}/messages`, {
             withCredentials: true
         })
             .then((response) => {
@@ -110,6 +114,7 @@ const TalkDetail = () => {
             setIsAnnouncementVisible(false);
         }
     };
+
 
     const toggleAnnouncementVisibility = () => {
         setIsAnnouncementVisible(!isAnnouncementVisible);
@@ -150,6 +155,7 @@ const TalkDetail = () => {
                     <button
                         className="text-gray-500 hover:text-gray-700"
                         onClick={toggleAnnouncementVisibility}
+                        disabled={masterId !== currentUserId}
                     >
                         {isAnnouncementVisible ? <FaChevronUp /> : <FaChevronDown />}
                     </button>
@@ -157,6 +163,7 @@ const TalkDetail = () => {
 
                 {isAnnouncementVisible && (
                     <div className="bg-gray-100 p-3 text-center text-sm">
+
                         <input
                             type="text"
                             className="flex-1 rounded-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring focus:border-blue-500 text-sm"
@@ -164,12 +171,14 @@ const TalkDetail = () => {
                             value={newAnnouncement}
                             onChange={(e) => setNewAnnouncement(e.target.value)}
                         />
+
                         <button
                             className="ml-4 bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 text-sm"
                             onClick={handleSetAnnouncement}
                         >
                             공지사항 설정
                         </button>
+
                     </div>
                 )}
 

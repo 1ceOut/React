@@ -2,19 +2,57 @@ import { useNavigate } from 'react-router-dom';
 import HorizontalLine from "../../components/Common/HorizontalLine";
 import MenuNavigate from "../../components/Common/MenuNavigate";
 import useUserStore from "../../store/useUserStore.js";
-import useFridgeOptions from "../../query/RefriQuery.jsx";
+import useFridgeOptions, {masterUserList} from "../../query/RefriQuery.jsx";
+import {useEffect, useState} from "react";
+
 
 const Talk = () => {
     const navigate = useNavigate();
-    const {userId}=useUserStore();
+
+    const { userId, isLogin, LoginSuccessStatus } = useUserStore();
+    const { data, error, isLoading, } = useFridgeOptions(userId);
+
+    const [filteredFridges, setFilteredFridges] = useState([]);
+
+    useEffect(() => {
+        const fetchMasterFridges = async () => {
+            try {
+                const masterFridges = await masterUserList(userId);
+
+
+
+                if (Array.isArray(masterFridges)) {
+                    console.log("masterFridges.id: ");
+                    console.log("masterFridges: "+masterFridges);
+                    //userId와 id를 문자열로 비교
+                    const filtered = masterFridges.filter(fridge => fridge.id == userId );
+                   console.log("Filtered Fridges: ", filtered); // 필터링된 데이터 확인
+                   setFilteredFridges(filtered);
+                } else {
+                    console.error("Unexpected data structure:", masterFridges);
+                }
+            } catch (error) {
+                console.error("Error fetching master fridges:", error);
+            }
+        };
+
+        fetchMasterFridges();
+    }, [userId, isLogin, navigate, LoginSuccessStatus]);
 
     // 클릭 이벤트 핸들러
-    const handleClick = (refrigeratorName, refrigeratorId) => {
-        console.log("refrigeratorId+"+JSON.stringify(refrigeratorId));
-        navigate(`/Talk/TalkDetail?name=${refrigeratorName}&id=${refrigeratorId}`);
+    const handleClick = (refrigeratorName, refrigerator_id) => {
+        // 해당 냉장고의 userId만 넘김
+        const selectedFridge = filteredFridges.find(fridge => fridge.refrigerator_id === refrigerator_id);
+
+        if (selectedFridge) {
+            navigate(`/Talk/TalkDetail?name=${refrigeratorName}&refri_id=${refrigerator_id}&id=${selectedFridge.id}`);
+        }else {
+            navigate(`/Talk/TalkDetail?name=${refrigeratorName}&refri_id=${refrigerator_id}&id=null`);
+            console.error("Selected fridge not found.");
+        }
+
     };
 
-    const { data, error, isLoading } = useFridgeOptions(userId);
 
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
