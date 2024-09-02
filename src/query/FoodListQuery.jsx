@@ -87,4 +87,23 @@ export const uploadFile = async (formData) => {
     }
 };
 
+export const SearchAllFood = async (userid, productName) => {
+    try {
+        const response = await axios.post(`${API_URL}/api/food/keyword/all/search`, null, {
+            params: {
+                userid,
+                productName
+            },
+            withCredentials: true,
+        });
+        console.log('SearchAllFood response:', response.data);
+        return Array.isArray(response.data) ? response.data : [];
+    } catch (error) {
+        console.error('Error fetching all food data', error);
+        return [];
+    }
+};
+
+
+
 

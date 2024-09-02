@@ -4,10 +4,41 @@ import { useState } from "react";
 import { useDeleteComment } from "./../../../query/LikeCommentQuery";
 import UpdateCommentModal from "./UpdateCommentModal";
 
-const CommentList = ({ commentId, comment, userProfile, userName }) => {
+const CommentList = ({
+  commentId,
+  comment,
+  userProfile,
+  userName,
+  isOwner,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const { mutate: deletecomment } = useDeleteComment();
+
+  const getRelativeTime = (dateString) => {
+    const date = new Date(dateString);
+
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+
+    const timeIntervals = [
+      { label: "년", seconds: 31536000 },
+      { label: "개월", seconds: 2592000 },
+      { label: "일", seconds: 86400 },
+      { label: "시간", seconds: 3600 },
+      { label: "분", seconds: 60 },
+      { label: "초", seconds: 1 },
+    ];
+
+    for (const interval of timeIntervals) {
+      const timePassed = Math.floor(diffInSeconds / interval.seconds);
+      if (timePassed >= 1) {
+        return `${timePassed} ${interval.label} 전`;
+      }
+    }
+
+    return "방금 전";
+  };
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -52,21 +83,28 @@ const CommentList = ({ commentId, comment, userProfile, userName }) => {
         </div>
         <div className="ml-2">
           <div className="w-[302px] rounded-xl h-auto bg-[#F5F5F5] p-[14px]">
-            <div className="flex space-x-4">
-              <div>{userName}</div>
-              <div className="flex justify-center items-center">
-                <Rating size="small" readOnly value={comment.rate} />
+            <div className="flex justify-between">
+              <div className="flex space-x-4">
+                <div>{userName}</div>
+                <div className="flex justify-center items-center">
+                  <Rating size="small" readOnly value={comment.rate} />
+                </div>
+                <div>{comment.diff}</div>
               </div>
-              <div>{comment.diff}</div>
-              <div className="right-0" onClick={openModal}>
-                ...
-              </div>
+              {isOwner && (
+                <div
+                  className="flex justify-center items-center cursor-pointer"
+                  onClick={openModal}
+                >
+                  . . .
+                </div>
+              )}
             </div>
             <br />
             <div>{comment.comment}</div>
           </div>
           <div className="flex space-x-5 font-normal text-[12px] text-[#767676]">
-            <div>1시간</div>
+            <div>{getRelativeTime(comment.writeday)}</div>{" "}
           </div>
         </div>
       </div>
@@ -115,10 +153,12 @@ CommentList.propTypes = {
     rate: PropTypes.number.isRequired,
     diff: PropTypes.string.isRequired,
     comment: PropTypes.string.isRequired,
+    writeday: PropTypes.string.isRequired,
   }).isRequired,
   userProfile: PropTypes.string,
   userName: PropTypes.string,
   commentId: PropTypes.number,
+  isOwner: PropTypes.bool.isRequired,
 };
 
 CommentList.defaultProps = {

@@ -37,7 +37,9 @@ const getRelativeTime = (dateString) => {
 const FeedDetailPage = () => {
   const { postingId } = useParams();
   const { data: postWithUser, isLoading, isError } = useDetailPost(postingId);
-  const { userId: currentUserId } = useUserStore((state) => ({ userId: state.userId })); // 현재 사용자 ID 가져오기
+  const { userId: currentUserId } = useUserStore((state) => ({
+    userId: state.userId,
+  })); // 현재 사용자 ID 가져오기
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading data</div>;
@@ -66,7 +68,7 @@ const FeedDetailPage = () => {
       <FeedTitle title={post.title} thumbnail={post.thumbnail} />
       <FeedRecipe steps={post.steps} contents={post.contents} />
       <FeedTags tags={post.tags} />
-    
+
       <FeedMenu postingId={post.postingId} userName={userName} />
       <FeedComment postingId={post.postingId} />
     </main>
