@@ -8,8 +8,8 @@ const HomeTopContent = ({headerData=[]}) => {
     const [currentIndex, setCurrentIndex] = useState(0); // 초기값 설정
 
     const renderSlides = headerData.map((image, idx) => (
-        <div key={idx} onClick={() => window.open(image.url, "_blank")}>
-            <img src={image.image} alt={`Slide ${idx}`} style={{ height: '162px', width: 'auto' }}/>
+        <div key={idx} onClick={() => window.open(image.url, "_blank")} style={{height:"162px", width:"auto",overflow:"hidden", position:"relative"}}>
+            <img src={image.image} alt={`Slide ${idx}`} style={{top:"50%",left:"50%",transform:"translate(-25%,5%)",minWidth:"200%",height:"auto"}}/>
         </div>
     ));
 

@@ -33,11 +33,11 @@ const ShoppingHome = () => {
     const [animationClass, setAnimationClass] = useState('animate-slideInUp');
     const userList = []; // 사용자 기반 추천 목록
     const data = storedata?.length === 0?dummyListData:storedata;
-    const best_list = data?.length ? data.slice(0, 20) : [];
-    const discount_list = data?.length ? data.filter((a) => a.discount_percent !== null).sort((a, b) => Number(b.discount_percent.replace("%", "")) - Number(a.discount_percent.replace("%", ""))).slice(0, 20) : [];
+    const best_list = data?.length ? data : [];
+    const discount_list = data?.length ? data.filter((a) => a.discount_percent !== null).sort((a, b) => Number(b.discount_percent.replace("%", "")) - Number(a.discount_percent.replace("%", ""))) : [];
     const review_list = data?.length ? data.filter((a) => a.review_count !== null).sort((a, b) => {
         return Number(a.price.replace(/[^\d]+/g, "")) - Number(b.price.replace(/[^\d]+/g, ""));
-    }).slice(0, 20) : [];
+    }) : [];
 
     const {userName} = useUserStore();
 
@@ -62,10 +62,10 @@ const ShoppingHome = () => {
                 <MenuNavigate option={"쇼핑"} alertPath="/addinfo/habit"/>
             </div>
             <HomeTopContent headerData={bannerdata?.length===0 ? dummyBannerData : bannerdata}/>
-            {userName === "" ? null : <HomeMainContent options={"user"} data={userList}/>}
-            <HomeMainContent options={"best"} data={best_list}/>
-            <HomeMainContent options={"discount"} data={discount_list}/>
-            <HomeMainContent options={"reviews"} data={review_list}/>
+            {userName === "" ? null : <HomeMainContent options={"user"} data={userList.slice(0, 20)}/>}
+            <HomeMainContent options={"best"} data={best_list.slice(0, 20)}/>
+            <HomeMainContent options={"discount"} data={discount_list.slice(0, 20)}/>
+            <HomeMainContent options={"reviews"} data={review_list.slice(0, 20)}/>
             <BarNavigate
                 shoppingsrc="/assets/shoppingselect.png"
                 homesrc="/assets/home.png"
