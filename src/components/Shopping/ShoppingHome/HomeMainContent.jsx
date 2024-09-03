@@ -1,10 +1,12 @@
 import useUserStore from "../../../store/useUserStore.js";
 import Items from "../Items.jsx";
 import PropTypes from "prop-types";
+import {useNavigate} from "react-router-dom";
 
 
 const HomeMainContent = ({options,data=[]}) => {
     const {userName} = useUserStore();
+    const navigate = useNavigate();
 
     return (
         <article className="flex flex-col items-start text-lg font-semibold tracking-tight leading-snug">
@@ -16,7 +18,7 @@ const HomeMainContent = ({options,data=[]}) => {
                             <p className="font-semibold text-lg">할인율 높은 식재료 추천</p>
                         )))
                 }
-                <p className="font-medium text-sm text-gray-500 border-b border-gray-500 cursor-pointer">전체보기</p>
+                <p className="font-medium text-sm text-gray-500 border-b border-gray-500 cursor-pointer" onClick={()=>navigate("/shop/detail")}>전체보기</p>
             </div>
 
             <div className="flex w-[365px] h-max-[340px] pl-4 bg-indigo-50 mx-3 mt-1 rounded-lg shadow-xl overflow-x-auto scrollbar-hide">
