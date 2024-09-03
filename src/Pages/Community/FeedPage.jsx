@@ -74,7 +74,7 @@ const FeedPage = () => {
               userName={userName}
               writeday={formatDate(posting.writeday)} // 날짜 포맷팅 적용
               userProfile={userProfile}
-              userId={posting.userId}
+              postingUserId={posting.userId}
             />
 
             <FeedTitle
