@@ -136,7 +136,7 @@ const UpdateFeed = () => {
           />
         </label>
       </div>
-      <div className="self-stretch border rounded-[12px] w-[342px] flex justify-center items-center mt-4">
+      <div className="self-stretch border bg-white rounded-[12px] w-[342px] flex justify-center items-center mt-4">
         <input
           id="title"
           name="title"
@@ -147,7 +147,7 @@ const UpdateFeed = () => {
           onChange={(e) => setTitle(e.target.value)}
         />
       </div>
-      <div className="self-stretch border rounded-[12px] w-[342px] h-[300px] flex justify-center my-8">
+      <div className="self-stretch border bg-white rounded-[12px] w-[342px] h-[300px] flex justify-center my-8">
         <textarea
           id="content"
           name="content"
@@ -157,7 +157,7 @@ const UpdateFeed = () => {
           onChange={(e) => setContent(e.target.value)}
         />
       </div>
-      <div className="self-stretch border rounded-[12px] w-[342px] flex justify-center items-center mt-4">
+      <div className="self-stretch border bg-white rounded-[12px] w-[342px] flex justify-center items-center mt-4">
         <input
           id="tags"
           name="tags"
@@ -168,7 +168,7 @@ const UpdateFeed = () => {
           onChange={(e) => setTag(e.target.value)}
         />
       </div>
-      <div className="self-stretch border rounded-[12px] w-[342px] p-4 my-8">
+      <div className="self-stretch border bg-white rounded-[12px] w-[342px] p-4 my-8">
         <input
           id="step-description"
           name="step-description"
