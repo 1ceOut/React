@@ -65,13 +65,24 @@ const SearchForm = () => {
                 </div>
             </div>
             {response.length > 0 ? (
-        response.map(({productName,refrigeratorName,count},index) => (
-          <div key={index} className="mb-6">
+  response.map((item, index) => (
+    <div key={index} className="mb-6">
+      <RecentSearch
+        option={item.productName}
+        refrigeratorName={item.refrigeratorName}
+        count={item.count}
+        userId={item.userId}
+        id={item.id}
+        createdDate={item.createdDate}
+        expiryDate={item.expiryDate}
+        lcategory={item.lcategory}
+        productType={item.productType}
+        scategory={item.scategory}
+        barcode={item.barcode}
+
             
-            <RecentSearch
-            productName={productName}
-            refrigeratorName={refrigeratorName}
-            count={count} />
+            
+             />
           </div>
         ))
       ) : (

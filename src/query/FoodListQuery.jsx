@@ -92,7 +92,7 @@ export const SearchAllFood = async (userid, productName) => {
         const response = await axios.post(`${API_URL}/api/food/keyword/all/search`, null, {
             params: {
                 userid,
-                productName
+                productName,
             },
             withCredentials: true,
         });

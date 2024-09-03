@@ -92,9 +92,7 @@ const Router = () => {
                     <Route path="/Refrigerator/food/AddInput" element={<AddInput/>}/>
                     <Route path="/Refrigerator/food/AddInput2" element={<AddInput2/>}/>
                     <Route
-                        path="/Refrigerator/food/FoodDetail"
-                        element={<FoodDetail/>}
-                    />
+                        path="/Refrigerator/food/FoodDetail" element={<FoodDetail/>}/>
                     <Route path="/Refrigerator/food/FoodList" element={<FoodList/>}/>
                     <Route path="/Refrigerator/food/MyFridge" element={<MyFridge/>}/>
                     <Route path="/Refrigerator/food/AddFridge" element={<AddFridge/>}/>

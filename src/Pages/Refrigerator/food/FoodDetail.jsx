@@ -24,6 +24,7 @@ const FoodDetail = () => {
     const [nutritionInfo, setNutritionInfo] = useState(null);
     const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    
 
     useEffect(() => {
         const fetchInfo = async () => {
@@ -65,9 +66,9 @@ const FoodDetail = () => {
         await foodDelete(option, id);
         navigate('/fridge/fridgemanage');
     };
-
+console.log(state)
     return (
-        <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen overflow-auto">
+        <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-auto overflow-auto">
             <MenuNavigate option={"상품 상세"} alertPath="/addinfo/habit"/>
             <div className="relative w-[342px] h-[60px] mt-5 flex items-center rounded-xl">
                 <div className="flex items-center">
