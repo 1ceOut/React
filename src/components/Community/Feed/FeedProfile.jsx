@@ -87,7 +87,7 @@ const FeedProfile = ({ writeday, userProfile, userName, postingUserId }) => {
 
         {/* 모달 창 */}
         {isModalOpen && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
               <div className="bg-white p-4 rounded-lg shadow-lg w-64">
                 <div className="text-center mb-4">{modalMessage}</div>
                 <button
