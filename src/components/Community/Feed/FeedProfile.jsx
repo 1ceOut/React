@@ -52,7 +52,7 @@ const FeedProfile = ({ writeday, userProfile, userName, userId }) => {
         {/* 구독 버튼 */}
         <button
           className={`px-4 py-1 rounded-full text-sm font-semibold cursor-pointer transition-colors duration-300 ${
-            isSubscribed ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
+            isSubscribed ? "bg-gray-200 text-gray-700" : "bg-blue-600 text-white"
           }`}
           onClick={handleSubscribeClick}
         >

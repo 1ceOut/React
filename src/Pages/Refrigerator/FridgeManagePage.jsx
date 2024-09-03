@@ -12,8 +12,10 @@ const FridgeManagePage = () => {
     const [selectedFridge, setSelectedFridge] = useState(null);
     const [saveFoodList, setSaveFoodList] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [itemsToShow, setItemsToShow] = useState(3); // 표시할 항목 수
 
     const handleShowMore = () => {
+        setItemsToShow(prev => prev + 3); // 3개씩 추가로 표시
         setShowMore(true);
     };
 
@@ -73,10 +75,7 @@ const FridgeManagePage = () => {
             </div>
 
             <div className="self-stretch pt-8">
-                <SearchForm
-                    selectedFridge={selectedFridge}
-
-                />
+                <SearchForm selectedFridge={selectedFridge} />
             </div>
 
             <div className="self-stretch pt-5">
@@ -90,7 +89,7 @@ const FridgeManagePage = () => {
                     Object.keys(groupedFoodList).map((category) => (
                         <div key={category}>
                             <CategoryFood option={category}/>
-                            {groupedFoodList[category].map((food, index) => (
+                            {groupedFoodList[category].slice(0, itemsToShow).map((food, index) => (
                                 <DetailButton
                                     key={index}
                                     id={food.id}
@@ -118,30 +117,6 @@ const FridgeManagePage = () => {
                         alt='down arrow'
                         style={{marginLeft: 8}}
                     />
-                </div>
-            )}
-
-            {showMore && selectedFridge && (
-                <div className="self-stretch pt-5">
-                    {Object.keys(groupedFoodList).map((category) => (
-                        <div key={category}>
-                            <CategoryFood option={category}/>
-                            {groupedFoodList[category].map((food, index) => (
-                                <DetailButton
-                                    key={index}
-                                    id={food.id}
-                                    productName={food.productName}
-                                    expiryDate={food.expiryDate}
-                                    count={food.count}
-                                    productType={food.productType}
-                                    createdDate={food.createdDate}
-                                    lcategory={food.lcategory}
-                                    scategory={food.scategory}
-                                    option={food.productName}
-                                />
-                            ))}
-                        </div>
-                    ))}
                 </div>
             )}
         </main>
