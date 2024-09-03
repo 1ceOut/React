@@ -36,8 +36,6 @@ const Refrigerator = () => {
     }, [userId]);
 
     const { data: fridgeOptions = [], isLoading, error } = useFridgeOptions(userId);
-    console.log("데이터임", fridgeOptions);
-
     const handleNavigate = () => {
         navigate('/fridge/fridgemanage');
     };

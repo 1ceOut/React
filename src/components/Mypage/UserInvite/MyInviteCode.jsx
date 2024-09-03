@@ -24,7 +24,6 @@ const MyInviteCode = ({ setRefrigeratorId }) => {
             try {
                 const data = await masterUserList(userId);
                 setUserData(data || []);
-                console.log(data);
             } catch (error) {
                 console.error("Failed to fetch user data", error);
                 setUserData([]);

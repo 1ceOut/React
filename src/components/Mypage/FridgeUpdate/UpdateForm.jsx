@@ -68,7 +68,9 @@ const UpdateForm = () => {
     return (
         <div className='self-stretch w-[342px]'>
             <div className="self-stretch border rounded-[12px] w-[342px] p-4 bg-white shadow-lg">
-                <h2 className="text-lg font-semibold mb-4 text-gray-800">니가 만든 냉장고임;</h2>
+                <h2 className="text-lg font-semibold mb-4 text-gray-800">
+                    냉장고 이름을 수정한 후, <br/> '이름 수정' 버튼을 눌러주세요.
+                </h2>
                 <div className="flex flex-col gap-3">
                     {userData.map((refri, index) => (
                         <div key={index} className="w-full">

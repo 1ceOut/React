@@ -18,17 +18,12 @@ const FridgeSelect = () => {
             // 새 옵션 선택
             setSelectedOption(optionId);
         }
-        console.log(optionId);
     };
 
     const refriDelete = async (optionId) => {
-        console.log(optionId);
         try {
             await masterUserDelete(optionId);
-            // 삭제 후 상태 업데이트 또는 리디렉션 등을 여기에 추가할 수 있습니다.
-            // 예를 들어:
             setOptions(prevOptions => prevOptions.filter(option => option.refrigerator_id !== optionId));
-            //navigate("/addinfo/favorite");
         } catch (error) {
             console.log(error);
         }
@@ -37,7 +32,6 @@ const FridgeSelect = () => {
     const handleDelete = () => {
         if (selectedOption) {
             refriDelete(selectedOption);
-            console.log("이거값뭐냐?",selectedOption);
         }
     };
 
