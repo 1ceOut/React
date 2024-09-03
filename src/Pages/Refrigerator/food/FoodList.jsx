@@ -4,14 +4,18 @@ import MenuNavigate from "../../../components/Common/MenuNavigate";
 import SearchForm from "../../../components/Refrigerator/Common/SearchForm";
 import { useLocation } from "react-router-dom";
 import { listFromLcategory } from "../../../query/FoodListQuery.jsx";
+import Modal from "../../../components/Refrigerator/FridgeManage/Modal.jsx";
 
 const FoodList = () => {
     const location = useLocation();
     const category = location.state?.category;
     const [foodList, setFoodList] = useState([]);
+    const [sortedFoodList, setSortedFoodList] = useState([]);
     const [loading, setLoading] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [selectedOption, setSelectedOption] = useState(null);
+    const [searchResults, setSearchResults] = useState([]); // 검색 결과 상태 추가
+    const [isModalOpen, setIsModalOpen] = useState(false);  // 모달 상태 추가
 
     useEffect(() => {
         const fetchFoodList = async () => {
@@ -20,6 +24,7 @@ const FoodList = () => {
             try {
                 const data = await listFromLcategory(refrigeratorName, category);
                 setFoodList(data); // 데이터 설정
+                setSortedFoodList(data); // 초기 로딩 시 정렬된 리스트 설정
             } catch (error) {
                 console.error('Failed to fetch food list:', error);
             } finally {
@@ -36,6 +41,40 @@ const FoodList = () => {
     // 옵션 클릭 핸들러
     const handleOptionClick = (option) => {
         setSelectedOption(option);
+    };
+
+    // 음식 리스트 정렬 함수
+    const sortFoodList = (option) => {
+        let sortedList = [...foodList];
+        switch (option) {
+            case '이름 순':
+                sortedList.sort((a, b) => a.productName.localeCompare(b.productName));
+                break;
+            case '등록일 순':
+                sortedList.sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
+                break;
+            case '유통기한 순':
+                sortedList.sort((a, b) => {
+                    const expiryA = new Date(a.expiryDate);
+                    const expiryB = new Date(b.expiryDate);
+                    const daysLeftA = Math.ceil((expiryA - new Date()) / (1000 * 60 * 60 * 24));
+                    const daysLeftB = Math.ceil((expiryB - new Date()) / (1000 * 60 * 60 * 24));
+                    return daysLeftA - daysLeftB;
+                });
+                break;
+            default:
+                break;
+        }
+        setSortedFoodList(sortedList);
+        setShowPopup(false); // 팝업 닫기
+    };
+
+    // 검색 결과를 처리하는 함수
+    const handleSearchResults = (results) => {
+        // 현재 카테고리에 맞는 항목만 필터링
+        const filteredResults = results.filter(item => item.lcategory === category);
+        setSearchResults(filteredResults);
+        setIsModalOpen(true); // 검색 결과 모달 열기
     };
 
     // 버튼 스타일
@@ -69,7 +108,7 @@ const FoodList = () => {
             <MenuNavigate option={`${category} 전체보기`} alertPath="/addinfo/habit" />
 
             <div className="self-stretch pt-8">
-                <SearchForm />
+                <SearchForm selectedFridge={sessionStorage.getItem('selectedFridge')} onSearchResults={handleSearchResults} />
             </div>
 
             <div
@@ -114,7 +153,7 @@ const FoodList = () => {
                             >
                                 총
                             </div>
-                            <div style={{ fontWeight: 500, fontSize: 14 }}>{foodList.length}개</div>
+                            <div style={{ fontWeight: 500, fontSize: 14 }}>{sortedFoodList.length}개</div>
                         </div>
                         <img
                             src="/assets/filter.png"
@@ -129,10 +168,10 @@ const FoodList = () => {
             <div className="self-stretch pt-5 mt-[16px]">
                 {loading ? (
                     <p>로딩 중...</p>
-                ) : foodList.length === 0 ? (
+                ) : sortedFoodList.length === 0 ? (
                     <p>{category}에 해당하는 음식이 없습니다.</p>
                 ) : (
-                    foodList.map((food, index) => (
+                    sortedFoodList.map((food, index) => (
                         <DetailButton
                             key={index}
                             id={food.id}
@@ -148,6 +187,34 @@ const FoodList = () => {
                     ))
                 )}
             </div>
+
+            {isModalOpen && (
+                <Modal onClose={() => setIsModalOpen(false)}>
+                    <div className="p-4">
+                        <h2 className="text-xl font-semibold mb-4">검색 결과</h2>
+                        {searchResults.length > 0 ? (
+                            <div className="space-y-2">
+                                {searchResults.map((food, index) => (
+                                    <DetailButton
+                                        key={index}
+                                        id={food.id}
+                                        productName={food.productName}
+                                        expiryDate={food.expiryDate}
+                                        count={food.count}
+                                        productType={food.productType}
+                                        createdDate={food.createdDate}
+                                        lcategory={food.lcategory}
+                                        scategory={food.scategory}
+                                        option={food.productName}
+                                    />
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="text-gray-500 text-center mt-8">검색 결과가 없습니다.</p>
+                        )}
+                    </div>
+                </Modal>
+            )}
 
             {showPopup && (
                 <div
@@ -230,6 +297,7 @@ const FoodList = () => {
                                 alignItems: 'center',
                                 justifyContent: 'center'
                             }}
+                            onClick={() => sortFoodList(selectedOption)} // 조회 버튼 클릭 시 정렬 및 팝업 닫기
                         >
                             <p
                                 style={{

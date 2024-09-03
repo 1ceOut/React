@@ -66,7 +66,6 @@ const FoodDetail = () => {
         await foodDelete(option, id);
         navigate('/fridge/fridgemanage');
     };
-console.log(state)
     return (
         <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-auto overflow-auto">
             <MenuNavigate option={"상품 상세"} alertPath="/addinfo/habit"/>

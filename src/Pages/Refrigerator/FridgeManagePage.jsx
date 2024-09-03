@@ -6,20 +6,17 @@ import FridgeSelect from '../../components/Refrigerator/FridgeManage/FridgeSelec
 import CategoryFood from './../../components/Refrigerator/FridgeManage/CategoryFood';
 import { fetchSavedBarcodes } from '../../query/FoodListQuery';
 import DetailButton from "../../components/Common/DetailButton.jsx";
+import Modal from "../../components/Refrigerator/FridgeManage/Modal.jsx";
 
 const FridgeManagePage = () => {
-    const [showMore, setShowMore] = useState(false);
     const [selectedFridge, setSelectedFridge] = useState(null);
     const [saveFoodList, setSaveFoodList] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [itemsToShow, setItemsToShow] = useState(3); // 표시할 항목 수
+    const [itemsToShow, setItemsToShow] = useState(3);
+    const [searchResults, setSearchResults] = useState([]);  // 검색 결과 상태 추가
+    const [isModalOpen, setIsModalOpen] = useState(false);   // 모달 상태 추가
 
-    const handleShowMore = () => {
-        setItemsToShow(prev => prev + 3); // 3개씩 추가로 표시
-        setShowMore(true);
-    };
 
-    // 세션 스토리지에서 냉장고 정보 가져오기
     useEffect(() => {
         const storedFridge = sessionStorage.getItem('selectedFridge');
         if (storedFridge) {
@@ -38,7 +35,7 @@ const FridgeManagePage = () => {
                     setLoading(false);
                 });
         } else {
-            setSaveFoodList([]); // 냉장고가 선택되지 않았을 때 음식 목록 초기화
+            setSaveFoodList([]);
         }
     }, [selectedFridge]);
 
@@ -55,6 +52,11 @@ const FridgeManagePage = () => {
             acc[food.lcategory].push(food);
             return acc;
         }, {});
+    };
+
+    const handleSearchResults = (results) => {
+        setSearchResults(results);  // 검색 결과를 상태에 저장
+        setIsModalOpen(true);       // 검색 결과 모달을 엽니다.
     };
 
     const groupedFoodList = groupByCategory(saveFoodList);
@@ -75,7 +77,7 @@ const FridgeManagePage = () => {
             </div>
 
             <div className="self-stretch pt-8">
-                <SearchForm selectedFridge={selectedFridge} />
+                <SearchForm selectedFridge={selectedFridge} onSearchResults={handleSearchResults} />
             </div>
 
             <div className="self-stretch pt-5">
@@ -84,7 +86,7 @@ const FridgeManagePage = () => {
                 ) : selectedFridge === null ? (
                     <p>냉장고를 선택하면 해당 냉장고에 있는 음식이 나와요</p>
                 ) : Object.keys(groupedFoodList).length === 0 ? (
-                    <p>냉장고 텅텅텅텅 비었음, ㅋ</p>
+                    <p>선택한 냉장고의 음식이 없습니다.</p>
                 ) : (
                     Object.keys(groupedFoodList).map((category) => (
                         <div key={category}>
@@ -108,17 +110,37 @@ const FridgeManagePage = () => {
                 )}
             </div>
 
-            {!showMore && selectedFridge && Object.keys(groupedFoodList).length > 0 && (
-                <div style={{marginTop: 40, display: 'flex', alignItems: 'center', cursor: 'pointer'}}
-                     onClick={handleShowMore}>
-                    <span>더보기</span>
-                    <img
-                        src="/assets/downarrow.png"
-                        alt='down arrow'
-                        style={{marginLeft: 8}}
-                    />
-                </div>
+            {isModalOpen && (
+                <Modal onClose={() => setIsModalOpen(false)}>
+                    <div className="p-4">
+                        {/* 검색 결과 안내 문구 */}
+                        <h2 className="text-xl font-semibold mb-4">검색 결과</h2>
+
+                        {searchResults.length > 0 ? (
+                            <div className="space-y-2">
+                                {searchResults.map((food, index) => (
+                                    <DetailButton
+                                        key={index}
+                                        id={food.id}
+                                        productName={food.productName}
+                                        expiryDate={food.expiryDate}
+                                        count={food.count}
+                                        productType={food.productType}
+                                        createdDate={food.createdDate}
+                                        lcategory={food.lcategory}
+                                        scategory={food.scategory}
+                                        option={food.productName}
+                                    />
+                                ))}
+                            </div>
+                        ) : (
+                            // 검색 결과가 없을 때 표시할 내용
+                            <p className="text-gray-500 text-center mt-8">검색 결과가 없습니다.</p>
+                        )}
+                    </div>
+                </Modal>
             )}
+
         </main>
     );
 };
