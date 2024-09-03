@@ -48,7 +48,7 @@ const MyLiveKitApp = () => {
     }
 
     return (
-        <div className='flex flex-col items-center mx-auto w-full bg-zinc-100 max-w-[390px] h-screen'>
+        <div className='flex flex-col items-center mx-auto w-full bg-zinc-100 max-w-[390px] h-auto'>
             <LiveKitRoom
                 serverUrl={LIVEKIT_URL}
                 token={token}
@@ -57,7 +57,7 @@ const MyLiveKitApp = () => {
                 video={true}
                 data-lk-theme={"default"}
                 debug={"true"}
-                style={{width: '38vh', height: '130vh'}}
+                style={{width: '390px', height: '550px'}}
                 onDisconnected={handleDisconnected}
             >
                 <LayoutContextProvider>
@@ -67,7 +67,7 @@ const MyLiveKitApp = () => {
                         {
                             participantName===publisher?(
                                 <>
-                                    <ControlBar style={{width: '100%', maxHeight: '150px', display: "flex",flexWrap:"wrap"}}/>
+                                    <ControlBar style={{width: '100%', maxHeight: '100px', display: "flex",flexWrap:"wrap"}}/>
                                 </>)
                                 :(<DisconnectButton>연결 끊기</DisconnectButton>)
                         }
