@@ -48,7 +48,7 @@ const MyLiveKitApp = () => {
     }
 
     return (
-        <div className='flex flex-col items-center mx-auto w-full bg-zinc-100 max-w-[390px] h-auto'>
+        <div className='flex flex-col items-center mx-0 w-full bg-zinc-100 min-h-[500px] h-auto max-w-[390px]'>
             <LiveKitRoom
                 serverUrl={LIVEKIT_URL}
                 token={token}
@@ -57,20 +57,20 @@ const MyLiveKitApp = () => {
                 video={true}
                 data-lk-theme={"default"}
                 debug={"true"}
-                style={{width: '390px', height: '550px'}}
+                style={{width: '100%', height: '100%'}}
                 onDisconnected={handleDisconnected}
             >
                 <LayoutContextProvider>
                     <div className="flex flex-col h-full">
-                        <VideoConference style={{flex: '1',height: '54%', width: "100%"}} publisherName={publisher}/>
-                        <ChatComponent/>
+                        <VideoConference style={{height: '62vh', width: "100%",display:"flex"}} publisherName={publisher}/>
                         {
                             participantName===publisher?(
-                                <>
-                                    <ControlBar style={{width: '100%', maxHeight: '100px', display: "flex",flexWrap:"wrap"}}/>
-                                </>)
+                                    <>
+                                        <ControlBar style={{width: '100%', height: '10vh', display: "flex",flexWrap:"wrap"}}/>
+                                    </>)
                                 :(<DisconnectButton>연결 끊기</DisconnectButton>)
                         }
+                        <ChatComponent/>
                     </div>
                 </LayoutContextProvider>
                 <RoomAudioRenderer/>
