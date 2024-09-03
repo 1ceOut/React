@@ -103,11 +103,23 @@ const FeedMenu = ({ postingId }) => {
   const commentsArray = commentsByPostingId ? commentsByPostingId.comments : [];
   const commentCount = commentsArray.length;
 
-  const openCommentModal = () => setIsCommentModalOpen(true);
-  const closeCommentModal = () => setIsCommentModalOpen(false);
+  const openCommentModal = () => {
+    document.body.style.overflow = "hidden";
+    setIsCommentModalOpen(true);
+  };
+  const closeCommentModal = () => {
+    document.body.style.overflow = "auto";
+    setIsCommentModalOpen(false);
+  };
 
-  const openFilterModal = () => setIsFilterModalOpen(true);
-  const closeFilterModal = () => setIsFilterModalOpen(false);
+  const openFilterModal = () => {
+    document.body.style.overflow = "hidden";
+    setIsFilterModalOpen(true);
+  };
+  const closeFilterModal = () => {
+    document.body.style.overflow = "auto";
+    setIsFilterModalOpen(false);
+  };
 
   const handleFilterClick = (filter) => {
     setSelectedFilter(filter);
@@ -150,7 +162,7 @@ const FeedMenu = ({ postingId }) => {
     setIsDragging(false);
     const deltaY = e.changedTouches[0].clientY - modalOffsetY;
 
-    if (modalRef.current && deltaY > 200) {
+    if (modalRef.current && deltaY > 100) {
       closeCommentModal();
     } else {
       if (modalRef.current) {
@@ -199,43 +211,52 @@ const FeedMenu = ({ postingId }) => {
         >
           <div
             ref={modalRef}
-            className="bg-white rounded-lg w-[390px] h-auto overflow-y-auto"
+            className="bg-white rounded-lg w-[390px] h-full overflow-hidden"
             style={{ transition: "transform 0.3s ease" }}
           >
-            <div className="flex flex-col justify-between items-center">
-              <div className="text-lg font-semibold mb-8 flex justify-center items-center">
-                <div>댓글 목록</div>
+            <div className="flex flex-col justify-between items-center h-full">
+              <div className="flex justify-between w-full px-4 py-3 bg-gray-100">
+                <div className="w-[18px]"></div>
+                <div className="text-lg font-semibold">댓글 목록</div>
+                <button
+                  onClick={closeCommentModal}
+                  className="text-lg font-bold"
+                >
+                  &times;
+                </button>
               </div>
               <div
-                className="my-5 cursor-pointer flex"
+                className="my-5 cursor-pointer flex bg-white z-10 w-full px-4"
                 onClick={openFilterModal}
               >
                 관련성 높은 댓글
                 <img
                   src="/assets/downarrow.png"
                   alt="아래방향"
-                  className="ml-2 flex justify-center items-center"
+                  className="ml-2"
                 />
               </div>
-              {sortedComments.length > 0 ? (
-                sortedComments.map((comment) => (
-                  <div key={comment.comment.commentId}>
-                    <CommentList
-                      isOwner={isCommentOwner(comment.comment)}
-                      commentId={comment.commentId}
-                      comment={comment.comment}
-                      userProfile={comment.userProfile}
-                      userName={comment.userName}
-                    />
-                  </div>
-                ))
-              ) : (
-                <div>댓글이 없습니다.</div>
-              )}
-              <div className="flex justify-center items-center">
+              <div className="flex-1 w-full px-4 overflow-y-auto">
+                {sortedComments.length > 0 ? (
+                  sortedComments.map((comment) => (
+                    <div key={comment.comment.commentId}>
+                      <CommentList
+                        isOwner={isCommentOwner(comment.comment)}
+                        commentId={comment.commentId}
+                        comment={comment.comment}
+                        userProfile={comment.userProfile}
+                        userName={comment.userName}
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <div>댓글이 없습니다.</div>
+                )}
+              </div>
+              <div className="flex justify-center items-center w-full mt-4">
                 <button
                   onClick={closeCommentModal}
-                  className="mt-4 px-4 py-2 w-[342px] h-12 bg-gray-300 rounded-lg"
+                  className="px-4 py-2 w-[342px] h-12 bg-gray-300 rounded-lg"
                 >
                   닫기
                 </button>
@@ -244,6 +265,7 @@ const FeedMenu = ({ postingId }) => {
           </div>
         </div>
       )}
+
       {isFilterModalOpen && (
         <div>
           <div

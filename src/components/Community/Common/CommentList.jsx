@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { Rating } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDeleteComment } from "./../../../query/LikeCommentQuery";
 import UpdateCommentModal from "./UpdateCommentModal";
 
@@ -71,6 +71,22 @@ const CommentList = ({
     }
   };
 
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        closeModal();
+      }
+    };
+
+    if (isModalOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [isModalOpen]);
+
   return (
     <div className="mb-4">
       <div className="flex">
@@ -109,8 +125,8 @@ const CommentList = ({
         </div>
       </div>
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 w-[342px]">
+        <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 w-[342px]" ref={modalRef}>
             <div className="text-lg font-semibold mb-8 flex flex-col justify-center items-center">
               <img src="/assets/confirm.png" alt="삭제확인" className="mb-3" />
               수정/삭제
