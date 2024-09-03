@@ -12,6 +12,7 @@ const FoodList = () => {
   const [loading, setLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [sortOrder, setSortOrder] = useState("asc"); // "asc" for ascending, "desc" for descending
 
   useEffect(() => {
     const fetchFoodList = async () => {
@@ -35,7 +36,40 @@ const FoodList = () => {
 
   // 옵션 클릭 핸들러
   const handleOptionClick = (option) => {
-    setSelectedOption(option);
+    if (selectedOption === option) {
+      // If the same option is clicked, toggle the sort order
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      // If a new option is clicked, set to ascending order by default
+      setSelectedOption(option);
+      setSortOrder("asc");
+    }
+    sortFoodList(option);
+  };
+
+  // Food list sorting function
+  const sortFoodList = (option) => {
+    let sortedList = [...foodList];
+    if (option === "이름 순") {
+      sortedList.sort((a, b) =>
+        sortOrder === "asc"
+          ? a.productName.localeCompare(b.productName, "ko")
+          : b.productName.localeCompare(a.productName, "ko")
+      );
+    } else if (option === "등록일 순") {
+      sortedList.sort((a, b) =>
+        sortOrder === "asc"
+          ? new Date(a.createdDate) - new Date(b.createdDate)
+          : new Date(b.createdDate) - new Date(a.createdDate)
+      );
+    } else if (option === "유통기한 순") {
+      sortedList.sort((a, b) =>
+        sortOrder === "asc"
+          ? new Date(a.expiryDate) - new Date(b.expiryDate)
+          : new Date(b.expiryDate) - new Date(a.expiryDate)
+      );
+    }
+    setFoodList(sortedList);
   };
 
   // 백그라운드 클릭 시 팝업 닫기
@@ -46,6 +80,14 @@ const FoodList = () => {
   // 팝업 내부 클릭 시 이벤트 전파 방지
   const handlePopupClick = (e) => {
     e.stopPropagation();
+  };
+
+  // Function to render the sort arrow
+  const renderSortArrow = (option) => {
+    if (selectedOption === option) {
+      return sortOrder === "asc" ? "▲" : "▼";
+    }
+    return null;
   };
 
   return (
@@ -121,7 +163,7 @@ const FoodList = () => {
                 }`}
                 onClick={() => handleOptionClick("이름 순")}
               >
-                이름 순
+                이름 순 {renderSortArrow("이름 순")}
               </div>
               <div
                 className={`w-[108px] h-[56px] rounded-[12px] flex justify-center border-[1px] items-center text-center font-normal text-[16px] cursor-pointer ${
@@ -131,7 +173,7 @@ const FoodList = () => {
                 }`}
                 onClick={() => handleOptionClick("등록일 순")}
               >
-                등록일 순
+                등록일 순 {renderSortArrow("등록일 순")}
               </div>
               <div
                 className={`w-[108px] h-[56px] rounded-[12px] flex justify-center border-[1px] items-center text-center font-normal text-[16px] cursor-pointer ${
@@ -141,7 +183,7 @@ const FoodList = () => {
                 }`}
                 onClick={() => handleOptionClick("유통기한 순")}
               >
-                유통기한 순
+                유통기한 순 {renderSortArrow("유통기한 순")}
               </div>
             </div>
             <div className="w-[342px] h-[56px] rounded-[12px] bg-[#2377EF] mt-6 flex items-center justify-center">

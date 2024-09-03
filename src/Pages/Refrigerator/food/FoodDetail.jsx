@@ -70,7 +70,7 @@ const FoodDetail = () => {
   };
   console.log(state);
   return (
-    <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-auto overflow-auto">
+    <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-auto">
       <MenuNavigate option={"상품 상세"} alertPath="/addinfo/habit" />
       <div className="relative w-[342px] h-[60px] mt-5 flex items-center rounded-xl">
         <div className="flex items-center">
@@ -122,7 +122,6 @@ const FoodDetail = () => {
           </p>
         </div>
       </div>
-      <div className="w-[390px] h-[16px] bg-[#F4F4F4] mt-8"></div>
       {nutritionInfo ? (
         <div className="border-2 border-black w-[342px] font-sans text-[#333] p-2 mt-8">
           <div className="text-left">
@@ -211,9 +210,9 @@ const FoodDetail = () => {
           </table>
         </div>
       ) : (
-        <p>영양정보 없는딩?</p>
+        <div className="mt-10">영양정보 없는딩?</div>
       )}
-      <div className="w-[342px] flex justify-between mt-8">
+      <div className="w-[342px] flex justify-center mt-8">
         <button
           onClick={handleSave}
           className="w-[330px] h-[48px] rounded-xl border border-[#009B77] bg-[#009B77] text-white text-[16px] font-medium"
