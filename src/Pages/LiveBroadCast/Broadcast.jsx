@@ -5,9 +5,9 @@ import {
     LayoutContextProvider,
     LiveKitRoom,
     useToken,
-    RoomAudioRenderer,
+    RoomAudioRenderer, DisconnectButton,
 } from "@livekit/components-react";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {ChatComponent} from "../../components/LiveBroadCast/ChatComponent.jsx";
 import VideoConference from "../../components/LiveBroadCast/VideoConference.jsx";
 
@@ -19,6 +19,7 @@ const MyLiveKitApp = () => {
     const token = useToken(`${api_url}/api/token`, roomName, {
         userInfo: {identity: participantName},
     });
+    const navigate = useNavigate();
 
     return (
         <div className='flex flex-col items-center mx-auto w-full bg-zinc-100 max-w-[390px] h-screen'>
@@ -37,7 +38,10 @@ const MyLiveKitApp = () => {
                         <VideoConference roomName={roomName} style={{flex: '1',height: '54%', width: "100%"}}
                                          participantName={participantName}/>
                         <ChatComponent/>
-                        <ControlBar style={{width: '100%', maxHeight: '150px', display: "flex",flexWrap:"wrap"}}/>
+                        {
+                            roomName===participantName?(<ControlBar style={{width: '100%', maxHeight: '150px', display: "flex",flexWrap:"wrap"}}/>)
+                                :(<DisconnectButton onClick={()=>navigate("/community/feed")}>연결 끊기</DisconnectButton>)
+                        }
                     </div>
                 </LayoutContextProvider>
                 <RoomAudioRenderer/>
