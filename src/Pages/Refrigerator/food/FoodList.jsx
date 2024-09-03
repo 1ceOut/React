@@ -4,6 +4,7 @@ import MenuNavigate from "../../../components/Common/MenuNavigate";
 import SearchForm from "../../../components/Refrigerator/Common/SearchForm";
 import { useLocation } from "react-router-dom";
 import { listFromLcategory } from "../../../query/FoodListQuery.jsx";
+import BarNavigate from "./../../../components/Common/BarNavigate";
 import Modal from "../../../components/Refrigerator/FridgeManage/Modal.jsx";
 
 const FoodList = () => {
@@ -42,7 +43,6 @@ const FoodList = () => {
     const handleOptionClick = (option) => {
         setSelectedOption(option);
     };
-
     // 음식 리스트 정렬 함수
     const sortFoodList = (option) => {
         let sortedList = [...foodList];
@@ -313,6 +313,11 @@ const FoodList = () => {
                     </div>
                 </div>
             )}
+            <BarNavigate
+        shoppingsrc="/assets/shopping.png"
+        homesrc="/assets/home.png"
+        searchsrc="/assets/search.png"
+      />
         </main>
     );
 };

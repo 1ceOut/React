@@ -7,6 +7,7 @@ import CategoryFood from './../../components/Refrigerator/FridgeManage/CategoryF
 import { fetchSavedBarcodes } from '../../query/FoodListQuery';
 import DetailButton from "../../components/Common/DetailButton.jsx";
 import Modal from "../../components/Refrigerator/FridgeManage/Modal.jsx";
+import BarNavigate from "./../../components/Common/BarNavigate";
 
 const FridgeManagePage = () => {
     const [selectedFridge, setSelectedFridge] = useState(null);
@@ -24,20 +25,27 @@ const FridgeManagePage = () => {
         }
     }, []);
 
-    useEffect(() => {
-        if (selectedFridge) {
-            setLoading(true);
-            fetchSavedBarcodes(selectedFridge)
-                .then((response) => {
-                    setSaveFoodList(response || []);
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
-        } else {
-            setSaveFoodList([]);
-        }
-    }, [selectedFridge]);
+   useEffect(() => {
+    if (selectedFridge) {
+      setLoading(true);
+      fetchSavedBarcodes(selectedFridge)
+        .then((response) => {
+          setSaveFoodList(response || []);
+          const initialItemsToShow = response.reduce((acc, food) => {
+            if (!acc[food.lcategory]) {
+              acc[food.lcategory] = { count: 3, expanded: false };
+            }
+            return acc;
+          }, {});
+          setItemsToShowByCategory(initialItemsToShow);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      setSaveFoodList([]);
+    }
+  }, [selectedFridge]);
 
     const groupByCategory = (foods) => {
         if (!Array.isArray(foods)) {
@@ -54,6 +62,17 @@ const FridgeManagePage = () => {
         }, {});
     };
 
+  const handleToggle = (category) => {
+    setItemsToShowByCategory((prev) => ({
+      ...prev,
+      [category]: {
+        count: prev[category].expanded ? 3 : groupedFoodList[category].length,
+        expanded: !prev[category].expanded,
+      },
+    }));
+  };
+
+  const groupedFoodList = groupByCategory(saveFoodList);
     const handleSearchResults = (results) => {
         setSearchResults(results);  // 검색 결과를 상태에 저장
         setIsModalOpen(true);       // 검색 결과 모달을 엽니다.
@@ -80,34 +99,59 @@ const FridgeManagePage = () => {
                 <SearchForm selectedFridge={selectedFridge} onSearchResults={handleSearchResults} />
             </div>
 
-            <div className="self-stretch pt-5">
-                {loading ? (
-                    <p>로딩 중...</p>
-                ) : selectedFridge === null ? (
-                    <p>냉장고를 선택하면 해당 냉장고에 있는 음식이 나와요</p>
-                ) : Object.keys(groupedFoodList).length === 0 ? (
-                    <p>선택한 냉장고의 음식이 없습니다.</p>
-                ) : (
-                    Object.keys(groupedFoodList).map((category) => (
-                        <div key={category}>
-                            <CategoryFood option={category}/>
-                            {groupedFoodList[category].slice(0, itemsToShow).map((food, index) => (
-                                <DetailButton
-                                    key={index}
-                                    id={food.id}
-                                    productName={food.productName}
-                                    expiryDate={food.expiryDate}
-                                    count={food.count}
-                                    productType={food.productType}
-                                    createdDate={food.createdDate}
-                                    lcategory={food.lcategory}
-                                    scategory={food.scategory}
-                                    option={food.productName}
-                                />
-                            ))}
-                        </div>
-                    ))
-                )}
+      <div className="self-stretch pt-5">
+        {loading ? (
+          <p>로딩 중...</p>
+        ) : selectedFridge === null ? (
+          <p>냉장고를 선택하면 해당 냉장고에 있는 음식이 나와요</p>
+        ) : Object.keys(groupedFoodList).length === 0 ? (
+          <p>냉장고 텅텅텅텅 비었음, ㅋ</p>
+        ) : (
+          Object.keys(groupedFoodList).map((category) => (
+            <div key={category}>
+              <CategoryFood option={category} />
+              {groupedFoodList[category]
+                .slice(0, itemsToShowByCategory[category].count)
+                .map((food, index) => (
+                  <DetailButton
+                    key={index}
+                    id={food.id}
+                    productName={food.productName}
+                    expiryDate={food.expiryDate}
+                    count={food.count}
+                    productType={food.productType}
+                    createdDate={food.createdDate}
+                    lcategory={food.lcategory}
+                    scategory={food.scategory}
+                    option={food.productName}
+                  />
+                ))}
+
+              {groupedFoodList[category].length > 3 && (
+                <div
+                  className="mt-2 flex justify-center items-center cursor-pointer"
+                  onClick={() => handleToggle(category)}
+                >
+                  <span>
+                    {itemsToShowByCategory[category].expanded
+                      ? "접기"
+                      : "더보기"}
+                  </span>
+                  <img
+                    src={
+                      itemsToShowByCategory[category].expanded
+                        ? "/assets/arrowup.png"
+                        : "/assets/downarrow.png"
+                    }
+                    alt={
+                      itemsToShowByCategory[category].expanded
+                        ? "up arrow"
+                        : "down arrow"
+                    }
+                    className="ml-2"
+                  />
+                </div>
+              )}
             </div>
 
             {isModalOpen && (
@@ -140,6 +184,13 @@ const FridgeManagePage = () => {
                     </div>
                 </Modal>
             )}
+            <div className="flex justify-center items-center mt-10">
+        <BarNavigate
+          shoppingsrc="/assets/shopping.png"
+          homesrc="/assets/home.png"
+          searchsrc="/assets/search.png"
+        />
+      </div>
 
         </main>
     );
