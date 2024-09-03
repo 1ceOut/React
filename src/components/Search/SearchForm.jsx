@@ -7,21 +7,20 @@ import RecentSearch from "../../components/Search/RecentSearch";
 
 const SearchForm = () => {
     const [inputValue, setInputValue] = useState('');
-    
-    const [response, setResponse] = useState([]); // response 상태 추가
-    
+    const [response, setResponse] = useState([]);
+    const [showPopup, setShowPopup] = useState(false); // 팝업 상태 추가
+
     const addSearch = useSearchStore((state) => state.addSearch);
     const navigate = useNavigate();
-    
     const { userId, isLogin, LoginSuccessStatus } = useUserStore();
 
     useEffect(() => {
         const savedToken = localStorage.getItem("accessToken");
         if (savedToken && !isLogin) {
-            LoginSuccessStatus(savedToken); // 토큰이 있다면 로그인 상태 초기화
+            LoginSuccessStatus(savedToken);
         }
         if (!userId) {
-            navigate("/"); // 로그인 안되어 있으면 로그인 페이지로 이동
+            navigate("/");
         }
     }, [userId, isLogin, navigate, LoginSuccessStatus]);
 
@@ -30,6 +29,11 @@ const SearchForm = () => {
     };
 
     const handleSearch = async () => {
+        if (inputValue.trim() === '') {
+            setShowPopup(true); // 입력이 비어 있으면 팝업 표시
+            return;
+        }
+
         const response = await SearchAllFood(userId, inputValue);
         setResponse(response);
        
@@ -38,6 +42,10 @@ const SearchForm = () => {
             setInputValue('');
         }
         console.log(response);
+    };
+
+    const closePopup = () => {
+        setShowPopup(false);
     };
 
     return (
@@ -60,38 +68,44 @@ const SearchForm = () => {
                         />
                     </div>
                 </div>
-                <div>
-                    
-                </div>
+                <div></div>
             </div>
-            {response.length > 0 ? (
-  response.map((item, index) => (
-    <div key={index} className="mb-6">
-      <RecentSearch
-        option={item.productName}
-        refrigeratorName={item.refrigeratorName}
-        count={item.count}
-        userId={item.userId}
-        id={item.id}
-        createdDate={item.createdDate}
-        expiryDate={item.expiryDate}
-        lcategory={item.lcategory}
-        productType={item.productType}
-        scategory={item.scategory}
-        barcode={item.barcode}
+            
+            {/* 검색 결과 */}
+            {response.length > 0 && response.map((item, index) => (
+                <div key={index} className="mb-6">
+                    <RecentSearch
+                        option={item.productName}
+                        refrigeratorName={item.refrigeratorName}
+                        count={item.count}
+                        userId={item.userId}
+                        id={item.id}
+                        createdDate={item.createdDate}
+                        expiryDate={item.expiryDate}
+                        lcategory={item.lcategory}
+                        productType={item.productType}
+                        scategory={item.scategory}
+                        barcode={item.barcode}
+                    />
+                </div>
+            ))}
 
-            
-            
-             />
-          </div>
-        ))
-      ) : (
-        <div>No posts available</div>
-      )} 
+            {/* 팝업 */}
+            {showPopup && (
+                <div className="fixed inset-0 flex items-center justify-center z-50 mb-[100px]">
+                    <div className="bg-white p-4 border rounded-lg shadow-lg  mb-[50px]">
+                        <p className="text-center text-lg ">검색어를 입력하세요!</p>
+                        <button
+                            onClick={closePopup}
+                            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded ml-[40px]"
+                        >
+                            닫기
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
 
 export default SearchForm;
-
-
