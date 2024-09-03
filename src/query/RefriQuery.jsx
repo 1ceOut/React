@@ -10,7 +10,6 @@ const API_KEY = import.meta.env.VITE_API_FOODAPI_KEY;
 const fetchFridgeOptions = async (userId) => {
     try {
         const response = await axios.post(`${API_URL}/api/food/refri/user/refrilist`, { userId });
-        console.log('Fetched data:', response.data);
         return response.data;
     } catch (error) {
         console.error('Error fetching fridge options:', error);
@@ -64,7 +63,7 @@ export const masterUserList = async (userId) => {
             },
             withCredentials: true // 옵션으로 설정
         });
-        console.log(response.data); // 여기서 response.data는 refrigerator 객체 리스트가 됨
+         // 여기서 response.data는 refrigerator 객체 리스트가 됨
         return response.data;
     } catch (error) {
         console.error("Error fetching master user list:", error);
@@ -74,8 +73,6 @@ export const masterUserList = async (userId) => {
 
 //마스터 냉장고 사용자가 이름 변경
 export const masterUserRefri = async ({ userId, data }) => {
-    console.log("userId:", userId);
-    console.log("data:", data);
     try {
         const response = await axios.post(`${API_URL}/api/food/refri/master/update`, {
             userId: userId,
@@ -85,7 +82,6 @@ export const masterUserRefri = async ({ userId, data }) => {
                 'Content-Type': 'application/json'
             }
         });
-        console.log(response.data);
         return response.data;
     } catch (error) {
         console.error("Error updating data:", error.response ? error.response.data : error.message);
@@ -95,7 +91,6 @@ export const masterUserRefri = async ({ userId, data }) => {
 
 //마스터 냉장고 사용자가 냉장고 삭제
 export const masterUserDelete = async (refrigerator_id) => {
-    console.log("너 값 뭐냐?", refrigerator_id);
     try {
         // `refrigerator_id`를 쿼리 파라미터로 전달
         const response = await axios.post(
@@ -139,7 +134,6 @@ export const inviteUserDelete = async (userId, refrigerator_id) => {
 
 //음식추가
 export const saveBarcode = async (product, onSuccess) => {
-    console.log(product);
     try {
         const response = await axios.post(`${API_URL}/api/food/barcodes`, product,{
             headers: {
@@ -157,10 +151,28 @@ export const saveBarcode = async (product, onSuccess) => {
     }
 };
 
+export const UserList = async (userId) => {
+    try {
+        const response = await axios.post(
+            `${API_URL}/api/food/user?userId=${userId}`, // 쿼리 파라미터로 데이터 전달
+            {},
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                withCredentials: true // 옵션으로 설정
+            }
+        );
+        return response.data;
+    } catch (e) {
+        console.error("Error in inviteUserList:", e);
+        throw e; // 에러를 상위로 전달
+    }
+};
+
 
 
 export const inviteUserList = async (userId, refrigeratorId) => {
-    console.log("Sending request with userId:", userId, "and refrigeratorId:", refrigeratorId);
     try {
         const response = await axios.post(
             `${API_URL}/api/food/refri/invite/userlist`,
@@ -196,14 +208,12 @@ export const recognizeTextWithUrl = async (imageUrl) => {
         version: 'V2',
         timestamp: Date.now(),
     };
-    console.log(ocrRequest);
     try {
         const response = await axios.post(`${API_URL}/api/food/ocr`, ocrRequest, {
             headers: {
                 'Content-Type': 'application/json',
             },
         });
-        console.log(response.data);
         return response.data;
     } catch (error) {
         console.error("Error recognizing text:", error.response ? error.response.data : error.message);

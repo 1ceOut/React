@@ -27,7 +27,6 @@ const FridgeUser = () => {
             try {
                 const data = await masterUserList(userId);
                 setUserData(data || []);
-                console.log(data);
             } catch (error) {
                 console.error("Failed to fetch user data", error);
                 setUserData([]);
@@ -42,13 +41,15 @@ const FridgeUser = () => {
 
     return (
         <div className="self-stretch flex items-center justify-between w-[342px] mb-5">
-             <div className="text-base font-semibold">
+             <div className="text-base font-semibold flex flex-col overflow-x-hidden h-[410px]">
                  {userData.map((refri, index) => (
                      <div key={index} className="items-center space-x-2 mb-2">
-                         <div className="text-sm font-medium text-gray-700 p-2 mb-3" >
+                         <div className="bg-blue-100 text-xl font-bold text-blue-800 p-3 rounded-lg shadow-md mb-3 text-center">
                              {refri.refrigeratorName} 냉장고
                          </div>
-                         <UserSelect userId={userId} refriId={refri.refrigerator_id}/>
+                         <div>
+                             <UserSelect userId={userId} refriId={refri.refrigerator_id}/>
+                         </div>
                      </div>
                  ))}
              </div>

@@ -1,10 +1,27 @@
 
 import useUserStore from './../../../store/useUserStore';
+import {useEffect, useState} from "react";
+import {UserList} from "../../../query/RefriQuery.jsx";
 
 const ProfileInfo = () => {
 
-    const { userProfile, userName } = useUserStore();
+    const { userProfile, userName,userId } = useUserStore();
+    const [userData, setUserData] = useState([]);
 
+    useEffect(() => {
+        const fetchInvitedUserData = async () => {
+            if (userId) {
+                try {
+                    const data = await UserList(userId);
+                    setUserData(data || []);
+                } catch (error) {
+                    setUserData([]);
+                }
+            }
+        };
+
+        fetchInvitedUserData();
+    }, [userId]);
 
     return (
         <div className="self-stretch flex items-center w-[342px] h-14 mt-[30px]"> 
@@ -20,10 +37,13 @@ const ProfileInfo = () => {
                     <div className="font-semibold text-[18px]">
                         {userName}
                     </div>
-                    <div className="font-normal text-[14px] text-[#767676]">
-                        gahyunee012@gmail.com
+                    {userData.map((user, index) => (
+                    <div key={index} className="font-normal text-[14px] text-[#767676]">
+                        {user.email}
                     </div>
+                    ))}
                 </div>
+
             </div>
         </div>
     );
