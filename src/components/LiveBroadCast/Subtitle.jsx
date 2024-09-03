@@ -6,7 +6,7 @@ import {useParams} from "react-router-dom";
 
 const api_url = import.meta.env.VITE_API_IP;
 
-const Subtitle = () => {
+const Subtitle = ({publisher}) => {
     const [value, setValue] = useState('');
     const stompClient = useRef(null);
     const { listen, listening, stop } = useSpeechRecognition({
@@ -16,6 +16,7 @@ const Subtitle = () => {
             setValue(result);
         },
     });
+
     const { roomName, participantName } = useParams();
 
     const xhr = new XMLHttpRequest();
@@ -46,7 +47,7 @@ const Subtitle = () => {
         <div>
             <div>{value}</div>
             {
-                roomName === participantName?(<button onMouseDown={listen} onMouseUp={stop}>
+                publisher === participantName?(<button onMouseDown={listen} onMouseUp={stop}>
                         🎤
                     </button>):null
             }

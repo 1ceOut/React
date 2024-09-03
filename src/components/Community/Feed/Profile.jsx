@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAllUsers } from "../../../query/FeedQuery";
 import useUserStore from "../../../store/useUserStore";
 import HorizontalLine from "../../Common/HorizontalLine";
+import {start} from "../../../query/LiveroomQuery.js"
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -53,6 +54,11 @@ const Profile = () => {
   const handleProfileClick = (userId) => {
     navigate(`/community/myfeed/${userId}`);
   };
+
+  const handleLiveBroadcast = () => {
+    start(userId);
+    window.open(`/liveroom/${userId}/${userName}`,"_blank");
+  }
 
   const handlePlusButtonClick = (e) => {
     e.stopPropagation(); // 클릭 이벤트 버블링 방지
@@ -135,7 +141,7 @@ const Profile = () => {
           >
             게시글 쓰기
           </div>
-          <div className="w-[83px] h-[22px] text-[13px] font-semibold mt-[12px] cursor-pointer">
+          <div className="w-[83px] h-[22px] text-[13px] font-semibold mt-[12px] cursor-pointer" onClick={handleLiveBroadcast}>
             라이브 시작
           </div>
         </div>

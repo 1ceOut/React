@@ -10,9 +10,7 @@
     }
 }
 
-main {
-    background-color: ghostwhite;
-}
+
 
 .tagify {
     --tag-border-radius: 7px;
