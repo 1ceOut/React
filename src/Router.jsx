@@ -41,6 +41,7 @@ import FeedUpdatePage from "./Pages/Community/FeedUpdatePage.jsx";
 import {createAsyncStoragePersister} from "@tanstack/query-async-storage-persister";
 import {PersistQueryClientProvider} from "@tanstack/react-query-persist-client";
 import {createSyncStoragePersister} from "@tanstack/query-sync-storage-persister";
+import MyLiveKitApp from "./Pages/LiveBroadCast/Broadcast.jsx";
 
 
 const queryClient = new QueryClient();
@@ -111,12 +112,12 @@ const Router = () => {
 
                     {/* 커뮤니티 */}
 
-                    <Route path="/community/feed" element={<FeedPage />} />
-                    <Route path="/community/feeddetail/:postingId" element={<FeedDetailPage />} />
-                    <Route path="/community/feedcreate" element={<FeedCreatePage />} />
+                    <Route path="/community/feed" element={<FeedPage/>}/>
+                    <Route path="/community/feeddetail/:postingId" element={<FeedDetailPage/>}/>
+                    <Route path="/community/feedcreate" element={<FeedCreatePage/>}/>
                     <Route path="/community/feedupdate" element={<FeedUpdatePage/>}/>
                     {/* <Route path="community/myfeed" element={<MyFeedPage />} /> */}
-                    <Route path="/community/myfeed/:userId" element={<MyFeedPage />} />
+                    <Route path="/community/myfeed/:userId" element={<MyFeedPage/>}/>
 
 
                     {/* 채팅방 */}
@@ -128,6 +129,9 @@ const Router = () => {
                     <Route path="Shop/detail" element={<ShoppingDetail/>}/>
                     {/* 검색 */}
                     <Route path="search/search" element={<SearchPage/>}/>
+
+                    {/*방송*/}
+                    <Route path={"/liveroom/:roomName/:participantName"} element={<MyLiveKitApp/>}></Route>
                 </Routes>
             </BrowserRouter>
             <ReactQueryDevtools buttonPosition={"relative"}/>
