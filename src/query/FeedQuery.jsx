@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 // API URL 설정
 const API_URL = import.meta.env.VITE_FOOD_IP || "http://localhost:17017";
-
+const API_URL1 = import.meta.env.VITE_API_REFRI;
 // Axios 기본 설정 업데이트
 axios.defaults.withCredentials = true;
 
@@ -98,6 +98,58 @@ const deletePosting = async (postingId) => {
   } catch (error) {
     console.error("게시물 삭제 실패:", error.response ? error.response.data : error.message);
     throw error; // 오류를 상위 컴포넌트에 전파하여 적절히 처리하도록 합니다.
+  }
+};
+
+export const usercreatesub = async (postingUserId, userId) => {
+  try {
+    const response = await axios.post(`${API_URL1}/api/food/create/subUser`, null, {
+      params: {
+        userId1: userId,
+        userId2: postingUserId,
+      },
+    });
+    return response.data;
+  } catch (e) {
+  }
+};
+export const userdelete = async (postingUserId, userId)=>{
+  try {
+    const response = await axios.post(`${API_URL1}/api/food/delete/subUser`, null, {
+      params: {
+        userid1: userId,
+        userid2: postingUserId,
+      },
+    });
+    return response.data;
+  } catch (e) {
+  }
+};
+
+//고졸 이슈로 팔로워 팔로잉이 서로 바뀌었습니다.
+//죄송합니다.
+export const subUserListFollow = async (userId) => {
+  try {
+    const response = await axios.get(`${API_URL1}/api/food/find/subUser`,{
+      params:{
+        userId:userId,
+      }
+    });
+    return response.data;
+  }catch (e) {
+    console.log(e);
+  }
+};
+export const subUserListFollowing = async (userId) => {
+  try {
+    const response = await axios.get(`${API_URL1}/api/food/find/Usersub`,{
+      params:{
+        userId:userId,
+      }
+    });
+    return response.data;
+  }catch (e) {
+    console.log(e);
   }
 };
 
