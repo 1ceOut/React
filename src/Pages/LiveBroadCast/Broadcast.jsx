@@ -5,21 +5,47 @@ import {
     LayoutContextProvider,
     LiveKitRoom,
     useToken,
-    RoomAudioRenderer, DisconnectButton,
+    RoomAudioRenderer, DisconnectButton, TrackToggle, MediaDeviceSelect,
 } from "@livekit/components-react";
-import {useNavigate, useParams} from "react-router-dom";
+import { useNavigate, useParams} from "react-router-dom";
 import {ChatComponent} from "../../components/LiveBroadCast/ChatComponent.jsx";
 import VideoConference from "../../components/LiveBroadCast/VideoConference.jsx";
+import useUserStore from "../../store/useUserStore.js";
+import {Getuser,start,end} from "../../query/LiveroomQuery.js";
 
 let LIVEKIT_URL = "wss://openvidu.midichi.kro.kr/";
 
 const api_url = import.meta.env.VITE_API_IP;
 const MyLiveKitApp = () => {
     const {roomName, participantName} = useParams();
+    const {userId} = useUserStore();
     const token = useToken(`${api_url}/api/token`, roomName, {
         userInfo: {identity: participantName},
     });
+
+    const [publisher, setPublisher] = useState(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchPublisher = async () => {
+            try {
+                const response = await Getuser(userId);
+                setPublisher(response.data.name);
+            } catch (error) {
+                console.error("Error fetching publisher:", error);
+            }
+        };
+
+        fetchPublisher();
+    }, [userId]);
+
+    const handleDisconnected = () => {
+        console.log("disconnected");
+        if (publisher===participantName){
+            end(userId)
+        }
+        navigate("/community/feed")
+    }
 
     return (
         <div className='flex flex-col items-center mx-auto w-full bg-zinc-100 max-w-[390px] h-screen'>
@@ -32,15 +58,18 @@ const MyLiveKitApp = () => {
                 data-lk-theme={"default"}
                 debug={"true"}
                 style={{width: '38vh', height: '130vh'}}
+                onDisconnected={handleDisconnected}
             >
                 <LayoutContextProvider>
                     <div className="flex flex-col h-full">
-                        <VideoConference roomName={roomName} style={{flex: '1',height: '54%', width: "100%"}}
-                                         participantName={participantName}/>
+                        <VideoConference style={{flex: '1',height: '54%', width: "100%"}} publisherName={publisher}/>
                         <ChatComponent/>
                         {
-                            roomName===participantName?(<ControlBar style={{width: '100%', maxHeight: '150px', display: "flex",flexWrap:"wrap"}}/>)
-                                :(<DisconnectButton onClick={()=>navigate("/community/feed")}>연결 끊기</DisconnectButton>)
+                            participantName===publisher?(
+                                <>
+                                    <ControlBar style={{width: '100%', maxHeight: '150px', display: "flex",flexWrap:"wrap"}}/>
+                                </>)
+                                :(<DisconnectButton>연결 끊기</DisconnectButton>)
                         }
                     </div>
                 </LayoutContextProvider>
