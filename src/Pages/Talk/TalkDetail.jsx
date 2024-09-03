@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import {useState, useEffect, useRef} from "react";
 import MenuNavigate from "../../components/Common/MenuNavigate";
-import { FaChevronDown, FaChevronUp, FaSmile } from 'react-icons/fa'; // FaSmile 아이콘 추가
+import {FaChevronDown, FaChevronUp, FaSmile} from 'react-icons/fa'; // FaSmile 아이콘 추가
 import axiosApi from "./axiosApi.js";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
@@ -8,8 +8,45 @@ import useUserStore from "../../store/useUserStore.js";
 import {useLocation} from "react-router-dom";
 import EmojiPicker from "emoji-picker-react"; // EmojiPicker 임포트
 
-const formatDate = (date) => {
-    return date.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+//시간 별
+const getTimeParts = (timestamp) => {
+    const timeString = timestamp.match(/(오전|오후)\s(\d+):(\d+):(\d+)/);
+    if (!timeString) {
+        console.error("Invalid timestamp format:", timestamp);
+        return {hours: null, minutes: null}; // null 반환
+    }
+
+    let hours = parseInt(timeString[2], 10);
+    const minutes = parseInt(timeString[3], 10);
+    const period = timeString[1];
+
+    if (period === "오후" && hours !== 12) {
+        hours += 12;
+    } else if (period === "오전" && hours === 12) {
+        hours = 0; // 오전 12시는 0시로 설정
+    }
+
+    return {hours, minutes};
+};
+
+// 날짜별로 메시지 그룹화
+const groupMessagesByDate = (messages) => {
+    const grouped = messages.reduce((acc, message) => {
+        const date = new Date(message.datestamp).toLocaleDateString('ko-KR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        });
+
+        if (!acc[date]) {
+            acc[date] = [];
+        }
+
+        acc[date].push(message);
+        return acc;
+    }, {});
+
+    return grouped;
 };
 
 const TalkDetail = () => {
@@ -20,8 +57,7 @@ const TalkDetail = () => {
     const refrigeratorName = queryParams.get('name');
     const chatroomSeq = refrigeratorId;
 
-    console.log("masterId--"+masterId);
-    const { userName, userProfile, userId: currentUserId} = useUserStore();
+    const {userName, userProfile, userId: currentUserId} = useUserStore();
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const [announcement, setAnnouncement] = useState("이건 공지사항 띄울거임");
@@ -48,7 +84,7 @@ const TalkDetail = () => {
     const api_server = import.meta.env.VITE_API_IP;
 
     const connect = () => {
-        //const socket = new SockJS(`http://localhost:8081/ws`,null);
+        //const socket = new SockJS(`http://localhost:8081/ws`, null);
         const socket = new SockJS(`${api_server}/ws`, null, {
             transports: ['xhr-streaming', 'xhr-polling'],
             xhr: () => xhr,
@@ -76,7 +112,7 @@ const TalkDetail = () => {
 
     const fetchMessages = () => {
         axiosApi.get(`${api_server}/api/chatroom/${chatroomSeq}/messages`, {
-        //axiosApi.get(`/api/chatroom/${chatroomSeq}/messages`, {
+        // axiosApi.get(`/api/chatroom/${chatroomSeq}/messages`, {
             withCredentials: true
         })
             .then((response) => {
@@ -98,7 +134,8 @@ const TalkDetail = () => {
                 message: newMessage,
                 senderSeq: Date.now(),
                 userProfile: userProfile,
-                timestamp: new Date().toLocaleTimeString()
+                timestamp: new Date().toLocaleTimeString(),
+                datestamp: new Date().toLocaleDateString()
             };
             stompClient.current.send(`/pub/message`, {}, JSON.stringify(messageObj));
             setNewMessage("");
@@ -121,20 +158,9 @@ const TalkDetail = () => {
     };
 
     const scrollToBottom = () => {
-        chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        chatEndRef.current?.scrollIntoView({behavior: "smooth"});
     };
 
-    const groupMessagesByDate = (messages) => {
-        const grouped = messages.reduce((acc, message) => {
-            const date = new Date(message.timestamp).toLocaleDateString();
-            if (!acc[date]) {
-                acc[date] = [];
-            }
-            acc[date].push(message);
-            return acc;
-        }, {});
-        return grouped;
-    };
 
     const onEmojiClick = (emojiObject) => {
         setNewMessage(prevInput => prevInput + emojiObject.emoji); // 이모지를 메시지에 추가
@@ -145,19 +171,19 @@ const TalkDetail = () => {
 
     return (
         <main className={`flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen`}>
-            <MenuNavigate option={refrigeratorName} alertPath="/addinfo/habit" />
+            <MenuNavigate option={refrigeratorName} alertPath="/addinfo/habit"/>
 
             <div className="flex flex-col w-[390px] h-full bg-gray-50">
                 {/* 공지사항 */}
                 <div className="bg-gray-100 p-3 text-center text-sm text-gray-600 flex items-center justify-between">
-                    <img src="/assets/alert_icon.png" alt="확성기" className="w-5 h-5" />
+                    <img src="/assets/alert_icon.png" alt="확성기" className="w-5 h-5"/>
                     <span className="w-[250px] overflow-hidden h-4">{announcement}</span> {/* 공지사항 내용 */}
                     <button
                         className="text-gray-500 hover:text-gray-700"
                         onClick={toggleAnnouncementVisibility}
                         disabled={masterId !== currentUserId}
                     >
-                        {isAnnouncementVisible ? <FaChevronUp /> : <FaChevronDown />}
+                        {isAnnouncementVisible ? <FaChevronUp/> : <FaChevronDown/>}
                     </button>
                 </div>
 
@@ -184,47 +210,66 @@ const TalkDetail = () => {
 
                 {/* 채팅 메시지 목록 */}
                 <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
-                     style={{ maxHeight: 'calc(100vh - 176px)' }}>
+                     style={{maxHeight: 'calc(100vh - 176px)'}}>
                     {Object.entries(groupedMessages).map(([date, messages]) => (
                         <div key={date}>
+                            <div className="text-center my-4">
+                                <span className="px-4 py-1 bg-gray-200 rounded-full text-xs text-gray-600">
+                                    {date}
+                                </span>
+                            </div>
                             {messages.map((msg, index) => {
-                                const isSameSenderAsPrevious = index > 0 && messages[index - 1].sender === msg.sender;
-                                console.log(messages[index].timestamp==msg.timestamp);
+                                const prevMsg = index > 0 ? messages[index - 1] : null;  // prevMsg 정의
+
+                                const {hours: currentHours, minutes: currentMinutes} = getTimeParts(msg.timestamp);
+                                const {
+                                    hours: prevHours,
+                                    minutes: prevMinutes
+                                } = prevMsg ? getTimeParts(prevMsg.timestamp) : {};
+
+                                const isSameSenderAsPrevious = index > 0 && prevMsg.sender === msg.sender;
+                                const isSameMinuteAsPrevious = index > 0 && currentHours !== null && prevHours !== null && prevHours === currentHours && prevMinutes === currentMinutes;
+
+                                const showProfileAndName = !isSameSenderAsPrevious || !isSameMinuteAsPrevious;
+
                                 return (
-                                    <div key={index} className={`flex ${msg.sender === userName ? 'justify-end' : 'justify-start'} mb-4`}>
+                                    <div key={index}
+                                         className={`flex ${msg.sender === userName ? 'justify-end' : 'justify-start'} mb-4`}>
                                         {/* 프로필 사진 렌더링 (본인이 보낸 메시지에서는 생략) */}
-                                        {msg.sender !== userName && !isSameSenderAsPrevious && (
-                                            <img src={msg.userProfile} alt="profile" className="w-8 h-8 rounded-full mr-2" />
+                                        {showProfileAndName && msg.sender !== userName && (
+                                            <img src={msg.userProfile} alt="profile"
+                                                 className="w-8 h-8 rounded-full mr-2"/>
                                         )}
 
-                                        <div className={`flex flex-col ${msg.sender === userName ? 'items-end' : 'items-start'}`}>
-                                            {/* 발신자 이름을 연속 메시지에서 첫 번째 메시지에만 표시 */}
-                                            {!isSameSenderAsPrevious  && (
+                                        <div
+                                            className={`flex flex-col ${msg.sender === userName ? 'items-end' : 'items-start'}`}>
+                                            {/* 발신자 이름을 연속 메시지에서 시, 분이 동일할 때는 생략 */}
+                                            {showProfileAndName && (
                                                 <div
-                                                    className={`text-xs ${msg.sender === userName ?  "text-blue-500" : "text-gray-500"} mb-1`}>
+                                                    className={`text-xs ${msg.sender === userName ? "text-blue-500" : "text-gray-500"} mb-1`}>
                                                     {msg.sender}
                                                 </div>
                                             )}
                                             <div
                                                 className={`flex ${msg.sender === userName ? 'flex-row-reverse' : 'flex-row'} items-center`}>
-
                                                 <div
                                                     className={`max-w-xs rounded-lg p-2 text-sm ${msg.sender === userName ? "bg-blue-500 text-white" : "bg-gray-300 text-gray-700"} ${msg.sender === userName ? 'rounded-br-none' : 'rounded-bl-none'}`}>
                                                     {msg.message}
                                                 </div>
                                                 <span
                                                     className={`text-gray-400 text-xs ${msg.sender === userName ? 'mr-2' : 'ml-2'}`}>
-                                {msg.timestamp}
-                            </span>
+                                                    {msg.timestamp}
+                                                    </span>
                                             </div>
                                         </div>
                                     </div>
                                 );
                             })}
+
                         </div>
                     ))}
 
-                    <div ref={chatEndRef} />
+                    <div ref={chatEndRef}/>
                 </div>
 
                 {/* 입력 및 전송 버튼 */}
@@ -242,7 +287,7 @@ const TalkDetail = () => {
                         <button
                             className="ml-2 text-gray-400 hover:text-gray-700"
                             onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
-                            <FaSmile />
+                            <FaSmile/>
                         </button>
                         <button
                             className="ml-4 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 text-sm"
@@ -260,7 +305,7 @@ const TalkDetail = () => {
                     {/* 이모지 선택기 */}
                     {showEmojiPicker && (
                         <div className="absolute bottom-20 right-4">
-                            <EmojiPicker onEmojiClick={onEmojiClick} />
+                            <EmojiPicker onEmojiClick={onEmojiClick}/>
                         </div>
                     )}
                 </div>

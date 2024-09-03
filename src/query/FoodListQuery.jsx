@@ -13,7 +13,6 @@ export const fetchSavedBarcodes = async (selectedFridge) => {
             },
             withCredentials: true // 옵션으로 설정
         });
-        console.log(response.data);
         return response.data;
     } catch (error) {
         console.error('Error fetching saved barcodes', error);
