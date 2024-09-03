@@ -54,6 +54,10 @@ const Profile = () => {
     navigate(`/community/myfeed/${userId}`);
   };
 
+  const handleLiveBroadcast = () => {
+    window.open(`/liveroom/${userName}/${userName}`,"_blank");
+  }
+
   const handlePlusButtonClick = (e) => {
     e.stopPropagation(); // 클릭 이벤트 버블링 방지
     const rect = e.target.getBoundingClientRect();
@@ -135,7 +139,7 @@ const Profile = () => {
           >
             게시글 쓰기
           </div>
-          <div className="w-[83px] h-[22px] text-[13px] font-semibold mt-[12px] cursor-pointer">
+          <div className="w-[83px] h-[22px] text-[13px] font-semibold mt-[12px] cursor-pointer" onClick={()=>handleLiveBroadcast}>
             라이브 시작
           </div>
         </div>

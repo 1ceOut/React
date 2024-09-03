@@ -16,6 +16,7 @@ const Subtitle = () => {
             setValue(result);
         },
     });
+
     const { roomName, participantName } = useParams();
 
     const xhr = new XMLHttpRequest();
