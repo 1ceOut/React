@@ -14,28 +14,25 @@ const BarNavigate = ({ shoppingsrc, homesrc, searchsrc }) => {
         <img
           src={shoppingsrc}
           alt="쇼핑"
-          className="cursor-pointer"
+          className="cursor-pointer w-7"
           onClick={() => handleNavigation("/Shop/home")}
         />
-        쇼핑
       </div>
       <div className="flex flex-col justify-center items-center w-1/3">
         <img
           src={homesrc}
           alt="홈"
-          className="cursor-pointer"
+          className="cursor-pointer w-7"
           onClick={() => handleNavigation("/")}
         />
-        홈
       </div>
       <div className="flex flex-col justify-center items-center w-1/3">
         <img
           src={searchsrc}
           alt="검색"
-          className="cursor-pointer"
+          className="cursor-pointer w-7"
           onClick={() => handleNavigation("/search/search")}
         />
-        검색
       </div>
     </div>
   );

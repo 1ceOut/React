@@ -4,6 +4,7 @@ import MenuNavigate from "../../../components/Common/MenuNavigate";
 import SearchForm from "../../../components/Refrigerator/Common/SearchForm";
 import { useLocation } from "react-router-dom";
 import { listFromLcategory } from "../../../query/FoodListQuery.jsx";
+import BarNavigate from "./../../../components/Common/BarNavigate";
 
 const FoodList = () => {
   const location = useLocation();
@@ -77,6 +78,10 @@ const FoodList = () => {
     setShowPopup(false);
   };
 
+  const closeModal = () => {
+    setShowPopup(!showPopup);
+  };
+
   // 팝업 내부 클릭 시 이벤트 전파 방지
   const handlePopupClick = (e) => {
     e.stopPropagation();
@@ -92,10 +97,7 @@ const FoodList = () => {
 
   return (
     <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
-      <MenuNavigate
-        option={`${category} 전체보기`}
-        alertPath="/addinfo/habit"
-      />
+      <MenuNavigate option={`${category}`} alertPath="/addinfo/habit" />
 
       <div className="self-stretch pt-8">
         <SearchForm />
@@ -187,11 +189,21 @@ const FoodList = () => {
               </div>
             </div>
             <div className="w-[342px] h-[56px] rounded-[12px] bg-[#2377EF] mt-6 flex items-center justify-center">
-              <p className="font-semibold text-[16px] text-white m-0">조회</p>
+              <p
+                className="font-semibold text-[16px] text-white m-0"
+                onClick={closeModal}
+              >
+                조회
+              </p>
             </div>
           </div>
         </div>
       )}
+      <BarNavigate
+        shoppingsrc="/assets/shopping.png"
+        homesrc="/assets/home.png"
+        searchsrc="/assets/search.png"
+      />
     </main>
   );
 };

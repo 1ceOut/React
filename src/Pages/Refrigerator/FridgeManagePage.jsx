@@ -6,20 +6,14 @@ import FridgeSelect from "../../components/Refrigerator/FridgeManage/FridgeSelec
 import CategoryFood from "./../../components/Refrigerator/FridgeManage/CategoryFood";
 import { fetchSavedBarcodes } from "../../query/FoodListQuery";
 import DetailButton from "../../components/Common/DetailButton.jsx";
+import BarNavigate from "./../../components/Common/BarNavigate";
 
 const FridgeManagePage = () => {
-  const [showMore, setShowMore] = useState(false);
   const [selectedFridge, setSelectedFridge] = useState(null);
   const [saveFoodList, setSaveFoodList] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [itemsToShow, setItemsToShow] = useState(3); // 표시할 항목 수
+  const [itemsToShowByCategory, setItemsToShowByCategory] = useState({});
 
-  const handleShowMore = () => {
-    setItemsToShow((prev) => prev + 3); // 3개씩 추가로 표시
-    setShowMore(true);
-  };
-
-  // 세션 스토리지에서 냉장고 정보 가져오기
   useEffect(() => {
     const storedFridge = sessionStorage.getItem("selectedFridge");
     if (storedFridge) {
@@ -33,12 +27,19 @@ const FridgeManagePage = () => {
       fetchSavedBarcodes(selectedFridge)
         .then((response) => {
           setSaveFoodList(response || []);
+          const initialItemsToShow = response.reduce((acc, food) => {
+            if (!acc[food.lcategory]) {
+              acc[food.lcategory] = { count: 3, expanded: false };
+            }
+            return acc;
+          }, {});
+          setItemsToShowByCategory(initialItemsToShow);
         })
         .finally(() => {
           setLoading(false);
         });
     } else {
-      setSaveFoodList([]); // 냉장고가 선택되지 않았을 때 음식 목록 초기화
+      setSaveFoodList([]);
     }
   }, [selectedFridge]);
 
@@ -55,6 +56,16 @@ const FridgeManagePage = () => {
       acc[food.lcategory].push(food);
       return acc;
     }, {});
+  };
+
+  const handleToggle = (category) => {
+    setItemsToShowByCategory((prev) => ({
+      ...prev,
+      [category]: {
+        count: prev[category].expanded ? 3 : groupedFoodList[category].length,
+        expanded: !prev[category].expanded,
+      },
+    }));
   };
 
   const groupedFoodList = groupByCategory(saveFoodList);
@@ -94,7 +105,7 @@ const FridgeManagePage = () => {
             <div key={category}>
               <CategoryFood option={category} />
               {groupedFoodList[category]
-                .slice(0, itemsToShow)
+                .slice(0, itemsToShowByCategory[category].count)
                 .map((food, index) => (
                   <DetailButton
                     key={index}
@@ -109,26 +120,44 @@ const FridgeManagePage = () => {
                     option={food.productName}
                   />
                 ))}
+
+              {groupedFoodList[category].length > 3 && (
+                <div
+                  className="mt-2 flex justify-center items-center cursor-pointer"
+                  onClick={() => handleToggle(category)}
+                >
+                  <span>
+                    {itemsToShowByCategory[category].expanded
+                      ? "접기"
+                      : "더보기"}
+                  </span>
+                  <img
+                    src={
+                      itemsToShowByCategory[category].expanded
+                        ? "/assets/arrowup.png"
+                        : "/assets/downarrow.png"
+                    }
+                    alt={
+                      itemsToShowByCategory[category].expanded
+                        ? "up arrow"
+                        : "down arrow"
+                    }
+                    className="ml-2"
+                  />
+                </div>
+              )}
             </div>
           ))
         )}
       </div>
 
-      {!showMore &&
-        selectedFridge &&
-        Object.keys(groupedFoodList).length > 0 && (
-          <div
-            className="mt-10 flex items-center cursor-pointer"
-            onClick={handleShowMore}
-          >
-            <span>더보기</span>
-            <img
-              src="/assets/downarrow.png"
-              alt="down arrow"
-              className="ml-2"
-            />
-          </div>
-        )}
+      <div className="flex justify-center items-center mt-10">
+        <BarNavigate
+          shoppingsrc="/assets/shopping.png"
+          homesrc="/assets/home.png"
+          searchsrc="/assets/search.png"
+        />
+      </div>
     </main>
   );
 };
