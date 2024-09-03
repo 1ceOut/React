@@ -10,7 +10,7 @@ WORKDIR /app
 
 # 3. package.json과 package-lock.json을 복사하고, 의존성 설치
 COPY package*.json ./
-RUN npm install
+RUN npm install --force
 
 # 4. 애플리케이션 소스 복사 및 빌드
 COPY . .
