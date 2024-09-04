@@ -30,7 +30,7 @@ const MyLiveKitApp = () => {
     useEffect(() => {
         const fetchPublisher = async () => {
             try {
-                const response = await Getuser(userId);
+                const response = await Getuser(roomName);
                 setPublisher(response.data.name);
             } catch (error) {
                 console.error("Error fetching publisher:", error);
@@ -41,9 +41,6 @@ const MyLiveKitApp = () => {
     }, [userId]);
 
     const handleDisconnected = () => {
-        console.log("disconnected");
-        console.log(publisher);
-        console.log(participantName)
         if (publisher === participantName) {
             end(userId)
         }
@@ -52,9 +49,6 @@ const MyLiveKitApp = () => {
 
     const handleLeave = () => {
         // 사용자가 페이지를 떠날 때 실행할 함수
-        console.log("사용자가 페이지를 떠났습니다.");
-        // 여기에 추가적인 작업을 수행할 수 있습니다.
-        console.log(userId)
         handleDisconnected();
     };
 
