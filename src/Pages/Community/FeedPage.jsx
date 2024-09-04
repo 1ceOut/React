@@ -65,7 +65,7 @@ const FeedPage = () => {
 
   return (
     <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-auto">
-      <MenuNavigate option="커뮤니티" />
+      <MenuNavigate option="커뮤니티" previousPage="/" />
       <Profile profiles={sortedProfiles} /> {/* 최신 프로필 데이터 전달 */}
       {sortedPosts.length > 0 ? (
         sortedPosts.map(({ posting, userProfile, userName }) => (
@@ -93,7 +93,7 @@ const FeedPage = () => {
       )}
       <BarNavigate
         shoppingsrc="/assets/shopping.png"
-        homesrc="/assets/homeselect.png"
+        homesrc="/assets/home.png"
         searchsrc="/assets/search.png"
       />
     </main>
