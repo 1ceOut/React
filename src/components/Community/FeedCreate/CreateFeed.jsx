@@ -87,7 +87,7 @@ const CreateFeed = () => {
         //알림 전송 // 포스팅 작성
         await axios.post(`${import.meta.env.VITE_ALERT_IP}/writePosting`, null, {
           params: {
-            sender: userId,z
+            sender: userId,
           },
         });
 
