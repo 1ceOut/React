@@ -66,6 +66,7 @@ const Profile = () => {
 
   const handleLiveBroadcast = async () => {
     start(userId);
+    navigate(`/liveroom/${userId}/${userName}`);
 
     //알림 전송 // 방송 시작
     await axios.post(`${import.meta.env.VITE_ALERT_IP}/startBroadcasting`, null, {
