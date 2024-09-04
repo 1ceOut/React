@@ -6,6 +6,9 @@ import useFridgeOptions, {masterUserList,inviteUserList} from "../../query/Refri
 import {useEffect, useState} from "react";
 import axios from "axios";
 
+import ProfileImages from "../../components/Talk/ProfileImages.jsx";
+import "../../css/ChatCSS/chat.css";
+
 const Talk = () => {
     const navigate = useNavigate();
 
@@ -14,6 +17,7 @@ const Talk = () => {
     const [filteredFridges, setFilteredFridges] = useState([]);
     const [fridgeIds, setFridgeIds] = useState([]); // fridgeIds 상태 추가
     const [lastMessages, setLastMessages] = useState({});
+    const [userMap, setUserMap] = useState({}); // 냉장고 ID별 유저 데이터 저장
 
     const fetchLastMessage = async (refrigerator_id) => {
         try {
@@ -23,6 +27,19 @@ const Talk = () => {
         } catch (error) {
             console.error(`Error fetching last message for fridge ${refrigerator_id}:`, error);
             return null;
+        }
+    };
+
+    const fetchUsersForFridge = async (refrigerator_id) => {
+        try {
+            const response = await axios.get(`https://api.icebuckwheat.kro.kr/api/food/find/refriUser?refrigerator_id=${refrigerator_id}`);
+            return response.data.map(user => ({
+                ...user,
+                profileImageUrl: user.photo // 여기서 프로필 이미지 URL을 가져온다고 가정
+            }));
+        } catch (error) {
+            console.error(`Error fetching users for fridge ${refrigerator_id}:`, error);
+            return [];
         }
     };
 
@@ -69,6 +86,7 @@ const Talk = () => {
 
     useEffect(() => {
         const fetchAllLastMessages = async () => {
+
             const messages = {};
             for (const id of fridgeIds) {
                 const lastMessage = await fetchLastMessage(id);
@@ -79,6 +97,21 @@ const Talk = () => {
 
         if (fridgeIds.length > 0) {
             fetchAllLastMessages();
+        }
+    }, [fridgeIds]);
+
+    useEffect(() => {
+        const fetchAndSetUsers = async () => {
+            const userData = {};
+            for (const id of fridgeIds) {
+                const users = await fetchUsersForFridge(id);
+                userData[id] = users; // 냉장고 ID를 키로 하고 유저 데이터를 값으로 저장
+            }
+            setUserMap(userData);
+        };
+
+        if (fridgeIds.length > 0) {
+            fetchAndSetUsers();
         }
     }, [fridgeIds]);
 
@@ -107,6 +140,7 @@ const Talk = () => {
                 <div style={{display: 'flex', alignItems: 'center', width: 24, height: 24}}>
                     <img style={{width: 23, height: 23}} src="/assets/alert_icon.png" alt="Alert Icon"/>
                 </div>
+
                 <p style={{flexGrow: 1, fontWeight: 500, fontSize: 15, margin: '0 16px'}}>
                     {data?.length > 0 ? `${data[0].name}의 유통기한이 2일 남았어요` : '유통기한 정보가 없습니다'}
                 </p>
@@ -128,15 +162,7 @@ const Talk = () => {
                                 cursor: 'pointer'
                             }}
                              onClick={() => handleClick(refri.refrigeratorName, refri.refrigerator_id)}>
-                            <div style={{
-                                width: 40,
-                                height: 40,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'}}>
-                                <img src="/assets/people.png" alt="People" style={{width: '100%', height: '100%'}}/>
-                            </div>
-
+                            <ProfileImages users={userMap[refri.refrigerator_id] || []} />
                             <div style={{
                                 flex: 1,
                                 marginLeft: 8,
@@ -162,7 +188,7 @@ const Talk = () => {
                                             color: '#767676',
                                             justifyContent: "center",
                                             alignItems: "center"
-                                        }}></p>
+                                        }}>  {userMap[refri.refrigerator_id]?.length}</p>
                                     </div>
                                     <p style={{fontWeight: 400, fontSize: 13, color: '#767676', textAlign: 'right'}}>
                                         { lastMessages[refri.refrigerator_id]?.timestamp}</p>

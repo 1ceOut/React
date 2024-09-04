@@ -43,7 +43,7 @@ const FeedContent = ({ userId }) => {
             <img
               src="../../assets/post5.png"
               style={{
-                width: 35,
+                width: 27,
                 ...(activeImage === "posts" ? clickedStyle : {}), // 활성화된 이미지에 스타일 적용
               }}
               alt="게시물"
@@ -57,7 +57,7 @@ const FeedContent = ({ userId }) => {
             <img
               src="../../assets/lils5.png"
               style={{
-                width: 35,
+                width: 27,
                 ...(activeImage === "reels" ? clickedStyle : {}), // 활성화된 이미지에 스타일 적용
               }}
               alt="릴스"

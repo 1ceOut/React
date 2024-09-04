@@ -1,8 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { AiOutlinePlus } from 'react-icons/ai';
-import { uploadImage, useDetailPost, updatePosting } from '../../../query/FeedQuery';
-import useUserStore from '../../../store/useUserStore'; 
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { AiOutlinePlus } from "react-icons/ai";
+import {
+  uploadImage,
+  useDetailPost,
+  updatePosting,
+} from "../../../query/FeedQuery";
+import useUserStore from "../../../store/useUserStore";
 
 const UpdateFeed = () => {
   const navigate = useNavigate();
@@ -19,7 +23,7 @@ const UpdateFeed = () => {
   const [stepImage, setStepImage] = useState(null);
   const [steps, setSteps] = useState([]);
   const [isEnabled, setIsEnabled] = useState(false);
-  
+
   useEffect(() => {
     if (postData) {
       const { posting } = postData;
@@ -32,7 +36,9 @@ const UpdateFeed = () => {
   }, [postData]);
 
   useEffect(() => {
-    setIsEnabled(title.trim() !== "" && content.trim() !== "" && tag.trim() !== "");
+    setIsEnabled(
+      title.trim() !== "" && content.trim() !== "" && tag.trim() !== ""
+    );
   }, [title, content, tag]);
 
   const handleImageChange = async (event) => {
@@ -47,7 +53,7 @@ const UpdateFeed = () => {
       }
     }
   };
-  
+
   const handleStepImageChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -78,7 +84,7 @@ const UpdateFeed = () => {
   const handleRemoveStep = (index) => {
     setSteps((prevSteps) => prevSteps.filter((_, i) => i !== index));
   };
-  
+
   const handleSubmit = async () => {
     if (isEnabled && userId) {
       const postingData = {
@@ -90,9 +96,9 @@ const UpdateFeed = () => {
         writeday: new Date().toISOString(),
         steps,
       };
-      
+
       console.log("Submitting data:", postingData);
-    
+
       try {
         await updatePosting(postingId, postingData);
         navigate("/community/feed");
@@ -104,10 +110,10 @@ const UpdateFeed = () => {
       alert("Please fill in all required fields.");
     }
   };
-  
+
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading data</div>;
-  
+
   return (
     <div className="self-stretch">
       <div className="flex justify-center items-center mb-8">
@@ -137,7 +143,7 @@ const UpdateFeed = () => {
         </label>
       </div>
       <div className="self-stretch border bg-white rounded-[12px] w-[342px] flex justify-center items-center mt-4">
-        <input
+        <textarea
           id="title"
           name="title"
           type="text"
@@ -158,7 +164,7 @@ const UpdateFeed = () => {
         />
       </div>
       <div className="self-stretch border bg-white rounded-[12px] w-[342px] flex justify-center items-center mt-4">
-        <input
+        <textarea
           id="tags"
           name="tags"
           type="text"
@@ -169,7 +175,7 @@ const UpdateFeed = () => {
         />
       </div>
       <div className="self-stretch border bg-white rounded-[12px] w-[342px] p-4 my-8">
-        <input
+        <textarea
           id="step-description"
           name="step-description"
           type="text"
@@ -204,7 +210,9 @@ const UpdateFeed = () => {
           {steps.map((s, index) => (
             <div key={index} className="border rounded p-2 mb-2">
               <div className="flex items-start mb-2">
-                <span className="flex-1">{`Step ${index + 1}: ${s.description}`}</span>
+                <span className="flex-1">{`Step ${index + 1}: ${
+                  s.description
+                }`}</span>
                 {s.image && (
                   <img
                     src={s.image}

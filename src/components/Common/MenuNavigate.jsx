@@ -35,7 +35,11 @@ const MenuNavigate = ({ option }) => {
   };
 
   const goBack = () => {
-    navigate(-1);
+    if (previousPage === "/") {
+      navigate("/");
+    } else {
+      navigate(-1);
+    }
   };
 
   return (
@@ -87,6 +91,7 @@ const MenuNavigate = ({ option }) => {
 
 MenuNavigate.propTypes = {
   option: PropTypes.string.isRequired,
+  previousPage: PropTypes.string.isRequired,
 };
 
 export default MenuNavigate;

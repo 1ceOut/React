@@ -75,10 +75,25 @@ const Barcode = () => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
+
     if (video && context) {
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
+
+      // 이미지 전처리: 그레이스케일 및 대비 증가
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imageData.data;
+
+      for (let i = 0; i < data.length; i += 4) {
+        const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+        const contrast = avg * 1.5; // 대비 증가
+        data[i] = contrast; // red
+        data[i + 1] = contrast; // green
+        data[i + 2] = contrast; // blue
+      }
+      context.putImageData(imageData, 0, 0);
+
       const imageDataUrl = canvas.toDataURL("image/png");
       setCapturedImage(imageDataUrl);
       return imageDataUrl;
@@ -100,11 +115,11 @@ const Barcode = () => {
       console.log("Full image URL for OCR:", fullImageUrl);
 
       // OCR 인식 요청
-      const ocrResponse = await recognizeTextWithUrl(fullImageUrl); // 외부에서 가져온 함수 사용
+      const ocrResponse = await recognizeTextWithUrl(fullImageUrl);
       if (
-        !ocrResponse ||
-        ocrResponse.images.length === 0 ||
-        ocrResponse.images[0].fields.length === 0
+          !ocrResponse ||
+          ocrResponse.images.length === 0 ||
+          ocrResponse.images[0].fields.length === 0
       ) {
         alert("텍스트를 인식하지 못했습니다. 다시 시도해 주세요.");
         return;
@@ -119,6 +134,7 @@ const Barcode = () => {
 
   const extractInferTexts = (ocrData) => {
     const texts = [];
+    const validBarcodes = [];
 
     ocrData.images.forEach((image) => {
       let concatenatedText = "";
@@ -128,14 +144,25 @@ const Barcode = () => {
         concatenatedText += filteredText;
       });
 
+      // 유효한 바코드 검증: 12 또는 13자리의 바코드만 포함
       if (concatenatedText.length === 12 || concatenatedText.length === 13) {
         texts.push(concatenatedText);
       }
     });
 
-    setInferTexts(texts);
+    // 중복 및 유사도 비교를 통해 최적의 바코드 선택
+    if (texts.length > 0) {
+      const uniqueTexts = [...new Set(texts)];
+      uniqueTexts.forEach((text) => {
+        const occurrences = texts.filter((t) => t === text).length;
+        if (occurrences > 1) {
+          validBarcodes.push(text);
+        }
+      });
+    }
 
-    const finalConcatenatedText = texts.join(" ");
+    const finalConcatenatedText = validBarcodes.join(" ") || texts.join(" ");
+    setInferTexts(validBarcodes.length > 0 ? validBarcodes : texts);
     setConcatenatedText(finalConcatenatedText);
 
     setTimeout(() => {
@@ -168,126 +195,58 @@ const Barcode = () => {
   };
 
   return (
-    <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
-      <MenuNavigate
-        option={`${refrigeratorName} 냉장고`}
-        alertPath="/addinfo/habit"
-      />
-      <div className="w-[342px] h-[76px] mt-6">
-        <p className="font-semibold text-2xl">
-          상품 바코드를 찍어주세요
-          <br />
-        </p>
-      </div>
-      <video ref={videoRef} autoPlay playsInline className="w-full h-auto" />
-      <canvas ref={canvasRef} className="hidden" />
+      <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
+        <MenuNavigate
+            option={`${refrigeratorName} 냉장고`}
+            alertPath="/addinfo/habit"
+        />
+        <div className="w-[342px] h-[76px] mt-6">
+          <p className="font-semibold text-2xl">
+            상품 바코드를 찍어주세요
+            <br />
+          </p>
+        </div>
+        <video ref={videoRef} autoPlay playsInline className="w-full h-auto" />
+        <canvas ref={canvasRef} className="hidden" />
 
-      <div className="w-[342px] h-[56px] rounded-xl border border-[#E1E1E1] flex items-center justify-center mt-8 cursor-pointer">
-        <button
-          onClick={recognizeText}
-          className="w-full h-full bg-blue-500 text-white rounded-xl"
-        >
-          바코드 인식
-        </button>
-      </div>
-      <div className="mt-4">
-        {capturedImage && (
-          <div className="mr-5">
-            <h3>찍은 사진 임</h3>
-            <img src={capturedImage} alt="Captured" className="w-full" />
-          </div>
-        )}
-        {ocrResult && (
-          <div>
-            <h3>OCR Result:</h3>
-            <textarea
-              value={JSON.stringify(ocrResult, null, 2)}
-              readOnly
-              className="w-full h-[300px] border border-gray-300 p-2 rounded"
+        <div className="w-[342px] h-[56px] rounded-xl border border-[#E1E1E1] flex items-center justify-center mt-8 cursor-pointer">
+          <button
+              onClick={recognizeText}
+              className="w-full h-full bg-blue-500 text-white rounded-xl"
+          >
+            바코드 인식
+          </button>
+        </div>
+
+
+        <Dialog open={modalIsOpen} onClose={closeModal} maxWidth="sm" fullWidth>
+          <DialogTitle>바코드 정보</DialogTitle>
+          <DialogContent>
+            <TextField
+                label="인식된 바코드"
+                fullWidth
+                margin="normal"
+                value={concatenatedText}
+                InputProps={{ readOnly: true }}
             />
-          </div>
-        )}
-        {concatenatedText && (
-          <div>
-            <h3>인식된 바코드 결과는 ? :</h3>
-            <p>{concatenatedText}</p>
-          </div>
-        )}
-        {foodSafetyInfo && foodSafetyInfo.C005 && (
-          <div>
-            {foodSafetyInfo.C005.total_count === "0" ? (
-              <div>
-                <h3>해당 바코드에 등록된 상품 정보가 없음</h3>
-                <h3>해당 식품을 직접 입력하실?</h3>
-                <Link to="/userinput">
-                  <button className="bg-blue-500 text-white rounded px-4 py-2">
-                    상품등록
-                  </button>
-                </Link>
-              </div>
-            ) : (
-              <div>
-                <h3>추가 정보 입력:</h3>
-                <form>
-                  <label className="block mb-2">
-                    제품명:
-                    <input
-                      type="text"
-                      name="productName"
-                      value={additionalInfo.productName}
-                      onChange={handleInputChange}
-                      className="w-full border border-gray-300 p-2 rounded"
-                    />
-                  </label>
-                  <p>
-                    <strong>유통기한:</strong> {additionalInfo.expiryDate}
-                  </p>
-                  <p>유통기한은 년월일로 기입해주세요</p>
-                  <label className="block mb-2">
-                    유통기한:
-                    <input
-                      type="date"
-                      name="expiryDate"
-                      onChange={handleInputChange}
-                      required
-                      className="w-full border border-gray-300 p-2 rounded"
-                    />
-                  </label>
-                </form>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      <Dialog open={modalIsOpen} onClose={closeModal} maxWidth="sm" fullWidth>
-        <DialogTitle>바코드 정보</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="인식된 바코드"
-            fullWidth
-            margin="normal"
-            value={concatenatedText}
-            InputProps={{ readOnly: true }}
-          />
-          <TextField
-            label="제품명"
-            fullWidth
-            margin="normal"
-            value={additionalInfo.productName}
-            InputProps={{ readOnly: true }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeModal} color="primary">
-            다시 찍기
-          </Button>
-          <Button onClick={goToAddInput} color="primary">
-            추가 입력창으로 넘어가기
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </main>
+            <TextField
+                label="제품명"
+                fullWidth
+                margin="normal"
+                value={additionalInfo.productName}
+                InputProps={{ readOnly: true }}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={closeModal} color="primary">
+              다시 찍기
+            </Button>
+            <Button onClick={goToAddInput} color="primary">
+              추가 입력창으로 넘어가기
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </main>
   );
 };
 
