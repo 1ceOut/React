@@ -9,7 +9,10 @@ const initState = {
     userId: "",
     userRole:"",
     userAccessToken: "",
-    isLogin: false
+    isLogin: false,
+    broadcast: false, 
+    setBroadcast: (broadcast) => set({ broadcast })
+   
 }
 
 const store = (set) => ({

@@ -3,20 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { useAllUsers } from "../../../query/FeedQuery";
 import useUserStore from "../../../store/useUserStore";
 import HorizontalLine from "../../Common/HorizontalLine";
-import {start} from "../../../query/LiveroomQuery.js"
 
 const Profile = () => {
   const navigate = useNavigate();
   const { data: users, isLoading, isError } = useAllUsers();
-  const { userProfile, userName, userId, isLogin } = useUserStore();
+  const { userProfile, userName, userId, isLogin, broadcast, setBroadcast } = useUserStore(); // broadcast와 setBroadcast 추가
   const scrollContainerRef = useRef(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
-  const [profilesToDisplay, setProfilesToDisplay] = useState([]); // 랜덤화된 프로필 상태 추가
+  const [profilesToDisplay, setProfilesToDisplay] = useState([]);
 
   useEffect(() => {
     if (!isLoading && !isError) {
-      // 기본 프로필 목록
       const profiles = Array.isArray(users) ? users : [];
 
       const userProfileInfo = isLogin
@@ -24,7 +22,8 @@ const Profile = () => {
             userId,
             name: userName,
             photo: userProfile,
-            writeday: new Date().toISOString(), // 로그인 시점을 최신으로 간주
+            writeday: new Date().toISOString(),
+            broadcast: profiles.find((user) => user.userId === userId)?.broadcast || broadcast, // broadcast 상태를 가져오거나 기본값 사용
           }
         : null;
 
@@ -37,11 +36,19 @@ const Profile = () => {
       });
 
       const finalProfiles = Array.from(uniqueProfiles.values());
-      const [loggedInProfile, ...otherProfiles] = finalProfiles;
-      const shuffledProfiles = otherProfiles.sort(() => Math.random() - 0.5); // 랜덤 섞기
-      setProfilesToDisplay([loggedInProfile, ...shuffledProfiles]); // 상태에 저장
+      const [loggedInProfile] = finalProfiles;
+
+      // 방송 중인 사용자와 아닌 사용자를 분리하고 섞기
+      const broadcastUsers = finalProfiles
+        .filter((profile) => profile.broadcast && profile.userId !== userId); // 로그인한 사용자는 제외
+      const nonBroadcastUsers = finalProfiles
+        .filter((profile) => !profile.broadcast && profile.userId !== userId) // 로그인한 사용자는 제외
+        .sort(() => Math.random() - 0.5); // 랜덤 섞기
+
+      // 로그인한 사용자 -> 방송 중인 사용자 -> 나머지 사용자 순으로 정렬
+      setProfilesToDisplay([loggedInProfile, ...broadcastUsers, ...nonBroadcastUsers]);
     }
-  }, [isLoading, isError, users, isLogin, userId, userName, userProfile]); // 의존성 배열 설정
+  }, [isLoading, isError, users, isLogin, userId, userName, userProfile, broadcast]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -56,18 +63,20 @@ const Profile = () => {
   };
 
   const handleLiveBroadcast = () => {
-    start(userId);
-    window.open(`/liveroom/${userId}/${userName}`,"_blank");
-  }
-
-  const handlePlusButtonClick = (e) => {
-    e.stopPropagation(); // 클릭 이벤트 버블링 방지
-    const rect = e.target.getBoundingClientRect();
-    setPopupPosition({ top: rect.bottom + window.scrollY, left: rect.left + window.scrollX }); // 플러스 버튼 위치에 맞게 팝업 위치 설정
-    setIsPopupOpen(true); // 팝업 열기
+    setBroadcast(true); // broadcast 상태를 true로 변경
+    window.open(`/liveroom/${userName}/${userName}`, "_blank");
   };
 
-  // 여백 클릭 시 팝업 닫기
+  const handlePlusButtonClick = (e) => {
+    e.stopPropagation();
+    const rect = e.target.getBoundingClientRect();
+    setPopupPosition({
+      top: rect.bottom + window.scrollY,
+      left: rect.left + window.scrollX,
+    });
+    setIsPopupOpen(true);
+  };
+
   const handleOverlayClick = () => {
     setIsPopupOpen(false);
   };
@@ -88,16 +97,17 @@ const Profile = () => {
                     <img
                       src={profile.photo || "/assets/cha.png"}
                       alt={`Profile of ${profile.name}`}
-                      className="w-20 h-20 rounded-full object-cover cursor-pointer"
+                      className={`w-20 h-20 rounded-full object-cover cursor-pointer ${
+                        profile.broadcast ? "border-4 border-red-500" : ""
+                      }`} // 방송 중인 프로필에만 빨간색 테두리
                       onClick={() => handleProfileClick(profile.userId)}
                     />
-                    {/* 플러스 버튼 */}
                     {profile.userId === userId && isLogin && (
                       <img
                         src="/assets/plusbutton.png"
                         alt="게시글 버튼"
                         className="cursor-pointer absolute bottom-0 right-0"
-                        onClick={handlePlusButtonClick} // 팝업 위치와 열기 처리
+                        onClick={handlePlusButtonClick}
                       />
                     )}
                   </div>
@@ -118,30 +128,31 @@ const Profile = () => {
         <HorizontalLine />
       </div>
 
-      {/* 여백 클릭 시 팝업 닫기 위한 오버레이 */}
       {isPopupOpen && (
         <div
           onClick={handleOverlayClick}
-          className="fixed inset-0 w-screen h-screen bg-black/10 z-[999]" // 투명도 조정
+          className="fixed inset-0 w-screen h-screen bg-black/10 z-[999]"
         ></div>
       )}
 
-      {/* 팝업 */}
       {isPopupOpen && (
         <div
           className="absolute w-[86px] h-[84px] bg-white rounded-lg border border-white text-center flex flex-col justify-center items-center z-[1000]"
-          style={{ top: popupPosition.top, left: popupPosition.left }} // 팝업 위치 설정
-          onClick={(e) => e.stopPropagation()} // 팝업 내부 클릭 시 닫히지 않도록 처리
+          style={{ top: popupPosition.top, left: popupPosition.left }}
+          onClick={(e) => e.stopPropagation()}
         >
           <div
             className="w-[60px] h-[22px] text-[13px] font-semibold mt-[11px] cursor-pointer"
             onClick={() => {
-              navigate("/community/feedcreate"); // "게시글 쓰기" 클릭 시 이동
+              navigate("/community/feedcreate");
             }}
           >
             게시글 쓰기
           </div>
-          <div className="w-[83px] h-[22px] text-[13px] font-semibold mt-[12px] cursor-pointer" onClick={handleLiveBroadcast}>
+          <div
+            className="w-[83px] h-[22px] text-[13px] font-semibold mt-[12px] cursor-pointer"
+            onClick={handleLiveBroadcast}
+          >
             라이브 시작
           </div>
         </div>
@@ -151,3 +162,4 @@ const Profile = () => {
 };
 
 export default Profile;
+
