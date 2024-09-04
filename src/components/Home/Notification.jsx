@@ -1,5 +1,9 @@
 
 
+/*
+    useUserStore에 로그인한 유저가 받은 알림이 notifications 리스트에 들어있음.
+*/
+
 const Notification = () => {
     return (
         <div
