@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { masterUserList, masterUserRefri } from '../../../query/RefriQuery';
 import useUserStore from "../../../store/useUserStore.js";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 const UpdateForm = () => {
     const [userData, setUserData] = useState([]);
@@ -37,12 +38,31 @@ const UpdateForm = () => {
                 userId: userId,
                 data: userData
             };
+
+            // 서버에서 현재 저장된 냉장고 데이터를 불러와서 비교
+            const currentData = await masterUserList(userId);
+            // 이름이 변경된 냉장고만 필터링
+            const modifiedData = userData.filter((newRefri, index) => {
+                const currentRefri = currentData[index];
+                return newRefri.refrigeratorName !== currentRefri.refrigeratorName;
+            });
+
+            // 만약 수정된 데이터가 없다면 알림을 보내지 않고 바로 종료
+            if (modifiedData.length === 0) {
+                return;
+            }
+
             const updatedData = await masterUserRefri(requestPayload);
             const updatedNames = userData.map(refri => refri.refrigeratorName).join(', ');
 
+            // 알림 전송 // 냉장고 수정
+            await axios.post(`${import.meta.env.VITE_ALERT_IP}/editRefrigeratorNotification`, {
+                sender: userId,
+                senderrefri: modifiedData.map(refri => refri.refrigerator_id), // 냉장고 ID를 보냄
+            });
+
             alert(`"${updatedNames}"으로 수정되었습니다.`);
             navigate("/mypage/profile");
-
 
         } catch (error) {
             console.error("Failed to update data", error);
@@ -69,7 +89,7 @@ const UpdateForm = () => {
         <div className='self-stretch w-[342px]'>
             <div className="self-stretch border rounded-[12px] w-[342px] p-4 bg-white shadow-lg">
                 <h2 className="text-lg font-semibold mb-4 text-gray-800">
-                    냉장고 이름을 수정한 후, <br/> '이름 수정' 버튼을 눌러주세요.
+                    냉장고 이름을 수정한 후, <br /> '이름 수정' 버튼을 눌러주세요.
                 </h2>
                 <div className="flex flex-col gap-3">
                     {userData.map((refri, index) => (
