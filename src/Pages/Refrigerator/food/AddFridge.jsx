@@ -50,11 +50,22 @@ const AddFridge = () => {
         );
         setForm({ refrigeratorName: "" }); // 폼 초기화
 
-        //알림 전송 // 냉장고 생성
-        await axios.post(`${import.meta.env.VITE_ALERT_IP}/createRefrigeratorNotification`, null, { params:{
-          sender: userId  // userId를 sender로 전송
-        }});
-
+        try {
+          // 알림 전송 - 냉장고 생성
+          await axios.post(
+            `${import.meta.env.VITE_ALERT_IP}/createRefrigeratorNotification`,
+            null,
+            {
+              params: {
+                sender: userId, // userId를 sender로 전송
+              },
+            }
+          );
+          //console.log("알림이 성공적으로 전송되었습니다.");
+        } catch (error) {
+          //console.error("알림 전송 중 오류 발생:", error);
+          //alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
+        }
 
         navigate("/fridge/fridgemanage"); // 냉장고 관리 페이지로 이동
       }

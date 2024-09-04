@@ -43,11 +43,18 @@ const Body = () => {
         }
     };
 
+    //알림 전부 지워지면 자동 이동
+    useEffect(() => {
+        if (notifications.length === 0) {
+            navigate("/alert/noalert");
+        }
+    }, [notifications, navigate]);
+
     const renderNotificationItem = (notification) => {
         let imgSrc = '';
         let statusText = '';
         let titleText = '';
-        console.log("notification : ", notification)
+        //console.log("notification : ", notification)
 
         switch (notification.alerttype) {
             case '냉장고 생성':

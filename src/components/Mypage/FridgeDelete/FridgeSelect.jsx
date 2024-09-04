@@ -24,11 +24,17 @@ const FridgeSelect = () => {
     const refriDelete = async (optionId) => {
         try {
             //알림 전송 // 냉장고 삭제
-            await axios.post(`${import.meta.env.VITE_ALERT_IP}/deleteRefrigeratorNotification`, {
-                sender: userId,
-                senderrefri: optionId,
-            });
-            
+            try {
+                await axios.post(`${import.meta.env.VITE_ALERT_IP}/deleteRefrigeratorNotification`, {
+                    sender: userId,
+                    senderrefri: optionId,
+                });
+                //console.log("알림이 성공적으로 전송되었습니다.");
+            } catch (error) {
+                //console.error("알림 전송 중 오류 발생:", error);
+                //alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
+            }
+
             await masterUserDelete(optionId);
             setOptions(prevOptions => prevOptions.filter(option => option.refrigerator_id !== optionId));
         } catch (error) {
@@ -78,9 +84,8 @@ const FridgeSelect = () => {
                 {options.map((option, index) => (
                     <label
                         key={index}
-                        className={`flex items-center font-['Pretendard'] text-[#191F28] text-base font-semibold w-[342px] h-14 mb-3 border rounded-xl cursor-pointer ${
-                            selectedOption === option.refrigerator_id ? 'border-blue-500' : 'border-[#E1E1E1]'
-                        } hover:border-[#E1E1E1]`}
+                        className={`flex items-center font-['Pretendard'] text-[#191F28] text-base font-semibold w-[342px] h-14 mb-3 border rounded-xl cursor-pointer ${selectedOption === option.refrigerator_id ? 'border-blue-500' : 'border-[#E1E1E1]'
+                            } hover:border-[#E1E1E1]`}
                     >
                         <input
                             type="checkbox"
