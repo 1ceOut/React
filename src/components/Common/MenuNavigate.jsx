@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import useUserStore from "./../../store/useUserStore";
 import { Auto_Login } from "../../query/LoginQuery";
 
-const MenuNavigate = ({ option }) => {
+const MenuNavigate = ({ option, previousPage }) => {
   const { isLogin, userProfile, LoginSuccessStatus } = useUserStore();
 
   const AutoLogin = () => {
@@ -31,7 +31,11 @@ const MenuNavigate = ({ option }) => {
   };
 
   const goBack = () => {
-    navigate(-1);
+    if (previousPage === "/") {
+      navigate("/");
+    } else {
+      navigate(-1);
+    }
   };
 
   return (
@@ -83,6 +87,7 @@ const MenuNavigate = ({ option }) => {
 
 MenuNavigate.propTypes = {
   option: PropTypes.string.isRequired,
+  previousPage: PropTypes.string.isRequired,
 };
 
 export default MenuNavigate;

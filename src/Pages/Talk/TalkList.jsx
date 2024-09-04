@@ -2,28 +2,55 @@ import { useNavigate } from 'react-router-dom';
 import HorizontalLine from "../../components/Common/HorizontalLine";
 import MenuNavigate from "../../components/Common/MenuNavigate";
 import useUserStore from "../../store/useUserStore.js";
-import useFridgeOptions, {masterUserList} from "../../query/RefriQuery.jsx";
+import useFridgeOptions, {masterUserList,inviteUserList} from "../../query/RefriQuery.jsx";
 import {useEffect, useState} from "react";
+import axios from "axios";
 
+import ProfileImages from "../../components/Talk/ProfileImages.jsx";
+import "../../css/ChatCSS/chat.css";
 
 const Talk = () => {
     const navigate = useNavigate();
 
     const { userId, isLogin, LoginSuccessStatus } = useUserStore();
     const { data, error, isLoading, } = useFridgeOptions(userId);
-
     const [filteredFridges, setFilteredFridges] = useState([]);
+    const [fridgeIds, setFridgeIds] = useState([]); // fridgeIds 상태 추가
+    const [lastMessages, setLastMessages] = useState({});
+    const [userMap, setUserMap] = useState({}); // 냉장고 ID별 유저 데이터 저장
+
+    const fetchLastMessage = async (refrigerator_id) => {
+        try {
+            //const response = await axios.get(`http://localhost:8081/api/chatroom/${refrigerator_id}/last-message`);
+            const response = await axios.get(`https://api.icebuckwheat.kro.kr/api/chatroom/${refrigerator_id}/last-message`);
+            return response.data;
+        } catch (error) {
+            console.error(`Error fetching last message for fridge ${refrigerator_id}:`, error);
+            return null;
+        }
+    };
+
+    const fetchUsersForFridge = async (refrigerator_id) => {
+        try {
+            const response = await axios.get(`https://api.icebuckwheat.kro.kr/api/food/find/refriUser?refrigerator_id=${refrigerator_id}`);
+            return response.data.map(user => ({
+                ...user,
+                profileImageUrl: user.photo // 여기서 프로필 이미지 URL을 가져온다고 가정
+            }));
+        } catch (error) {
+            console.error(`Error fetching users for fridge ${refrigerator_id}:`, error);
+            return [];
+        }
+    };
 
     useEffect(() => {
         const fetchMasterFridges = async () => {
             try {
                 const masterFridges = await masterUserList(userId);
 
-
-
                 if (Array.isArray(masterFridges)) {
-                    console.log("masterFridges.id: ");
                     console.log("masterFridges: "+masterFridges);
+
                     //userId와 id를 문자열로 비교
                     const filtered = masterFridges.filter(fridge => fridge.id == userId );
                    console.log("Filtered Fridges: ", filtered); // 필터링된 데이터 확인
@@ -36,8 +63,57 @@ const Talk = () => {
             }
         };
 
+        const fetchAllFridges = () => {
+            if (Array.isArray(data)) {
+                console.log("All Fridges: ", data); // 전체 냉장고 데이터 확인
+
+                // refrigerator_id만 추출하여 새로운 배열 생성
+                const ids = data.map(fridge => fridge.refrigerator_id);
+
+                console.log("Fridge IDs: ", ids); // 추출된 refrigerator_id 확인
+                setFridgeIds(ids);
+            } else {
+                console.error("Unexpected data structure:", data);
+            }
+        };
+
+        fetchAllFridges();
         fetchMasterFridges();
-    }, [userId, isLogin, navigate, LoginSuccessStatus]);
+
+
+    }, [data,userId, isLogin, navigate, LoginSuccessStatus]);
+
+
+    useEffect(() => {
+        const fetchAllLastMessages = async () => {
+
+            const messages = {};
+            for (const id of fridgeIds) {
+                const lastMessage = await fetchLastMessage(id);
+                messages[id] = lastMessage;
+            }
+            setLastMessages(messages);
+        };
+
+        if (fridgeIds.length > 0) {
+            fetchAllLastMessages();
+        }
+    }, [fridgeIds]);
+
+    useEffect(() => {
+        const fetchAndSetUsers = async () => {
+            const userData = {};
+            for (const id of fridgeIds) {
+                const users = await fetchUsersForFridge(id);
+                userData[id] = users; // 냉장고 ID를 키로 하고 유저 데이터를 값으로 저장
+            }
+            setUserMap(userData);
+        };
+
+        if (fridgeIds.length > 0) {
+            fetchAndSetUsers();
+        }
+    }, [fridgeIds]);
 
     // 클릭 이벤트 핸들러
     const handleClick = (refrigeratorName, refrigerator_id) => {
@@ -53,7 +129,6 @@ const Talk = () => {
 
     };
 
-
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
 
@@ -65,6 +140,7 @@ const Talk = () => {
                 <div style={{display: 'flex', alignItems: 'center', width: 24, height: 24}}>
                     <img style={{width: 23, height: 23}} src="/assets/alert_icon.png" alt="Alert Icon"/>
                 </div>
+
                 <p style={{flexGrow: 1, fontWeight: 500, fontSize: 15, margin: '0 16px'}}>
                     {data?.length > 0 ? `${data[0].name}의 유통기한이 2일 남았어요` : '유통기한 정보가 없습니다'}
                 </p>
@@ -84,16 +160,9 @@ const Talk = () => {
                                 alignItems: 'center',
                                 padding: '0 4px',
                                 cursor: 'pointer'
-                            }} onClick={() => handleClick(refri.refrigeratorName, refri.refrigerator_id)}>
-                            <div style={{
-                                width: 40,
-                                height: 40,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'}}>
-                                <img src="/assets/people.png" alt="People" style={{width: '100%', height: '100%'}}/>
-                            </div>
-
+                            }}
+                             onClick={() => handleClick(refri.refrigeratorName, refri.refrigerator_id)}>
+                            <ProfileImages users={userMap[refri.refrigerator_id] || []} />
                             <div style={{
                                 flex: 1,
                                 marginLeft: 8,
@@ -119,10 +188,10 @@ const Talk = () => {
                                             color: '#767676',
                                             justifyContent: "center",
                                             alignItems: "center"
-                                        }}>4</p>
+                                        }}>  {userMap[refri.refrigerator_id]?.length}</p>
                                     </div>
-                                    <p style={{fontWeight: 400, fontSize: 13, color: '#767676', textAlign: 'right'}}>오전
-                                        10:11</p>
+                                    <p style={{fontWeight: 400, fontSize: 13, color: '#767676', textAlign: 'right'}}>
+                                        { lastMessages[refri.refrigerator_id]?.timestamp}</p>
                                 </div>
                                 <div style={{display: 'flex', alignItems: 'center', height: '50%'}}>
                                     <p style={{
@@ -134,7 +203,7 @@ const Talk = () => {
                                         color: '#767676',
                                         flex: 1
                                     }}>
-                                        이 부분을 채팅의 마지막 채팅내용을 넣고싶어
+                                        {lastMessages[refri.refrigerator_id]?.message || 'No messages yet'}
                                     </p>
                                 </div>
                             </div>
