@@ -3,6 +3,8 @@ import Rating from "@mui/material/Rating";
 import PropTypes from "prop-types";
 import useUserStore from "./../../../store/useUserStore";
 import { useAddComment } from "../../../query/LikeCommentQuery";
+import { useDetailPost } from "../../../query/FeedQuery";
+import axios from "axios";
 
 const CommentModal = ({ closeHidden, postingId, userName }) => {
   const { userId: currentUserId } = useUserStore((state) => ({
@@ -14,6 +16,9 @@ const CommentModal = ({ closeHidden, postingId, userName }) => {
   const [selectedQuality, setSelectedQuality] = useState("");
 
   const { mutate: addComment } = useAddComment();
+
+  const { data: postDetail } = useDetailPost(postingId);
+  const authorId = postDetail?.posting?.userId || null;
 
   const getRatingText = (rate) => {
     switch (rate) {
@@ -41,8 +46,18 @@ const CommentModal = ({ closeHidden, postingId, userName }) => {
     formData.append("diff", selectedQuality);
 
     addComment(formData, {
-      onSuccess: () => {
+      onSuccess: async () => {
         alert("Comment submitted successfully!");
+
+        // 알림 전송// 댓글 작성
+        await axios.post(`${import.meta.env.VITE_ALERT_IP}/writeReply`, null, {
+          params: {
+            sender: currentUserId,
+            receiver: authorId,
+            recipeposting: postingId,
+          },
+        });
+
         closeHidden();
       },
       onError: (error) => {

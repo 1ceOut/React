@@ -3,6 +3,7 @@ import FridgeDeleteButton from './FridgeDeleteButton';
 import { masterUserDelete, masterUserList } from '../../../query/RefriQuery';
 import useUserStore from "../../../store/useUserStore.js";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 const FridgeSelect = () => {
     const { userId, isLogin, LoginSuccessStatus } = useUserStore();
@@ -22,6 +23,12 @@ const FridgeSelect = () => {
 
     const refriDelete = async (optionId) => {
         try {
+            //알림 전송 // 냉장고 삭제
+            await axios.post(`${import.meta.env.VITE_ALERT_IP}/deleteRefrigeratorNotification`, {
+                sender: userId,
+                senderrefri: optionId,
+            });
+            
             await masterUserDelete(optionId);
             setOptions(prevOptions => prevOptions.filter(option => option.refrigerator_id !== optionId));
         } catch (error) {

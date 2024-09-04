@@ -12,6 +12,8 @@ import {
   useCommentsByPostingId,
 } from "../../../query/LikeCommentQuery";
 import CommentList from "./../Common/CommentList";
+import { useDetailPost } from "../../../query/FeedQuery";
+import axios from "axios";
 
 const FeedMenu = ({ postingId }) => {
   const [isAnimating, setIsAnimating] = useState(false);
@@ -37,6 +39,10 @@ const FeedMenu = ({ postingId }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [modalOffsetY, setModalOffsetY] = useState(0);
   const modalRef = useRef(null);
+
+
+  const { data: postDetail } = useDetailPost(postingId);
+  const authorId = postDetail?.posting?.userId || null;
 
   useEffect(() => {
     if (favoriteData !== undefined) {
@@ -81,7 +87,6 @@ const FeedMenu = ({ postingId }) => {
 
   const handleToggleFavorite = async () => {
     setIsAnimating(true);
-
     setLocalFavoriteStatus((prevStatus) => !prevStatus);
 
     try {
@@ -89,6 +94,18 @@ const FeedMenu = ({ postingId }) => {
 
       refetchFavoriteStatus();
       refetchFavoritesCount();
+
+      //알림 전송 //좋아요
+      if (!localFavoriteStatus) {
+        await axios.post(`${import.meta.env.VITE_ALERT_IP}/checkLikeNotification`, null, {
+          params: {
+            sender: userId,
+            receiver: authorId,
+            recipeposting: postingId,
+          },
+        });
+      }
+
     } catch (error) {
       console.error("Failed to toggle favorite:", error);
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { inviteRefri } from "../../../query/RefriQuery.jsx";
 import useUserStore from "../../../store/useUserStore.js";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const InviteButton = () => {
     const [code, setCode] = useState('');
@@ -23,6 +24,13 @@ const InviteButton = () => {
         try {
             const result = await inviteRefri(userId, code);
             console.log("초대 결과:", result);
+
+            // 알림 전송 // 냉장고 등록
+            await axios.post(`${import.meta.env.VITE_ALERT_IP}/registRefrigeratorUserNotification`, {
+                sender: userId, // 이벤트를 발생시킨 사용자 ID
+                senderrefri: code // 초대된 냉장고 ID (API에서 반환된 값 사용)
+            });
+
             alert(`초대 코드: ${code}`);
             navigate("/");
         } catch (error) {

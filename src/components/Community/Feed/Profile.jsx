@@ -3,7 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useAllUsers } from "../../../query/FeedQuery";
 import useUserStore from "../../../store/useUserStore";
 import HorizontalLine from "../../Common/HorizontalLine";
-import { start } from "../../../query/LiveroomQuery.js";
+
+import {start} from "../../../query/LiveroomQuery.js"
+import axios from "axios";
+
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -67,14 +70,24 @@ const Profile = () => {
 };
 
   const handleLiveBroadcast = async () => {
+
     try {
       // 서버에서 broadcast 상태를 true로 변경
       await start(userId); 
+      
+          //알림 전송 // 방송 시작
+    await axios.post(`${import.meta.env.VITE_ALERT_IP}/startBroadcasting`, null, {
+      params: {
+        sender: userId,  // userId를 sender로 전송
+      }
+    });
+  
       window.open(`/liveroom/${userId}/${userName}`, "_blank"); 
     } catch (error) {
       console.error("Failed to start live broadcast", error); // 에러 처리
     }
   };
+
 
 
 
