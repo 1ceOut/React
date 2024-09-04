@@ -10,11 +10,12 @@ const initState = {
     userId: "",
     userRole: "",
     userAccessToken: "",
-    isLogin: false,
+    isLogin: false,  
     hasUnread: false,
     notifications: [],
     sse: null,
 };
+
 
 // SSE 관리 훅
 const createSSE = (userId, onMessage, onReconnect) => {
