@@ -62,9 +62,14 @@ const Profile = () => {
     navigate(`/community/myfeed/${userId}`);
   };
 
-  const handleLiveBroadcast = () => {
-    setBroadcast(true); // broadcast 상태를 true로 변경
-    window.open(`/liveroom/${userName}/${userName}`, "_blank");
+  const handleLiveBroadcast = async () => {
+    try {
+      await start(userId); // 서버에서 broadcast 상태를 true로 변경
+      setBroadcast(true); // 클라이언트 상태를 true로 업데이트
+      window.open(`/liveroom/${userName}/${userName}`, "_blank"); // 라이브 방송 시작
+    } catch (error) {
+      console.error("Failed to start live broadcast", error); // 에러 처리
+    }
   };
 
   const handlePlusButtonClick = (e) => {
