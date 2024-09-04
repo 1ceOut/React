@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useAddPost, uploadImage } from "../../../query/FeedQuery"; // React Query 훅 import
 import useUserStore from "../../../store/useUserStore"; // Zustand store import
+import axios from "axios";
 
 const CreateFeed = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -82,6 +83,14 @@ const CreateFeed = () => {
 
       try {
         await addPost(postingData);
+
+        //알림 전송 // 포스팅 작성
+        await axios.post(`${import.meta.env.VITE_ALERT_IP}/writePosting`, null, {
+          params: {
+            sender: userId,z
+          },
+        });
+
         navigate("/community/feed");
       } catch (err) {
         console.error("Error adding posting:", err.response?.data || err);

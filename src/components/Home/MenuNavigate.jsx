@@ -5,7 +5,7 @@ import useUserStore from "../../store/useUserStore.js";
 
 const MenuNavigate = ({PageTitle}) => {
     const navigate = useNavigate();
-    const {isLogin, userProfile, LoginSuccessStatus} = useUserStore();
+    const {isLogin, userProfile, LoginSuccessStatus, hasUnread, notifications} = useUserStore();
 
     //홈화면 이동
     const homeNavigation = () => {
@@ -19,7 +19,11 @@ const MenuNavigate = ({PageTitle}) => {
 
     //알림 페이지로 이동
     const alertNavigation = () => {
-        navigate("/alert/noalert");
+        if (notifications.length > 0) {
+            navigate("/alert/alert");
+        } else {
+            navigate("/alert/noalert");
+        }
     }
 
     const profileNavigation = () => {
@@ -54,7 +58,7 @@ const MenuNavigate = ({PageTitle}) => {
                          className='cursor-pointer'/>
                 </div>
                 <div className="pr-4">
-                    <img src="/assets/alert.png" alt="alert" onClick={alertNavigation}
+                    <img src={hasUnread ? "/assets/alert_icon.png" : "/assets/alert.png"}  alt="alert" onClick={alertNavigation}
                          className='cursor-pointer'/>
                 </div>
                 <div>
