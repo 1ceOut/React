@@ -3,7 +3,7 @@ import {Track} from "livekit-client";
 import Subtitle from "./Subtitle.jsx";
 
 // eslint-disable-next-line react/prop-types
-const VideoConference = ({ roomName, style }) => {
+const VideoConference = ({ publisherName, style }) => {
 
     const trackRefs = useTracks([
         { source: Track.Source.Camera, withPlaceholder: true },
@@ -12,7 +12,7 @@ const VideoConference = ({ roomName, style }) => {
         { source: Track.Source.ScreenShareAudio, withPlaceholder: true },
     ]);
 
-    const mainCamTrackRef = trackRefs.find((trackRef) => trackRef.participant.name === roomName);
+    const mainCamTrackRef = trackRefs.find((trackRef) => trackRef.participant.name === publisherName);
 
     return (
         <div style={{ ...style, position: 'relative' }}>
@@ -34,7 +34,7 @@ const VideoConference = ({ roomName, style }) => {
                         maxWidth: '80%',
                         textAlign: 'center'
                     }}>
-                        <Subtitle/>
+                        <Subtitle publisher={publisherName}/>
                     </div>
                 </>
             ) : (

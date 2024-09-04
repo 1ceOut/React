@@ -64,7 +64,7 @@ const DetailButton = ({
             <div className="w-[250px] text-[15px] text-[#333D4B] truncate">{option}</div>
           </div>
         </div>
-        <div className="text-xl">{'>'}</div>
+        <div className="text-xl mr-8">{'>'}</div>
       </div>
   );
 };

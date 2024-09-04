@@ -14,7 +14,7 @@ const CreateFeed = () => {
   const [steps, setSteps] = useState([]);
   const [isEnabled, setIsEnabled] = useState(false);
   const navigate = useNavigate();
-  
+
   // React Query 훅에서 mutation 가져오기
   const { mutate: addPost } = useAddPost();
   const { userId } = useUserStore(); // Zustand store에서 유저 ID 가져오기
@@ -121,7 +121,7 @@ const CreateFeed = () => {
         </label>
       </div>
       <div className="self-stretch border bg-white rounded-[12px] w-[342px] flex justify-center items-center mt-4">
-        <input
+        <textarea
           id="title"
           name="title"
           type="text"
@@ -132,17 +132,17 @@ const CreateFeed = () => {
         />
       </div>
       <div className="self-stretch border bg-white rounded-[12px] w-[342px] h-[300px] flex justify-center my-8">
-      <textarea
-    id="content"
-    name="content"
-    placeholder="컨텐츠를 적어주세요."
-    className="block outline-none w-[302px] h-[300px] p-4 text-gray-900 placeholder:text-[#A8A8A8] resize-none"
-    value={content}
-    onChange={(e) => setContent(e.target.value)}
-  />
+        <textarea
+          id="content"
+          name="content"
+          placeholder="컨텐츠를 적어주세요."
+          className="block outline-none w-[302px] h-[300px] p-4 text-gray-900 placeholder:text-[#A8A8A8] resize-none"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+        />
       </div>
       <div className="self-stretch border bg-white rounded-[12px] w-[342px] flex justify-center items-center mt-4">
-        <input
+        <textarea
           id="tag"
           name="tag"
           type="text"
@@ -153,7 +153,7 @@ const CreateFeed = () => {
         />
       </div>
       <div className="self-stretch border bg-white rounded-[12px] w-[342px] p-4 my-8">
-        <input
+        <textarea
           id="step-description"
           name="step-description"
           type="text"
@@ -188,7 +188,9 @@ const CreateFeed = () => {
           {steps.map((s, index) => (
             <div key={index} className="border rounded p-2 mb-2">
               <div className="flex items-start mb-2">
-                <span className="flex-1">{`Step ${index + 1}: ${s.description}`}</span>
+                <span className="flex-1">{`Step ${index + 1}: ${
+                  s.description
+                }`}</span>
                 {s.image && (
                   <img
                     src={s.image}
