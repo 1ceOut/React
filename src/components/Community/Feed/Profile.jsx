@@ -3,11 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useAllUsers } from "../../../query/FeedQuery";
 import useUserStore from "../../../store/useUserStore";
 import HorizontalLine from "../../Common/HorizontalLine";
+import { start } from "../../../query/LiveroomQuery.js";
 
 const Profile = () => {
   const navigate = useNavigate();
   const { data: users, isLoading, isError } = useAllUsers();
-  const { userProfile, userName, userId, isLogin, broadcast, setBroadcast } = useUserStore(); // broadcast와 setBroadcast 추가
+  const { userProfile, userName, userId, isLogin } = useUserStore(); // broadcast와 setBroadcast 추가
   const scrollContainerRef = useRef(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
@@ -23,7 +24,6 @@ const Profile = () => {
             name: userName,
             photo: userProfile,
             writeday: new Date().toISOString(),
-            broadcast: profiles.find((user) => user.userId === userId)?.broadcast || broadcast, // broadcast 상태를 가져오거나 기본값 사용
           }
         : null;
 
@@ -48,7 +48,7 @@ const Profile = () => {
       // 로그인한 사용자 -> 방송 중인 사용자 -> 나머지 사용자 순으로 정렬
       setProfilesToDisplay([loggedInProfile, ...broadcastUsers, ...nonBroadcastUsers]);
     }
-  }, [isLoading, isError, users, isLogin, userId, userName, userProfile, broadcast]);
+  }, [isLoading, isError, users, isLogin, userId, userName, userProfile]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -58,19 +58,25 @@ const Profile = () => {
     return <div>Error loading users</div>;
   }
 
-  const handleProfileClick = (userId) => {
-    navigate(`/community/myfeed/${userId}`);
-  };
+ const handleProfileClick = (profile) => {
+  if (profile.broadcast) { // `profile.broadcast`가 문자열인지 확인
+    window.open(`/liveroom/${profile.userId}/${userName}`, "_blank");
+  } else {
+    navigate(`/community/myfeed/${profile.userId}`);
+  }
+};
 
   const handleLiveBroadcast = async () => {
     try {
-      await start(userId); // 서버에서 broadcast 상태를 true로 변경
-      setBroadcast(true); // 클라이언트 상태를 true로 업데이트
-      window.open(`/liveroom/${userName}/${userName}`, "_blank"); // 라이브 방송 시작
+      // 서버에서 broadcast 상태를 true로 변경
+      await start(userId); 
+      window.open(`/liveroom/${userId}/${userName}`, "_blank"); 
     } catch (error) {
       console.error("Failed to start live broadcast", error); // 에러 처리
     }
   };
+
+
 
   const handlePlusButtonClick = (e) => {
     e.stopPropagation();
@@ -98,14 +104,21 @@ const Profile = () => {
             {profilesToDisplay.length > 0 ? (
               profilesToDisplay.map((profile) => (
                 <div key={profile.userId} className="flex flex-col items-center">
-                  <div className="flex justify-end items-end relative">
+                  <div className="flex justify-end items-end relative h-24">
+                    {profile.broadcast && (
+                      <img
+                        src="/assets/Live.png"
+                        alt="Live"
+                        className="absolute top-[-32px] left-[4px] w-30 h-30 flex justify-center items-center"
+                      />
+                    )}
                     <img
                       src={profile.photo || "/assets/cha.png"}
                       alt={`Profile of ${profile.name}`}
                       className={`w-20 h-20 rounded-full object-cover cursor-pointer ${
                         profile.broadcast ? "border-4 border-red-500" : ""
                       }`} // 방송 중인 프로필에만 빨간색 테두리
-                      onClick={() => handleProfileClick(profile.userId)}
+                      onClick={() => handleProfileClick(profile)}
                     />
                     {profile.userId === userId && isLogin && (
                       <img
@@ -167,4 +180,3 @@ const Profile = () => {
 };
 
 export default Profile;
-

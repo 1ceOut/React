@@ -10,8 +10,7 @@ const initState = {
     userRole:"",
     userAccessToken: "",
     isLogin: false,
-    broadcast: false, 
-    setBroadcast: (broadcast) => set({ broadcast })
+
    
 }
 
