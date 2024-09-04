@@ -57,7 +57,7 @@ const Profile = () => {
 
   const handleLiveBroadcast = () => {
     start(userId);
-    window.open(`/liveroom/${userId}/${userName}`,"_blank");
+    navigate(`/liveroom/${userId}/${userName}`);
   }
 
   const handlePlusButtonClick = (e) => {
