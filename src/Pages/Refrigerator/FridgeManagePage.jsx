@@ -80,7 +80,7 @@ const FridgeManagePage = () => {
 
   return (
     <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px]">
-      <MenuNavigate option={"나의 냉장고"} alertPath="/addinfo/habit" />
+      <MenuNavigate option={"나의 냉장고"} previousPage="/" />
       <FridgeSelect onSelectFridge={setSelectedFridge} />
       <div className="self-stretch pt-3 text-lg font-semibold">
         {selectedFridge

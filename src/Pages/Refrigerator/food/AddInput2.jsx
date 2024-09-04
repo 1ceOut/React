@@ -238,7 +238,7 @@ const AddInput2 = () => {
         }`}
         onClick={isEnabled ? handleSave : null}
       >
-        <p className="font-medium text-lg">냉장고 등록하기</p>
+        <p className="font-medium text-lg">식재료 등록하기</p>
       </div>
     </main>
   );
