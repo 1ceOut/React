@@ -5,10 +5,12 @@ import ProfileMenu from "./../../components/Community/MyFeed/ProfileMenu";
 import FeedContent from "./../../components/Community/MyFeed/FeedContent";
 import { useAllUsers } from "../../query/FeedQuery";
 
+
 const MyFeedPage = () => {
     const { userId: paramUserId } = useParams(); // URL 파라미터에서 userId를 가져옵니다.
     const { data: users, isLoading, isError } = useAllUsers();
 
+    
     // 로딩 중일 때 또는 에러 발생 시 처리
     if (isLoading) {
         return <div>Loading...</div>;
@@ -38,7 +40,8 @@ const MyFeedPage = () => {
                 userName={user.name}
                 userId={user.userId}
             />
-            <FeedContent userId={user.userId} />
+            <FeedContent userId={user.userId}
+            />
         </main>
     );
 };
