@@ -60,11 +60,10 @@ const TalkDetail = () => {
     const {userName, userProfile, userId: currentUserId} = useUserStore();
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
-    const [announcement, setAnnouncement] = useState("이건 공지사항 띄울거임");
+    const [announcement, setAnnouncement] = useState("");
     const [newAnnouncement, setNewAnnouncement] = useState("");
     const [isAnnouncementVisible, setIsAnnouncementVisible] = useState(false);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false); // 이모지 선택기 상태
-    const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 추가
     const xhr = new XMLHttpRequest();
     xhr.withCredentials = true;
 
@@ -75,6 +74,7 @@ const TalkDetail = () => {
     useEffect(() => {
         connect();
         fetchMessages();
+        fetchAnnouncement(); // 공지사항 불러오기
         return;
     }, []);
 
@@ -84,7 +84,7 @@ const TalkDetail = () => {
     const api_server = import.meta.env.VITE_API_IP;
 
     const connect = () => {
-        //const socket = new SockJS(`http://localhost:8081/ws`, null);
+        // const socket = new SockJS(`http://localhost:8081/ws`, null);
         const socket = new SockJS(`${api_server}/ws`, null, {
             transports: ['xhr-streaming', 'xhr-polling'],
             xhr: () => xhr,
@@ -126,7 +126,22 @@ const TalkDetail = () => {
             .catch((error) => console.error("Failed to fetch chat messages.", error));
     };
 
+    const fetchAnnouncement = () => {
+        // 공지사항 불러오기
+        axiosApi.get(`${api_server}/api/announcement/${chatroomSeq}`, {
+            // axiosApi.get(`/api/announcement/${chatroomSeq}`, {
+            withCredentials: true
+        })
+            .then((response) => {
+                setAnnouncement(response.data.announcement); // 저장된 공지사항 세팅
+            })
+            .catch((error) => console.error("Failed to fetch announcement.", error));
+    };
+
     const sendMessage = () => {
+        if (!newMessage.trim()) {
+            return; // 공백 또는 빈 메시지일 경우 전송 안함
+        }
         if (stompClient.current && stompClient.current.ws.readyState === WebSocket.OPEN) {
             const messageObj = {
                 chatroomSeq: chatroomSeq,
@@ -144,11 +159,21 @@ const TalkDetail = () => {
         }
     };
 
+
     const handleSetAnnouncement = () => {
         if (newAnnouncement.trim() !== "") {
-            setAnnouncement(newAnnouncement);
-            setNewAnnouncement("");
-            setIsAnnouncementVisible(false);
+            axiosApi.post(`${api_server}/api/announcement/${chatroomSeq}`, {
+                // axiosApi.post(`/api/announcement/${chatroomSeq}`, {
+                announcement: newAnnouncement
+            }, {
+                withCredentials: true
+            }).then(() => {
+                setAnnouncement(newAnnouncement);
+                setNewAnnouncement("");
+                setIsAnnouncementVisible(false);
+            }).catch((error) => {
+                console.error("Failed to update announcement.", error);
+            });
         }
     };
 
