@@ -116,12 +116,12 @@ const CommentModal = ({ closeHidden, postingId, userName }) => {
           </select>
         </div>
         <div className="border-[2px] w-full min-h-28 h-auto mt-2">
-          <input
+          <textarea
             id="food"
             name="food"
             type="text"
             placeholder="감사의 한마디 부탁드려요!"
-            className="block outline-none pl-3 text-gray-900 placeholder:text-[#A8A8A8]"
+            className="block outline-none pl-3 w-full h-28 text-gray-900 placeholder:text-[#A8A8A8]"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           />
