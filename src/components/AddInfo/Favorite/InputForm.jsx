@@ -125,7 +125,7 @@ const InputForm = () => {
                     defaultValue="" // initial value
                     onChange={handleTagChange}
                     userInput={false}
-                    style={{ width: '100%', fontSize: '15px', padding: '5px', marginTop:'30px'}}
+                    style={{ width: '100%',fontSize: '15px', padding: '5px', marginTop:'30px'}}
                 />
             </div>
             <NextButton isEnabled={isNextButtonEnabled} nextPath="/addinfo/bodyinfo" />
