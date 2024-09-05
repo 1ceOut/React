@@ -38,6 +38,7 @@ const MyLiveKitApp = () => {
         };
 
         fetchPublisher();
+        if (participantName===publisher) start(userId);
     }, [userId]);
 
     const handleDisconnected = () => {
