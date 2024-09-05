@@ -3,7 +3,8 @@ import { Rating } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 import { useDeleteComment } from "./../../../query/LikeCommentQuery";
 import UpdateCommentModal from "./UpdateCommentModal";
-import { addHours } from "date-fns";
+import { formatDistanceToNow, addHours } from "date-fns";
+import { ko } from "date-fns/locale";
 
 const CommentList = ({
   commentId,
@@ -19,27 +20,7 @@ const CommentList = ({
   const getRelativeTime = (dateString) => {
     const date = new Date(dateString);
     const dateInKST = addHours(date, 9);
-    const now = new Date();
-
-    const diffInSeconds = Math.floor((now - dateInKST) / 1000);
-
-    const timeIntervals = [
-      { label: "년", seconds: 31536000 },
-      { label: "개월", seconds: 2592000 },
-      { label: "일", seconds: 86400 },
-      { label: "시간", seconds: 3600 },
-      { label: "분", seconds: 60 },
-      { label: "초", seconds: 1 },
-    ];
-
-    for (const interval of timeIntervals) {
-      const timePassed = Math.floor(diffInSeconds / interval.seconds);
-      if (timePassed >= 1) {
-        return `${timePassed} ${interval.label} 전`;
-      }
-    }
-
-    return "방금 전";
+    return formatDistanceToNow(dateInKST, { addSuffix: true, locale: ko });
   };
 
   const openModal = () => {
