@@ -61,33 +61,32 @@ const Profile = () => {
     return <div>Error loading users</div>;
   }
 
- const handleProfileClick = (profile) => {
-  if (profile.broadcast) { // `profile.broadcast`가 문자열인지 확인
-    window.open(`/liveroom/${profile.userId}/${userName}`, "_blank");
-  } else {
-    navigate(`/community/myfeed/${profile.userId}`);
-  }
-};
+  const handleProfileClick = (profile) => {
+    if (profile.broadcast) {
+      navigate(`/liveroom/${profile.userId}/${userName}`); // 현재 페이지에서 방송을 시작
+    } else {
+      navigate(`/community/myfeed/${profile.userId}`); // 현재 페이지에서 프로필 피드를 표시
+    }
+  };
 
-  const handleLiveBroadcast = async () => {
-
-    try {
-      // 서버에서 broadcast 상태를 true로 변경
-      await start(userId); 
-      
-          //알림 전송 // 방송 시작
+const handleLiveBroadcast = async () => {
+  try {
+    // 서버에서 broadcast 상태를 true로 변경
+    await start(userId); 
+    
+    // 알림 전송 - 방송 시작
     await axios.post(`${import.meta.env.VITE_ALERT_IP}/startBroadcasting`, null, {
       params: {
         sender: userId,  // userId를 sender로 전송
       }
     });
-  
-      window.open(`/liveroom/${userId}/${userName}`, "_blank"); 
-    } catch (error) {
-      console.error("Failed to start live broadcast", error); // 에러 처리
-    }
-  };
 
+    // 현재 페이지에서 라이브 방송을 시작하도록 navigate 사용
+    navigate(`/liveroom/${userId}/${userName}`);
+  } catch (error) {
+    console.error("Failed to start live broadcast", error); // 에러 처리
+  }
+};
 
 
 
