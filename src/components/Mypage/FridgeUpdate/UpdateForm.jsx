@@ -60,7 +60,7 @@ const UpdateForm = () => {
                 try {
                     await axios.post(`${import.meta.env.VITE_ALERT_IP}/editRefrigeratorNotification`, {
                         sender: userId,
-                        senderrefri: refri.refrigerator_id, // 개별 냉장고 ID
+                        senderrefri: modifiedData.map(refri => refri.refrigerator_id), // 개별 냉장고 ID
                     });
                     //console.log(`${refri.refrigeratorName} 알림이 성공적으로 전송되었습니다.`);
                 } catch (error) {
