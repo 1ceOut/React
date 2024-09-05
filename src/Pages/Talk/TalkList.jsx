@@ -7,7 +7,7 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 
 import ProfileImages from "../../components/Talk/ProfileImages.jsx";
-import "../../css/ChatCSS/chat.css";
+import "../../../public/css/ChatCSS/chat.css";
 
 const Talk = () => {
     const navigate = useNavigate();
