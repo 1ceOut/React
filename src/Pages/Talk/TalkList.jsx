@@ -53,8 +53,8 @@ const Talk = () => {
 
                     //userId와 id를 문자열로 비교
                     const filtered = masterFridges.filter(fridge => fridge.id == userId );
-                   console.log("Filtered Fridges: ", filtered); // 필터링된 데이터 확인
-                   setFilteredFridges(filtered);
+                    console.log("Filtered Fridges: ", filtered); // 필터링된 데이터 확인
+                    setFilteredFridges(filtered);
                 } else {
                     console.error("Unexpected data structure:", masterFridges);
                 }
@@ -136,78 +136,43 @@ const Talk = () => {
     return (
         <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
             <MenuNavigate option={"채팅방"} alertPath="/addinfo/habit"/>
-            <div style={{width: 342, height: 44, display: 'flex', alignItems: 'center'}}>
-                <div style={{display: 'flex', alignItems: 'center', width: 24, height: 24}}>
-                    <img style={{width: 23, height: 23}} src="/assets/alert_icon.png" alt="Alert Icon"/>
+            <div className="w-[342px] h-[44px] flex items-center">
+                <div className="flex items-center w-6 h-6">
+                    <img className="w-[23px] h-[23px]" src="/assets/alert_icon.png" alt="Alert Icon"/>
                 </div>
-
-                <p style={{flexGrow: 1, fontWeight: 500, fontSize: 15, margin: '0 16px'}}>
+                <p className="flex-grow font-medium text-[15px] mx-4">
                     {data?.length > 0 ? `${data[0].name}의 유통기한이 2일 남았어요` : '유통기한 정보가 없습니다'}
                 </p>
-                <div style={{display: 'flex', alignItems: 'center', width: 24, height: 24}}>
-                    <img style={{width: 23, height: 23}} src="/assets/right.png" alt="Right Arrow"/>
+                <div className="flex items-center w-6 h-6">
+                    <img className="w-[23px] h-[23px]" src="/assets/right.png" alt="Right Arrow"/>
                 </div>
             </div>
             <HorizontalLine/>
             <div>
                 {data?.map(refri => (
-                        <div key={refri.refrigerator_id}
-                            style={{
-                                marginTop: 32,
-                                width: 342,
-                                height: 40,
-                                display: 'flex',
-                                alignItems: 'center',
-                                padding: '0 4px',
-                                cursor: 'pointer'
-                            }}
-                             onClick={() => handleClick(refri.refrigeratorName, refri.refrigerator_id)}>
-                            <ProfileImages users={userMap[refri.refrigerator_id] || []} />
-                            <div style={{
-                                flex: 1,
-                                marginLeft: 8,
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'space-between',
-                                height: '100%'
-                            }}>
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                        height: '50%'
-                                    }}>
-                                    <div style={{display: 'flex'}}>
-                                        <p style={{fontWeight: 600, fontSize: 15}}>{refri.refrigeratorName}</p>
-                                        <p style={{
-                                            display: 'flex',
-                                            marginLeft: 8,
-                                            fontWeight: 600,
-                                            fontSize: 13,
-                                            color: '#767676',
-                                            justifyContent: "center",
-                                            alignItems: "center"
-                                        }}>  {userMap[refri.refrigerator_id]?.length}</p>
-                                    </div>
-                                    <p style={{fontWeight: 400, fontSize: 13, color: '#767676', textAlign: 'right'}}>
-                                        { lastMessages[refri.refrigerator_id]?.timestamp}</p>
-                                </div>
-                                <div style={{display: 'flex', alignItems: 'center', height: '50%'}}>
-                                    <p style={{
-                                        width: 290,
-                                        height: 16,
-                                        margin: 0,
-                                        fontWeight: 400,
-                                        fontSize: 12.7,
-                                        color: '#767676',
-                                        flex: 1
-                                    }}>
-                                        {lastMessages[refri.refrigerator_id]?.message || 'No messages yet'}
+                    <div key={refri.refrigerator_id}
+                         className="mt-8 w-[342px] h-10 flex items-center px-1 cursor-pointer"
+                         onClick={() => handleClick(refri.refrigeratorName, refri.refrigerator_id)}>
+                        <ProfileImages users={userMap[refri.refrigerator_id] || []} />
+                        <div className="flex-1 ml-2 flex flex-col justify-between h-full">
+                            <div className="flex items-center justify-between h-1/2">
+                                <div className="flex">
+                                    <p className="font-semibold text-[15px]">{refri.refrigeratorName}</p>
+                                    <p className="ml-2 font-semibold text-[13px] text-gray-500 flex justify-center items-center">
+                                        {userMap[refri.refrigerator_id]?.length}
                                     </p>
                                 </div>
+                                <p className="font-normal text-[13px] text-gray-500 text-right">
+                                    {lastMessages[refri.refrigerator_id]?.timestamp}
+                                </p>
+                            </div>
+                            <div className="flex items-center w-52 overflow-hidden h-1/2">
+                                <p className="w-[50px] h-[16px] m-0 font-normal text-[12.7px] text-gray-500 flex-1">
+                                    {lastMessages[refri.refrigerator_id]?.message || 'No messages yet'}
+                                </p>
                             </div>
                         </div>
+                    </div>
                 ))}
             </div>
         </main>

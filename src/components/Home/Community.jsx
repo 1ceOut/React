@@ -31,7 +31,7 @@ const Community = () => {
     <section className="self-stretch">
       <div className="flex gap-5 justify-between whitespace-nowrap">
         <h2 className="text-lg font-semibold tracking-tight text-gray-900">
-          커뮤니티
+          오늘 뭐 먹지~?
         </h2>
         <div
           className="text-sm tracking-tight text-neutral-500 underline cursor-pointer"
@@ -40,7 +40,7 @@ const Community = () => {
           전체보기
         </div>
       </div>
-      <div className="mt-4">
+      <div className="mt-4 flex space-x-1">
         {randomPosts.length > 0 ? (
           randomPosts.map(({ posting }) => {
             // Date 객체를 사용하여 날짜 포맷팅
@@ -48,20 +48,23 @@ const Community = () => {
             const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
             return (
-              <div 
-                key={posting.postingId} 
-                className="mb-6 flex justify-between cursor-pointer"
-                onClick={() => communityDetail(posting.postingId)}
-              >
-                <div>{posting.title}</div>
-                <div className="font-normal text-[12px] text-[#767676]">
-                  {formattedDate}
+                <div
+                    key={posting.postingId}
+                    className="mb-6 flex justify-between cursor-pointer w-1/3 h-[300px]"
+                    onClick={() => communityDetail(posting.postingId)}
+                >
+                  <div className="flex flex-col">
+                    <img src={posting.thumbnail} className="h-40 rounded-xl"/>
+                    <div>{posting.title}</div>
+                    <div className="font-normal text-[12px] text-[#767676]">
+                      {formattedDate}
+                    </div>
+                  </div>
                 </div>
-              </div>
             );
           })
         ) : (
-          <div>No posts available</div>
+            <div>No posts available</div>
         )}
       </div>
     </section>

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import useUserStore from "./../../store/useUserStore";
 import { Auto_Login } from "../../query/LoginQuery";
 
-const MenuNavigate = ({ option }) => {
+const MenuNavigate = ({ option, previousPage }) => {
   const { isLogin, userProfile, LoginSuccessStatus, hasUnread, notifications } = useUserStore();
 
   const AutoLogin = () => {

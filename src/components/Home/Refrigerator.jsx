@@ -7,6 +7,7 @@ const Refrigerator = () => {
     const [userData, setUserData] = useState([]);
     const { userId, isLogin, LoginSuccessStatus } = useUserStore();
     const navigate = useNavigate();
+    const [showAll, setShowAll] = useState(false); // 더보기 상태 관리
 
     useEffect(() => {
         const savedToken = localStorage.getItem("accessToken");
@@ -56,32 +57,41 @@ const Refrigerator = () => {
             <div className="flex gap-5 justify-between">
                 <h2 className="text-lg font-semibold tracking-tight text-gray-900">나의 냉장고</h2>
                 <div className="text-sm tracking-tight text-neutral-500 underline">
-                    <p className="cursor-pointer" onClick={handleNavigate}>전체보기</p>
+                    {
+                        userId &&
+                        <p className="cursor-pointer" onClick={handleNavigate}>전체보기</p>
+                    }
                 </div>
             </div>
             {
-                !userId &&
-                <div>
-                    <p>로그인하셈ㅋ</p>
+            !userId &&
+                <div className="flex flex-col items-center mt-5">
+                    <img src="/assets/norefri.jpeg" alt="냉장고" className="w-24 h-24" />
+                    <p className="mt-2 text-gray-500">등록된 냉장고가 없어요</p>
                 </div>
             }
+
             {fridgeOptions.map((item, index) => (
                 <div
                     key={index}
                     className="flex gap-3 mt-7 text-base font-medium tracking-tight text-gray-700 hover:bg-gray-100 rounded-lg p-2 transition duration-200 ease-in-out cursor-pointer"
                     onClick={() => handleFridgeClick(item.refrigeratorName)}
                 >
-                    <img
-                        loading="lazy"
-                        src={"/assets/iconrefridge.png"}
-                        alt={item.refrigeratorName}
-                        className="shrink-0 rounded-lg aspect-square w-[34px]"
-                    />
-                    <div className="flex-auto my-auto">{item.refrigeratorName}</div>
+                    <div className="relative rounded-[8px] w-34 h-34 flex items-center justify-center">
+                        <div className="w-10 h-10 bg-gray-100 flex items-center justify-center rounded-[8px]">
+                            <img
+                                loading="lazy"
+                                src={"/assets/iconrefridge.png"}
+                                alt={item.refrigeratorName}
+                                className="w-6 h-9"
+                            />
+                        </div>
+                    </div>
+                    <div className="flex-auto my-auto ">{item.refrigeratorName}</div>
                     <div
                         className="shrink-0 rounded-lg aspect-square w-[25px] h-[25px] cursor-pointer"
                         onClick={(e) => {
-                            e.stopPropagation(); // 클릭 이벤트의 전파를 막음
+                            e.stopPropagation();
                             editNavigate();
                         }}
                     >

@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import ConfirmModal from './ConfirmModal';
-import { PropTypes } from 'prop-types';
-import {inviteUserDelete} from "../../../query/RefriQuery.jsx";
-import {useNavigate} from "react-router-dom";
+import PropTypes from 'prop-types';
+import { inviteUserDelete } from "../../../query/RefriQuery.jsx";
+import { useNavigate } from "react-router-dom";
 
-const UserDeleteButton = ({ isEnabled, checkedUserIds, refriId , nextPath }) => {
+const UserDeleteButton = ({ isEnabled, checkedUsers }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
+
     // 삭제 버튼 클릭 핸들러
     const handleDeleteClick = () => {
         if (isEnabled) {
@@ -21,18 +22,23 @@ const UserDeleteButton = ({ isEnabled, checkedUserIds, refriId , nextPath }) => 
 
     // 삭제 확인 핸들러
     const handleConfirmDelete = async () => {
-
         try {
-            const response = await inviteUserDelete(checkedUserIds, refriId);
-            console.log("삭제할 사용자 ID:", checkedUserIds);
-            console.log(refriId);
-        }
-        catch (error) {
-                console.log('삭제 요청 중 오류 발생:', error);
+            // 냉장고별로 삭제 요청
+            for (const [refriId, users] of Object.entries(checkedUsers)) {
+                const userIds = users.map(user => user.id);
+                const userNames = users.map(user => user.name);
+
+                if (userIds.length > 0) {
+                    await inviteUserDelete(userIds, refriId);
+                    console.log(`삭제할 사용자 ID (냉장고 ${refriId}):`, userIds);
+                    console.log(`삭제할 사용자 이름:`, userNames);
+                    alert(`${userNames.join(', ')} 사용자 삭제했습니다`);
+                }
             }
-        // 모달 닫기
+        } catch (error) {
+            console.log('삭제 요청 중 오류 발생:', error);
+        }
         setIsModalOpen(false);
-        alert(`${checkedUserIds} 사용자 삭제했습니다`);
         navigate('/mypage/profile');
     };
 
@@ -50,6 +56,7 @@ const UserDeleteButton = ({ isEnabled, checkedUserIds, refriId , nextPath }) => 
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 onConfirm={handleConfirmDelete}
+                userNames={Object.values(checkedUsers).flat().map(user => user.name)} // 모든 유저 이름 전달
             />
         </div>
     );
@@ -57,9 +64,7 @@ const UserDeleteButton = ({ isEnabled, checkedUserIds, refriId , nextPath }) => 
 
 UserDeleteButton.propTypes = {
     isEnabled: PropTypes.bool.isRequired,
-    refriId:PropTypes.string.isRequired,
-    checkedUserIds: PropTypes.arrayOf(PropTypes.number).isRequired, // ID가 숫자라고 가정
-    nextPath: PropTypes.string.isRequired,
+    checkedUsers: PropTypes.object.isRequired, // 냉장고별 유저 객체
 };
 
 export default UserDeleteButton;
