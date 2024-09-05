@@ -1,4 +1,3 @@
-// UserSelect.jsx
 import { useEffect, useState } from "react";
 import UserDeleteButton from "./UserDeleteButton";
 import { inviteUserList } from "../../../query/RefriQuery.jsx";
@@ -40,7 +39,10 @@ const UserSelect = ({ userId, refriId, onUserSelectChange }) => {
   return (
       <div>
         {userData.length === 0 ? (
-            <p className="text-gray-500 text-center">유저가 없습니다</p>
+            <div className="flex flex-col items-center">
+              <img src={"/assets/confirm.png"} alt="confirm" className="mb-3" />
+              <p className="text-gray-500 text-center">등록된 유저가 없습니다</p>
+            </div>
         ) : (
             <div className="self-stretch flex flex-col items-start w-[332px]">
               {userData.map((user, index) => (
