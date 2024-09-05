@@ -96,8 +96,8 @@ const MyFeedPage = () => {
                 userId={user.userId}
             />
 
-            <FeedContent userId={user.userId}
-            />
+            
+            
 
             {/* 구독 버튼 */}
             {userId !== user.userId && (
