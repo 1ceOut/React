@@ -75,12 +75,16 @@ const Profile = () => {
       // 서버에서 broadcast 상태를 true로 변경
       await start(userId);
 
-      //알림 전송 // 방송 시작
-      await axios.post(`${import.meta.env.VITE_ALERT_IP}/startBroadcasting`, null, {
-        params: {
-          sender: userId,  // userId를 sender로 전송
-        }
-      });
+      // //알림 전송 // 방송 시작
+      try {
+        await axios.post(`${import.meta.env.VITE_ALERT_IP}/startBroadcasting`, null, {
+          params: { sender: userId },
+        });
+        //console.log("Broadcast notification sent.");
+      } catch (error) {
+        //console.error("알림 전송 중 오류 발생:", error);
+        //alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
+      }
 
       window.open(`/liveroom/${userId}/${userName}`, "_blank");
     } catch (error) {

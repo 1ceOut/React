@@ -58,6 +58,7 @@ const AddFridge = () => {
             {
               params: {
                 sender: userId, // userId를 sender로 전송
+                memo:product.refrigeratorName
               },
             }
           );
