@@ -62,10 +62,11 @@ const Profile = () => {
   }
 
   const handleProfileClick = (profile) => {
-    if (profile.broadcast) { // `profile.broadcast`가 문자열인지 확인
-      window.open(`/liveroom/${profile.userId}/${userName}`, "_blank");
+
+   if (profile.broadcast) {
+      navigate(`/liveroom/${profile.userId}/${userName}`); // 현재 페이지에서 방송을 시작
     } else {
-      navigate(`/community/myfeed/${profile.userId}`);
+      navigate(`/community/myfeed/${profile.userId}`); // 현재 페이지에서 프로필 피드를 표시
     }
   };
 
@@ -86,12 +87,12 @@ const Profile = () => {
         //alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
       }
 
-      window.open(`/liveroom/${userId}/${userName}`, "_blank");
-    } catch (error) {
-      console.error("Failed to start live broadcast", error); // 에러 처리
-    }
-  };
-
+    // 현재 페이지에서 라이브 방송을 시작하도록 navigate 사용
+    navigate(`/liveroom/${userId}/${userName}`);
+  } catch (error) {
+    console.error("Failed to start live broadcast", error); // 에러 처리
+  }
+};
 
 
 
