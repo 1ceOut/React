@@ -110,7 +110,7 @@ const FridgeManagePage = () => {
         ) : selectedFridge === null ? (
           <p>냉장고를 선택하면 해당 냉장고에 있는 음식이 나와요</p>
         ) : Object.keys(groupedFoodList).length === 0 ? (
-          <p>냉장고 텅텅텅텅 비었음, ㅋ</p>
+          <p>선택한 냉장고의 음식이 없습니다.</p>
         ) : (
           Object.keys(groupedFoodList).map((category) => (
             <div key={category}>
