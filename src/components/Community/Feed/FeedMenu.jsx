@@ -5,6 +5,7 @@ import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { red } from "@mui/material/colors";
 import useUserStore from "./../../../store/useUserStore";
+import CommentModal from "./../Common/CommentModal";
 import {
   useToggleFavorite,
   useCheckFavorite,
@@ -16,6 +17,9 @@ import { useDetailPost } from "../../../query/FeedQuery";
 import axios from "axios";
 
 const FeedMenu = ({ postingId }) => {
+  const [isHidden, setIsHidden] = useState(false);
+  const { data: postWithUser } = useDetailPost(postingId);
+  const userName = postWithUser?.userName || "Unknown User";
   const [isAnimating, setIsAnimating] = useState(false);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -97,13 +101,17 @@ const FeedMenu = ({ postingId }) => {
       //알림 전송 //좋아요
       if (!localFavoriteStatus) {
         try {
-          await axios.post(`${import.meta.env.VITE_ALERT_IP}/checkLikeNotification`, null, {
-            params: {
-              sender: userId,
-              receiver: authorId,
-              recipeposting: postingId,
-            },
-          });
+          await axios.post(
+            `${import.meta.env.VITE_ALERT_IP}/checkLikeNotification`,
+            null,
+            {
+              params: {
+                sender: userId,
+                receiver: authorId,
+                recipeposting: postingId,
+              },
+            }
+          );
           //console.log("알림이 성공적으로 전송되었습니다.");
         } catch (error) {
           //console.error("알림 전송 중 오류 발생:", error);
@@ -190,6 +198,14 @@ const FeedMenu = ({ postingId }) => {
         modalRef.current.style.transform = `translateY(0px)`;
       }
     }
+  };
+
+  const closeHidden = () => {
+    setIsHidden(false);
+  };
+
+  const showHidden = () => {
+    setIsHidden(true);
   };
 
   return (
@@ -343,13 +359,20 @@ const FeedMenu = ({ postingId }) => {
                   <div>댓글이 없습니다.</div>
                 )}
               </div>
-              <div className="flex justify-center items-center w-full mt-4">
+              <div className="flex justify-center items-center w-full mb-4">
                 <button
-                  onClick={closeCommentModal}
+                  onClick={showHidden}
                   className="px-4 py-2 w-[342px] h-12 bg-gray-300 rounded-lg"
                 >
-                  닫기
+                  댓글 달기
                 </button>
+                {isHidden && (
+                  <CommentModal
+                    userName={userName}
+                    closeHidden={closeHidden}
+                    postingId={postingId}
+                  />
+                )}
               </div>
             </div>
           </div>
