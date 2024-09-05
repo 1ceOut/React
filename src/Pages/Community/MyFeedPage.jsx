@@ -8,14 +8,17 @@ import axios from "axios";
 import useUserStore from "../../store/useUserStore.js";
 
 
+
 const MyFeedPage = () => {
     const { userId: paramUserId } = useParams(); // URL 파라미터에서 userId를 가져옵니다.
     const { userId } = useUserStore(); // 현재 로그인한 사용자의 ID를 가져옵니다.
     const { data: users, isLoading, isError } = useAllUsers();
 
+
     const [isSubscribed, setIsSubscribed] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
+
 
     // 로딩 중일 때 또는 에러 발생 시 처리
     if (isLoading) {
@@ -92,6 +95,10 @@ const MyFeedPage = () => {
                 userName={user.name}
                 userId={user.userId}
             />
+
+            <FeedContent userId={user.userId}
+            />
+
             {/* 구독 버튼 */}
             {userId !== user.userId && (
                 <button
