@@ -81,23 +81,6 @@ const FridgeSelect = () => {
     return (
         <div className="self-stretch">
             <div className="h-[220px] flex flex-col">
-                {options.map((option, index) => (
-                    <label
-                        key={index}
-                        className={`flex items-center font-['Pretendard'] text-[#191F28] text-base font-semibold w-[342px] h-14 mb-3 border rounded-xl cursor-pointer ${selectedOption === option.refrigerator_id ? 'border-blue-500' : 'border-[#E1E1E1]'
-                            } hover:border-[#E1E1E1]`}
-                    >
-                        <input
-                            type="checkbox"
-                            checked={selectedOption === option.refrigerator_id}
-                            onChange={() => handleSelection(option.refrigerator_id)}
-                            className="w-6 h-6 ml-2 border-solid border-[#E1E1E1] rounded-md cursor-pointer bg-gray-200 checked:bg-blue-500 checked:border-blue-500 hover:border-[#E1E1E1]"
-                        />
-                        <div className="flex w-[342px] ml-3">
-                            {option.refrigeratorName} {/* 객체의 속성을 사용하여 표시 */}
-                        </div>
-                    </label>
-                ))}
                 {options.length === 0 ? (
                     <div className="space-y-8 mt-16">
                         <div className="flex justify-center items-center">
