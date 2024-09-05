@@ -56,10 +56,18 @@ const UpdateForm = () => {
             const updatedNames = userData.map(refri => refri.refrigeratorName).join(', ');
 
             // 알림 전송 // 냉장고 수정
-            await axios.post(`${import.meta.env.VITE_ALERT_IP}/editRefrigeratorNotification`, {
-                sender: userId,
-                senderrefri: modifiedData.map(refri => refri.refrigerator_id), // 냉장고 ID를 보냄
-            });
+            for (let refri of modifiedData) {
+                try {
+                    await axios.post(`${import.meta.env.VITE_ALERT_IP}/editRefrigeratorNotification`, {
+                        sender: userId,
+                        senderrefri: refri.refrigerator_id, // 개별 냉장고 ID
+                    });
+                    //console.log(`${refri.refrigeratorName} 알림이 성공적으로 전송되었습니다.`);
+                } catch (error) {
+                    console.error(`${refri.refrigeratorName} 알림 전송 중 오류 발생:`, error);
+                    alert(`${refri.refrigeratorName} 알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.`);
+                }
+            }
 
             alert(`"${updatedNames}"으로 수정되었습니다.`);
             navigate("/mypage/profile");

@@ -43,6 +43,28 @@ const AddFridge = () => {
       if (responseData.exists) {
         alert("중복된 이름의 냉장고가 이미 존재합니다.");
       } else {
+        alert(
+          `${product.refrigeratorName} 냉장고가 성공적으로 생성되었습니다.`
+        );
+        setForm({ refrigeratorName: "" }); // 폼 초기화
+
+        try {
+          // 알림 전송 - 냉장고 생성
+          await axios.post(
+            `${import.meta.env.VITE_ALERT_IP}/createRefrigeratorNotification`,
+            null,
+            {
+              params: {
+                sender: userId, // userId를 sender로 전송
+                memo:product.refrigeratorName
+              },
+            }
+          );
+          //console.log("알림이 성공적으로 전송되었습니다.");
+        } catch (error) {
+          //console.error("알림 전송 중 오류 발생:", error);
+          //alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
+        }
         setModalMessage(`${product.refrigeratorName} 냉장고가 성공적으로 생성되었습니다.`);
         setForm({ refrigeratorName: "" });
 

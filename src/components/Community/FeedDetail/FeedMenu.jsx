@@ -49,15 +49,21 @@ const FeedMenu = ({ postingId, userName }) => {
 
       //알림 전송 //좋아요
       if (!localFavoriteStatus) {
-        await axios.post(`${import.meta.env.VITE_ALERT_IP}/checkLikeNotification`, null, {
-          params: {
-            sender: userId,
-            receiver: authorId,
-            recipeposting: postingId,
-          },
-        });
+        try {
+          await axios.post(`${import.meta.env.VITE_ALERT_IP}/checkLikeNotification`, null, {
+            params: {
+              sender: userId,
+              receiver: authorId,
+              recipeposting: postingId,
+            },
+          });
+          //console.log("알림이 성공적으로 전송되었습니다.");
+        } catch (error) {
+          //console.error("알림 전송 중 오류 발생:", error);
+          //alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
+        }
       }
-
+      
     } catch (error) {
       console.error("Failed to toggle favorite:", error);
 

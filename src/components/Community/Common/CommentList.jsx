@@ -3,6 +3,7 @@ import { Rating } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 import { useDeleteComment } from "./../../../query/LikeCommentQuery";
 import UpdateCommentModal from "./UpdateCommentModal";
+import { addHours } from "date-fns";
 
 const CommentList = ({
   commentId,
@@ -17,9 +18,10 @@ const CommentList = ({
 
   const getRelativeTime = (dateString) => {
     const date = new Date(dateString);
-
+    const dateInKST = addHours(date, 9);
     const now = new Date();
-    const diffInSeconds = Math.floor((now - date) / 1000);
+
+    const diffInSeconds = Math.floor((now - dateInKST) / 1000);
 
     const timeIntervals = [
       { label: "년", seconds: 31536000 },
