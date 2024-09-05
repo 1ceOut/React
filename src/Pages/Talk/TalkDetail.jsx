@@ -8,7 +8,7 @@ import useUserStore from "../../store/useUserStore.js";
 import {useLocation} from "react-router-dom";
 import EmojiPicker from "emoji-picker-react"; // EmojiPicker 임포트
 
-//시간 별
+//시간 별x
 const getTimeParts = (timestamp) => {
     const timeString = timestamp.match(/(오전|오후)\s(\d+):(\d+):(\d+)/);
     if (!timeString) {
@@ -158,7 +158,7 @@ const TalkDetail = () => {
     };
 
     const scrollToBottom = () => {
-        chatEndRef.current?.scrollIntoView({behavior: "smooth"});
+        chatEndRef.current?.scrollIntoView({behavior: "auto"});
     };
 
 
@@ -171,8 +171,9 @@ const TalkDetail = () => {
 
     return (
         <main className={`flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen`}>
-            <MenuNavigate option={refrigeratorName} alertPath="/addinfo/habit"/>
-
+            <div>
+                <MenuNavigate option={refrigeratorName} alertPath="/addinfo/habit"/>
+            </div>
             <div className="flex flex-col w-[390px] h-full bg-gray-50">
                 {/* 공지사항 */}
                 <div className="bg-gray-100 p-3 text-center text-sm text-gray-600 flex items-center justify-between">

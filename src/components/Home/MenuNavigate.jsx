@@ -38,7 +38,7 @@ const MenuNavigate = ({PageTitle}) => {
     }
 
     return (
-        <div className="relative self-stretch flex items-center justify-between w-[342px] h-14 mt-[50px]">
+        <div className="relative self-stretch flex items-center justify-between w-[342px] h-14 mt-[10px]">
             <div className="absolute cursor-pointer left-0 flex justify-center items-center text-[#777C89] font-bold"
                  onClick={homeNavigation}>
                 <img src="/assets/logo.png" alt="logo"
