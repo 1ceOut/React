@@ -68,10 +68,6 @@ const AddFridge = () => {
         setModalMessage(`${product.refrigeratorName} 냉장고가 성공적으로 생성되었습니다.`);
         setForm({ refrigeratorName: "" });
 
-        await axios.post(`${import.meta.env.VITE_ALERT_IP}/createRefrigeratorNotification`, null, {
-          params: { sender: userId }
-        });
-
         navigate("/fridge/fridgemanage");
       }
     } catch (error) {
