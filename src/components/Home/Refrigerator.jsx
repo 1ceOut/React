@@ -64,10 +64,18 @@ const Refrigerator = () => {
                 </div>
             </div>
             {
-            !userId &&
+                fridgeOptions.length===0 && userId &&
                 <div className="flex flex-col items-center mt-5">
                     <img src="/assets/norefri.jpeg" alt="냉장고" className="w-24 h-24" />
                     <p className="mt-2 text-gray-500">등록된 냉장고가 없어요</p>
+                </div>
+            }
+
+            {
+                !userId &&
+                <div className="flex flex-col items-center mt-5">
+                    <img src="/assets/norefri.jpeg" alt="냉장고" className="w-24 h-24" />
+                    <p className="mt-2 text-gray-500">로그인 후 이용해주세요</p>
                 </div>
             }
 

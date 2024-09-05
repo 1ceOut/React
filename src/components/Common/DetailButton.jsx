@@ -21,7 +21,20 @@ const DetailButton = ({
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
   };
+// 유통기한에 따른 색상 결정 함수
+    const getExpiryColor = (expiryDate) => {
+        const today = new Date();
+        const expiry = new Date(expiryDate);
+        const daysLeft = Math.ceil((expiry - today) / (1000 * 60 * 60 * 24));
 
+        if (daysLeft <= 1) {
+            return 'text-red-500'; // 1일 이하일 경우 빨간색
+        } else if (daysLeft <= 3) {
+            return 'text-green-500'; // 3일 이하일 경우 연두색
+        } else {
+            return 'text-blue-500'; // 그 이상일 경우 파란색
+        }
+    };
   const remainingDays = calculateRemainingDays(expiryDate);
 
   const getTextColor = (remainingDays) => {
@@ -58,7 +71,7 @@ const DetailButton = ({
             <img src={getCategoryImage(lcategory)} alt={lcategory} className="w-[28px] h-[28px]"/>
           </div>
           <div className="flex flex-col">
-            <div className={`text-[13px] ${getTextColor(remainingDays)}`}>
+            <div className={`text-[13px] ${getExpiryColor(expiryDate)}`}>
               {`${remainingDays >= 0 ? "D-" : "D+"}${Math.abs(remainingDays)}`}
             </div>
             <div className="w-[250px] text-[15px] text-[#333D4B] truncate">{option}</div>
