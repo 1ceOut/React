@@ -1,4 +1,4 @@
-import { useTracks, VideoTrack} from "@livekit/components-react";
+import {AudioTrack, useTracks, VideoTrack} from "@livekit/components-react";
 import {Track} from "livekit-client";
 import Subtitle from "./Subtitle.jsx";
 
@@ -6,13 +6,13 @@ import Subtitle from "./Subtitle.jsx";
 const VideoConference = ({ publisherName, style }) => {
 
     const trackRefs = useTracks([
-        { source: Track.Source.Camera, withPlaceholder: true },
-        { source: Track.Source.Microphone, withPlaceholder: true },
-        { source: Track.Source.ScreenShare, withPlaceholder: true },
-        { source: Track.Source.ScreenShareAudio, withPlaceholder: true },
+        Track.Source.Camera
     ]);
 
+    const audioRef = useTracks([Track.Source.Microphone])
+
     const mainCamTrackRef = trackRefs.find((trackRef) => trackRef.participant.name === publisherName);
+    const mainAudioTrackRef = audioRef.find((trackRef) => trackRef.participant.name === publisherName);
 
     return (
         <div style={{ ...style, position: 'relative' }}>
@@ -22,6 +22,7 @@ const VideoConference = ({ publisherName, style }) => {
                         trackRef={mainCamTrackRef}
                         style={{ width: '100%', height: '100%' }}
                     />
+                    <AudioTrack trackRef={mainAudioTrackRef}/>
                     <div style={{
                         position: 'absolute',
                         bottom: '10px',

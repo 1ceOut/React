@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import useUserStore from "./../../store/useUserStore";
 import { Auto_Login } from "../../query/LoginQuery";
 
-const MenuNavigate = ({ option, previousPage }) => {
-  const { isLogin, userProfile, LoginSuccessStatus } = useUserStore();
+const MenuNavigate = ({ option }) => {
+  const { isLogin, userProfile, LoginSuccessStatus, hasUnread, notifications } = useUserStore();
 
   const AutoLogin = () => {
     Auto_Login().then((response) => {
@@ -23,7 +23,11 @@ const MenuNavigate = ({ option, previousPage }) => {
   };
 
   const alertNavigation = () => {
-    navigate("/alert/noalert");
+    if (notifications.length > 0) {
+      navigate("/alert/alert");
+    } else {
+      navigate("/alert/noalert");
+    }
   };
 
   const profileNavigation = () => {
@@ -57,7 +61,7 @@ const MenuNavigate = ({ option, previousPage }) => {
         </div>
         <div className="pr-4">
           <img
-            src="/assets/alert.png"
+            src={hasUnread ? "/assets/alert_icon.png" : "/assets/alert.png"} 
             alt="alert"
             onClick={alertNavigation}
             className="cursor-pointer"

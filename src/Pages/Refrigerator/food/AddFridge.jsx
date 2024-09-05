@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import useUserStore from "../../../store/useUserStore";
 import MenuNavigate from "../../../components/Common/MenuNavigate.jsx";
 import { addFridge } from "../../../query/FoodListQuery.jsx"; // zustand 상태 관리 라이브러리 import
+import axios from "axios";
 
 const AddFridge = () => {
   const navigate = useNavigate();
@@ -48,6 +49,13 @@ const AddFridge = () => {
           `${product.refrigeratorName} 냉장고가 성공적으로 생성되었습니다.`
         );
         setForm({ refrigeratorName: "" }); // 폼 초기화
+
+        //알림 전송 // 냉장고 생성
+        await axios.post(`${import.meta.env.VITE_ALERT_IP}/createRefrigeratorNotification`, null, { params:{
+          sender: userId  // userId를 sender로 전송
+        }});
+
+
         navigate("/fridge/fridgemanage"); // 냉장고 관리 페이지로 이동
       }
     } catch (error) {

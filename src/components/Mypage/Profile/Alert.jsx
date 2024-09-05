@@ -1,5 +1,6 @@
 import HorizontalLine from "../../Common/HorizontalLine";
 
+/**/
 
 const Alert = () => {
     return (
