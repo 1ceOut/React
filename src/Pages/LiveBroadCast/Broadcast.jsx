@@ -40,10 +40,10 @@ const MyLiveKitApp = () => {
 
         fetchPublisher();
         //if (participantName === publisher) start(userId);
-        if (participantName === publisher) {
-            start(userId);
-            //sendBroadcastNotification();
-        }
+        // if (participantName === publisher) {
+        //     start(userId);
+        //     //sendBroadcastNotification();
+        // }
     }, [userId]);
 
     // //알림 전송 // 방송 시작
@@ -60,7 +60,7 @@ const MyLiveKitApp = () => {
     // };
 
     const handleDisconnected = () => {
-        if (publisher === participantName) {
+        if (participantName.startsWith("방장")) {
             end(userId)
         }
         navigate("/community/feed")
@@ -108,10 +108,9 @@ const MyLiveKitApp = () => {
             >
                 <LayoutContextProvider>
                     <div className="flex flex-col h-full w-full]">
-                        <VideoConference style={{ height: '56vh', width: "100%", display: "flex" }}
-                            publisherName={publisher} />
+                        <VideoConference style={{ height: '56vh', width: "100%", display: "flex" }}/>
                         {
-                            participantName === publisher ? (
+                            participantName.startsWith("방장") ? (
                                 <>
                                     <ControlBar style={{
                                         width: '100%',

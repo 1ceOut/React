@@ -30,7 +30,6 @@ const Subtitle = ({publisher}) => {
         // WebSocket 연결
         stompClient.current = Stomp.over(socket);
         stompClient.current.connect({}, () => {
-            console.log('WebSocket 연결됨');
             stompClient.current.subscribe(`/live/topic/${roomName}/subtitles`, (message) => {
                 setValue(message.body);
             });
@@ -52,7 +51,7 @@ const Subtitle = ({publisher}) => {
                     </button>):null
             }
             {
-                listening && <div>음성인식 활성화 중</div>
+                listening && <div></div>
             }
         </div>
     );
