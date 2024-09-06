@@ -68,15 +68,15 @@ const ProfileMenu = ({ userProfile, userName, userId }) => {
               </div>
               <div className="text-[#767676] font-semibold text-base">게시물</div>
             </div>
-            <div className="flex flex-col justify-center items-center w-[114px] cursor-pointer" onClick={handleShowFollowerModal}>
-              <div className="text-black font-semibold text-base">
-                {followerCount}
-              </div>
-              <div className="text-[#767676] font-semibold text-base">팔로워</div>
-            </div>
             <div className="flex flex-col justify-center items-center w-[114px] cursor-pointer" onClick={handleShowFollowingModal}>
               <div className="text-black font-semibold text-base">
                 {followingCount}
+              </div>
+              <div className="text-[#767676] font-semibold text-base">팔로워</div>
+            </div>
+            <div className="flex flex-col justify-center items-center w-[114px] cursor-pointer"  onClick={handleShowFollowerModal}>
+              <div className="text-black font-semibold text-base">
+                {followerCount}
               </div>
               <div className="text-[#767676] font-semibold text-base">팔로잉</div>
             </div>
@@ -86,7 +86,7 @@ const ProfileMenu = ({ userProfile, userName, userId }) => {
         {/* 팔로워 모달 */}
         {showFollowerModal && (
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-              <div className="bg-white p-6 rounded-lg w-96 max-w-md">
+              <div className="bg-white p-6 rounded-lg w-96 max-w-md max-h-[644px] overflow-y-scroll ">
                 <h2 className="text-xl font-semibold mb-4">팔로워</h2>
                 <ul>
                   {followers.length > 0 ? (
@@ -116,7 +116,7 @@ const ProfileMenu = ({ userProfile, userName, userId }) => {
         {/* 팔로잉 모달 */}
         {showFollowingModal && (
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-              <div className="bg-white p-6 rounded-lg w-96 max-w-md">
+              <div className="bg-white p-6 rounded-lg w-96 max-w-md max-w-md max-h-[644px] overflow-y-scroll ">
                 <h2 className="text-xl font-semibold mb-4">팔로잉</h2>
                 <ul>
                   {followings.length > 0 ? (

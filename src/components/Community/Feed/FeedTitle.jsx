@@ -10,7 +10,6 @@ const FeedTitle = ({ title, imageUrl, _id }) => {
   const detailNavigation = () => {
     navigate(`/community/feeddetail/${_id}`);
   };
-
   return (
     <div className="self-stretch cursor-pointer" onClick={detailNavigation}>
       <div>
