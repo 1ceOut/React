@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { usePostsWithUserDetails } from "../../query/FeedQuery";
 import MenuNavigate from "../../components/Common/MenuNavigate";
 import Profile from "../../components/Community/Feed/Profile";
@@ -24,6 +24,11 @@ const transformImageUrl = (url) => {
 };
 
 const FeedPage = () => {
+  // 페이지가 마운트될 때 스크롤을 맨 위로 이동시키기
+  useEffect(() => {
+    window.scrollTo(0, 0); // 스크롤 위치를 맨 위로 설정
+  }, []); // 빈 배열을 종속성으로 전달하여 컴포넌트가 처음 마운트될 때만 실행
+
   const {
     data: postsWithUserDetails,
     isLoading,

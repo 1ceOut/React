@@ -4,21 +4,14 @@ import { useNavigate } from "react-router-dom"; // React Router의 useNavigate �
 import HorizontalLine from "./../../Common/HorizontalLine";
 import { usePostsByUser } from "./../../../query/FeedQuery";
 
-const FeedContent = ({ userId }) => {
+const FeedContent = ({ userId, writeday }) => { // writeday를 props로 받습니다.
   const { data: posts } = usePostsByUser(userId);
   const safePosts = Array.isArray(posts) ? posts : [];
 
-  // 현재 선택된 섹션을 추적하기 위한 상태 (posts 또는 reels)
-  const [selectedSection, setSelectedSection] = useState("posts");
-  // 현재 활성화된 이미지를 추적하기 위한 상태
-  const [activeImage, setActiveImage] = useState("posts");
-  const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
+  // 최신순으로 게시물 정렬 (가장 최근 게시물이 먼저 나오도록)
+  safePosts.sort((a, b) => new Date(b.posting.writeday) - new Date(a.posting.writeday));
 
-  // 섹션 변경을 위한 핸들러 함수
-  const handleSectionChange = (section) => {
-    setSelectedSection(section);
-    setActiveImage(section); // 클릭된 섹션에 따라 활성화된 이미지 설정
-  };
+  const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
 
   // 게시물 페이지로 이동하기 위한 핸들러 함수
   const handlePostClick = (postingId) => {
@@ -33,34 +26,17 @@ const FeedContent = ({ userId }) => {
   return (
     <div>
       <div>
-        {/* 이미지 버튼들 */}
-        <div className="flex justify-between items-center h-8">
+        {/* 이미지 버튼 */}
+        <div className="flex justify-center items-center h-8">
           {/* 게시물 섹션 선택 이미지 */}
-          <div
-            className="flex justify-center items-center w-1/2 cursor-pointer" // 클릭 가능한 커서 스타일 추가
-            onClick={() => handleSectionChange("posts")} // 클릭 시 섹션 변경
-          >
+          <div className="flex justify-center items-center cursor-pointer">
             <img
               src="../../assets/post5.png"
               style={{
                 width: 27,
-                ...(activeImage === "posts" ? clickedStyle : {}), // 활성화된 이미지에 스타일 적용
+                ...clickedStyle, // 클릭된 이미지 스타일 적용
               }}
               alt="게시물"
-            />
-          </div>
-          {/* 릴스 섹션 선택 이미지 */}
-          <div
-            className="flex justify-center items-center w-1/2 cursor-pointer" // 클릭 가능한 커서 스타일 추가
-            onClick={() => handleSectionChange("reels")} // 클릭 시 섹션 변경
-          >
-            <img
-              src="../../assets/lils5.png"
-              style={{
-                width: 27,
-                ...(activeImage === "reels" ? clickedStyle : {}), // 활성화된 이미지에 스타일 적용
-              }}
-              alt="릴스"
             />
           </div>
         </div>
@@ -69,45 +45,27 @@ const FeedContent = ({ userId }) => {
         </div>
       </div>
 
-      {/* 선택된 섹션에 따라 콘텐츠를 표시 */}
+      {/* 게시물 섹션 */}
       <div className="self-stretch space-y-2">
-        {selectedSection === "posts" ? (
-          // 게시물 섹션
-          safePosts.length > 0 ? (
-            <div className="grid grid-cols-3 gap-3">
-              {safePosts.map(({ posting }) => (
-                <div
-                  key={posting.postingId}
-                  className="mb-6 cursor-pointer"
-                  onClick={() => handlePostClick(posting.postingId)} // 썸네일 클릭 시 게시물로 이동
-                >
-                  <img
-                    src={posting.thumbnail}
-                    alt="피드 사진"
-                    className="w-[112px] h-[114px]"
-                  />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div>No posts available</div>
-          )
-        ) : (
-          // 릴스 섹션 (릴스 콘텐츠가 있는 경우)
+        {safePosts.length > 0 ? (
           <div className="grid grid-cols-3 gap-3">
             {safePosts.map(({ posting }) => (
-              <div key={posting.postingId} className="mb-6">
-                <video
-                  src={posting.reelUrl} // 릴스 영상 URL (가정)
-                  controls
+              <div
+                key={posting.postingId}
+                className="mb-6 cursor-pointer"
+                onClick={() => handlePostClick(posting.postingId)} // 썸네일 클릭 시 게시물로 이동
+              >
+                <img
+                  src={posting.thumbnail}
+                  alt="피드 사진"
                   className="w-[112px] h-[114px]"
-                >
-                  Your browser does not support the video tag.
-                </video>
+                />
+                {/* writeday를 출력하는 예시 */}
+                <div>{writeday}</div>
               </div>
             ))}
           </div>
-        )}
+        ) : null} {/* No posts available 텍스트 제거 */}
       </div>
     </div>
   );
@@ -115,6 +73,7 @@ const FeedContent = ({ userId }) => {
 
 FeedContent.propTypes = {
   userId: PropTypes.string.isRequired,
+  writeday: PropTypes.string, // writeday의 PropType을 정의합니다.
 };
 
 export default FeedContent;

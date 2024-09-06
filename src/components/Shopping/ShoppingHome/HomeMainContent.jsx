@@ -21,10 +21,10 @@ const HomeMainContent = ({options,data=[]}) => {
                 <p className="font-medium text-sm text-gray-500 border-b border-gray-500 cursor-pointer" onClick={()=>navigate("/shop/detail")}>전체보기</p>
             </div>
 
-            <div className="flex w-[365px] h-max-[340px] pl-4 bg-indigo-50 mx-3 mt-1 rounded-lg shadow-xl overflow-x-auto scrollbar-hide">
+            <div className="flex w-[365px] h-[340px] pl-4 bg-indigo-50 mx-3 mt-1 rounded-lg shadow-xl overflow-x-auto scrollbar-hide">
                 {
                     data.length===0? (
-                        <div className="flex flex-col items-center ml-3">
+                        <div className="flex flex-col items-center mt-12 ml-3">
                             <img style={{ width: 220, height: 220 }} className="ml-12" src='/assets/basket.png' alt='No data' />
                             <p className="ml-12">추천 데이터가 없습니다.</p>
                         </div>

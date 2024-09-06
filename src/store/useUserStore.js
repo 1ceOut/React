@@ -45,6 +45,10 @@ const store = (set, get) => ({
         set({ hasUnread });
     },
 
+    AddinfoSuccessStatus : () =>{
+        set({userRole:"ROLE_USER"})
+    },
+
     initialize: () => {
         const state = get();
         if (state.isLogin && state.userAccessToken) {

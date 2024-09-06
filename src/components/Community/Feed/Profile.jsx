@@ -4,7 +4,7 @@ import { useAllUsers } from "../../../query/FeedQuery";
 import useUserStore from "../../../store/useUserStore";
 import HorizontalLine from "../../Common/HorizontalLine";
 
-import {start} from "../../../query/LiveroomQuery.js"
+import { start } from "../../../query/LiveroomQuery.js"
 import axios from "axios";
 
 
@@ -17,17 +17,24 @@ const Profile = () => {
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
   const [profilesToDisplay, setProfilesToDisplay] = useState([]);
 
+  const login_type = () => {
+    const login_type = userId.split(" ")[0];
+    if (login_type === "naver") return "네이버";
+    else if (login_type === "google") return "구글";
+    else return "카카오";
+  }
+
   useEffect(() => {
     if (!isLoading && !isError) {
       const profiles = Array.isArray(users) ? users : [];
 
       const userProfileInfo = isLogin
         ? {
-            userId,
-            name: userName,
-            photo: userProfile,
-            writeday: new Date().toISOString(),
-          }
+          userId,
+          name: userName,
+          photo: userProfile,
+          writeday: new Date().toISOString(),
+        }
         : null;
 
       const uniqueProfiles = new Map();
@@ -61,33 +68,39 @@ const Profile = () => {
     return <div>Error loading users</div>;
   }
 
- const handleProfileClick = (profile) => {
-  if (profile.broadcast) { // `profile.broadcast`가 문자열인지 확인
-    window.open(`/liveroom/${profile.userId}/${userName}`, "_blank");
-  } else {
-    navigate(`/community/myfeed/${profile.userId}`);
-  }
-};
+  const handleProfileClick = (profile) => {
+
+   if (profile.broadcast) {
+      navigate(`/liveroom/${profile.userId}/${userName}`); // 현재 페이지에서 방송을 시작
+    } else {
+      navigate(`/community/myfeed/${profile.userId}`); // 현재 페이지에서 프로필 피드를 표시
+    }
+  };
 
   const handleLiveBroadcast = async () => {
 
     try {
       // 서버에서 broadcast 상태를 true로 변경
-      await start(userId); 
-      
-          //알림 전송 // 방송 시작
-    await axios.post(`${import.meta.env.VITE_ALERT_IP}/startBroadcasting`, null, {
-      params: {
-        sender: userId,  // userId를 sender로 전송
-      }
-    });
-  
-      window.open(`/liveroom/${userId}/${userName}`, "_blank"); 
-    } catch (error) {
-      console.error("Failed to start live broadcast", error); // 에러 처리
-    }
-  };
+      await start(userId);
 
+      // //알림 전송 // 방송 시작
+      try {
+        await axios.post(`${import.meta.env.VITE_ALERT_IP}/startBroadcasting`, null, {
+          params: { sender: userId },
+        });
+        //console.log("Broadcast notification sent.");
+      } catch (error) {
+        //console.error("알림 전송 중 오류 발생:", error);
+        //alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
+      }
+
+      const login_type = userId.split(" ")[0];
+      navigate(`/liveroom/${userId}/방장_${userName}`);
+
+  } catch (error) {
+    console.error("Failed to start live broadcast", error); // 에러 처리
+  }
+};
 
 
 
@@ -128,9 +141,8 @@ const Profile = () => {
                     <img
                       src={profile.photo || "/assets/cha.png"}
                       alt={`Profile of ${profile.name}`}
-                      className={`w-20 h-20 rounded-full object-cover cursor-pointer ${
-                        profile.broadcast ? "border-4 border-red-500" : ""
-                      }`} // 방송 중인 프로필에만 빨간색 테두리
+                      className={`w-20 h-20 rounded-full object-cover cursor-pointer ${profile.broadcast ? "border-4 border-red-500" : ""
+                        }`} // 방송 중인 프로필에만 빨간색 테두리
                       onClick={() => handleProfileClick(profile)}
                     />
                     {profile.userId === userId && isLogin && (

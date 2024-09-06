@@ -69,6 +69,7 @@ const FoodList = () => {
         setShowPopup(false); // 팝업 닫기
     };
 
+
     // 검색 결과를 처리하는 함수
     const handleSearchResults = (results) => {
         // 현재 카테고리에 맞는 항목만 필터링
@@ -105,7 +106,7 @@ const FoodList = () => {
 
     return (
         <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
-            <MenuNavigate option={`${category} 전체보기`} alertPath="/addinfo/habit" />
+            <MenuNavigate option={`${category}`} alertPath="/addinfo/habit"/>
 
             <div className="self-stretch pt-8">
                 <SearchForm selectedFridge={sessionStorage.getItem('selectedFridge')} onSearchResults={handleSearchResults} />

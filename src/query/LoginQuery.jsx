@@ -54,7 +54,7 @@ const Auto_Login = async () => {
             withCredentials: true,
         });
     } catch (error){
-        console.error('Error fetching JWT:', error);
+        console.error('자동 로그인 실패, 쿠키를 지우고 다시 시도해주세요.', error);
         throw error;
     }
 }
@@ -65,7 +65,7 @@ const Logout_Action = async () => {
             withCredentials: true,
         });
     } catch (error){
-        console.error('Error fetching JWT:', error);
+        console.error('로그아웃이 성공적으로 진행되지 않았습니다.', error);
         throw error;
     }
 }
