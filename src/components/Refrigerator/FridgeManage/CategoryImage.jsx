@@ -16,19 +16,26 @@ export const getCategoryImage = (lcategory) => {
             return '/assets/milkcow.png';
         case '빵류':
         case '과자류':
-        case '아이스크림류':
             return '/assets/bread.png';
+        case '아이스크림류':
+            return '/assets/icecream.png';
         case '튀김류':
+            return '/assets/fride.png';
         case '구이류':
+            return '/assets/92.png';
         case '찜류':
+            return '/assets/ggim.png'
         case '조림류':
+            return '/assets/steam.png';
         case '볶음류':
+            return '/assets/wpdbr.png';
         case '찌개 및 전골류':
-            return '/assets/meet.png';
         case '국 및 탕류':
+            return '/assets/gook.png';
         case '면 및 만두류':
+            return '/assets/aksen.png';
         case '밥류':
-            return '/assets/bob.png';
+            return '/assets/bob1.png';
         case '채소류':
         case '과일류':
         case '버섯류':
