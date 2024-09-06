@@ -18,7 +18,7 @@ const ShoppingDetail=()=>{
     }, []);
 
     return(
-        <main className={`${animationClass} flex flex-col items-center px-6 pt-5 pb-18 mx-auto w-full max-w-[390px] h-screen`}>
+        <main className={`${animationClass} flex flex-col items-center px-6 pt-5 pb-5 mx-auto w-full max-w-[390px] max-h-[844px]`}>
             <MenuNavigate option={"식재료 추천"} alertPath="/addinfo/habit" />
             <DetailMainContent setIsModalVisible={setIsModalVisible} />
             <div className={`w-full ${isModalVisible ? 'opacity-0' : ''}`}>
