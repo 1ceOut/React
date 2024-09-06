@@ -7,6 +7,7 @@ import Stomp from "stompjs";
 import useUserStore from "../../store/useUserStore.js";
 import { useLocation } from "react-router-dom";
 import EmojiPicker from "emoji-picker-react"; // EmojiPicker 임포트
+import axios from "axios";
 
 //시간 별x
 const getTimeParts = (timestamp) => {
@@ -183,7 +184,7 @@ const TalkDetail = () => {
     // 새로운 공지 알림을 전송하는 함수
     const sendNewChattingMasterNotification = async () => {
         try {
-            await axiosApi.post(`${api_server}/api/newChattingMaster`, {
+            await axios.post(`${api_server}/api/newChattingMaster`, {
                 sender: currentUserId,  // 공지사항을 설정한 사용자
                 senderrefri: chatroomSeq, // 현재 냉장고(채팅방) ID
                 memo: newAnnouncement,

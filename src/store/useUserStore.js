@@ -18,10 +18,16 @@ const initState = {
 
 // SSE 관리 훅
 const createSSE = (userId, onMessage) => {
-    const sse = new EventSource(`${import.meta.env.VITE_ALERT_IP}/subscribe/${userId}`);
+    //const encodedUserId = encodeURIComponent(userId);//encode타입 변환
+    const sse = new EventSource(`${import.meta.env.VITE_ALERT_IP}/subscribe/${userId}`);//이벤트 소스로 하는게 맞아
+    //const sse = new EventSource(`${import.meta.env.VITE_ALERT_IP}/subscribe/${encodedUserId}`);//이벤트 소스로 하는게 맞아
+    console.log(userId);
+    //console.log(encodedUserId);
 
+    //알림이 존재하는지 확인
     sse.onmessage = async (event) => {
         const newNotification = JSON.parse(event.data);
+        //const hasUnreadResponse = await axios.get(`${import.meta.env.VITE_ALERT_IP}/hasUnread/${encodedUserId}`);
         const hasUnreadResponse = await axios.get(`${import.meta.env.VITE_ALERT_IP}/hasUnread/${userId}`);
         onMessage(newNotification, hasUnreadResponse.data);
     };
