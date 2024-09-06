@@ -50,7 +50,7 @@ const Community = () => {
             const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
             return (
-                <div className="bg-[] auto-slide-left rounded-xl">
+                <div className="bg-gray-200 auto-slide-left rounded-xl">
                 <div
                     key={posting.postingId}
                     className="min-w-52 h-100"
