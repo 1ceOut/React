@@ -9,8 +9,8 @@ const DetailItems = ({ item }) => {
 
     return (
         <div className='flex justify-center items-center my-4'>
-            <div className='flex mr-3 w-[120px] h-[140px]'>
-                <img src={item.image} alt={item.title || '상품 이미지'} className="rounded-lg w-full h-full object-cover" onClick={click_function}/>
+            <div className='flex mr-3 w-[120px] h-[140px] min-w-[120px] min-h-[120px]'>
+                <img src={item.image} alt={item.title || '상품 이미지'} className="rounded-lg w-full h-full object-fill" onClick={click_function}/>
             </div>
             <div className='flex flex-col justify-evenly'>
                 <div className='flex flex-col space-y-2'>
@@ -18,7 +18,7 @@ const DetailItems = ({ item }) => {
                         {item.title || '제목 없음'}
                     </div>
                     <div
-                        className='py-1 w-fit font-medium text-[13px] text-gray-600 overflow-hidden text-ellipsis whitespace-nowrap'>
+                        className='py-1 font-medium text-[13px] text-gray-600 overflow-hidden text-ellipsis whitespace-nowrap w-[200px]'>
                         {item.subtitle || '부제목 없음'}
                     </div>
                     <div className="text-[12px]">리뷰 : {item.review_count || 0}개</div>

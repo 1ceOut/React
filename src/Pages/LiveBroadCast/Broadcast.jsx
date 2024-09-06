@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import "@livekit/components-styles";
 import {
     ControlBar,
@@ -7,21 +7,22 @@ import {
     useToken,
     RoomAudioRenderer, DisconnectButton, TrackToggle, MediaDeviceSelect,
 } from "@livekit/components-react";
-import {useNavigate, useParams} from "react-router-dom";
-import {ChatComponent} from "../../components/LiveBroadCast/ChatComponent.jsx";
+import { useNavigate, useParams } from "react-router-dom";
+import { ChatComponent } from "../../components/LiveBroadCast/ChatComponent.jsx";
 import VideoConference from "../../components/LiveBroadCast/VideoConference.jsx";
 import useUserStore from "../../store/useUserStore.js";
-import {Getuser, start, end} from "../../query/LiveroomQuery.js";
+import { Getuser, start, end } from "../../query/LiveroomQuery.js";
+import axios from 'axios';
 
 let LIVEKIT_URL = "wss://openvidu.midichi.kro.kr/";
 
 const api_url = import.meta.env.VITE_API_IP;
 
 const MyLiveKitApp = () => {
-    const {roomName, participantName} = useParams();
-    const {userId} = useUserStore();
+    const { roomName, participantName } = useParams();
+    const { userId } = useUserStore();
     const token = useToken(`${api_url}/api/token`, roomName, {
-        userInfo: {identity: participantName},
+        userInfo: { identity: participantName },
     });
 
     const [publisher, setPublisher] = useState(null);
@@ -38,8 +39,25 @@ const MyLiveKitApp = () => {
         };
 
         fetchPublisher();
-        if (participantName===publisher) start(userId);
+        //if (participantName === publisher) start(userId);
+        if (participantName === publisher) {
+            start(userId);
+            //sendBroadcastNotification();
+        }
     }, [userId]);
+
+    // //알림 전송 // 방송 시작
+    // const sendBroadcastNotification = async () => {
+    //     try {
+    //         await axios.post(`${import.meta.env.VITE_ALERT_IP}/startBroadcasting`, null, {
+    //             params: { sender: userId },
+    //         });
+    //         //console.log("Broadcast notification sent.");
+    //     } catch (error) {
+    //         //console.error("알림 전송 중 오류 발생:", error);
+    //         //alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
+    //     }
+    // };
 
     const handleDisconnected = () => {
         if (publisher === participantName) {
@@ -85,30 +103,30 @@ const MyLiveKitApp = () => {
                 video={true}
                 data-lk-theme={"default"}
                 debug={"true"}
-                style={{width: '100%', height: '100%', display: "flex"}}
+                style={{ width: '100%', height: '100%', display: "flex" }}
                 onDisconnected={handleDisconnected}
             >
                 <LayoutContextProvider>
                     <div className="flex flex-col h-full w-full]">
-                        <VideoConference style={{height: '56vh', width: "100%", display: "flex"}}
-                                         publisherName={publisher}/>
+                        <VideoConference style={{ height: '56vh', width: "100%", display: "flex" }}
+                            publisherName={publisher} />
                         {
                             participantName === publisher ? (
-                                    <>
-                                        <ControlBar style={{
-                                            width: '100%',
-                                            height: 'auto',
-                                            display: "flex",
-                                            flexWrap: "wrap",
-                                            maxHeight: "150px"
-                                        }}/>
-                                    </>)
+                                <>
+                                    <ControlBar style={{
+                                        width: '100%',
+                                        height: 'auto',
+                                        display: "flex",
+                                        flexWrap: "wrap",
+                                        maxHeight: "150px"
+                                    }} />
+                                </>)
                                 : (<DisconnectButton>연결 끊기</DisconnectButton>)
                         }
-                        <ChatComponent/>
+                        <ChatComponent />
                     </div>
                 </LayoutContextProvider>
-                <RoomAudioRenderer/>
+                <RoomAudioRenderer />
             </LiveKitRoom>
         </div>
     );

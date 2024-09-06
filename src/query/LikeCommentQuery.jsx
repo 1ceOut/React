@@ -12,7 +12,7 @@ const fetchFavoritesCount = async (postingId) => {
     withCredentials: true,
     params: { postingId },
   });
-  return response.data;
+  return response.data; 
 };
 
 export const useFavoritesCount = (postingId) => {
