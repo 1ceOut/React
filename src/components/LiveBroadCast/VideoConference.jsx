@@ -11,8 +11,8 @@ const VideoConference = ({ publisherName, style }) => {
 
     const audioRef = useTracks([Track.Source.Microphone])
 
-    const mainCamTrackRef = trackRefs.find((trackRef) => trackRef.participant.name === publisherName);
-    const mainAudioTrackRef = audioRef.find((trackRef) => trackRef.participant.name === publisherName);
+    const mainCamTrackRef = trackRefs.find((trackRef) => trackRef.participant.name.startsWith("방장"));
+    const mainAudioTrackRef = audioRef.find((trackRef) => trackRef.participant.name.startsWith("방장"));
 
     return (
         <div style={{ ...style, position: 'relative' }}>
