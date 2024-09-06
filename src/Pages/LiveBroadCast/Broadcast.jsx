@@ -108,7 +108,7 @@ const MyLiveKitApp = () => {
             >
                 <LayoutContextProvider>
                     <div className="flex flex-col h-full w-full]">
-                        <VideoConference style={{ height: '56vh', width: "100%", display: "flex" }}/>
+                        <VideoConference style={{ height: '56vh', width: "100%", display: "flex" }} publisherName={publisher}/>
                         {
                             participantName.startsWith("방장") ? (
                                 <>
