@@ -3,6 +3,8 @@ import Rating from "@mui/material/Rating";
 import PropTypes from "prop-types";
 import useUserStore from "./../../../store/useUserStore";
 import { useAddComment } from "../../../query/LikeCommentQuery";
+import { useDetailPost } from "../../../query/FeedQuery";
+import axios from "axios";
 
 const CommentModal = ({ closeHidden, postingId, userName }) => {
   const { userId: currentUserId } = useUserStore((state) => ({
@@ -14,6 +16,9 @@ const CommentModal = ({ closeHidden, postingId, userName }) => {
   const [selectedQuality, setSelectedQuality] = useState("");
 
   const { mutate: addComment } = useAddComment();
+
+  const { data: postDetail } = useDetailPost(postingId);
+  const authorId = postDetail?.posting?.userId || null;
 
   const getRatingText = (rate) => {
     switch (rate) {
@@ -41,8 +46,25 @@ const CommentModal = ({ closeHidden, postingId, userName }) => {
     formData.append("diff", selectedQuality);
 
     addComment(formData, {
-      onSuccess: () => {
+      onSuccess: async () => {
         alert("Comment submitted successfully!");
+
+        // 알림 전송// 댓글 작성
+        try {
+          await axios.post(`${import.meta.env.VITE_ALERT_IP}/writeReply`, null, {
+            params: {
+              sender: currentUserId,
+              receiver: authorId,
+              recipeposting: postingId,
+            },
+          });
+          //console.log("알림이 성공적으로 전송되었습니다.");
+        } catch (error) {
+          //console.error("알림 전송 중 오류 발생:", error);
+          //alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
+        }
+        
+
         closeHidden();
       },
       onError: (error) => {
@@ -94,12 +116,12 @@ const CommentModal = ({ closeHidden, postingId, userName }) => {
           </select>
         </div>
         <div className="border-[2px] w-full min-h-28 h-auto mt-2">
-          <input
+          <textarea
             id="food"
             name="food"
             type="text"
             placeholder="감사의 한마디 부탁드려요!"
-            className="block outline-none pl-3 text-gray-900 placeholder:text-[#A8A8A8]"
+            className="block outline-none pl-3 w-full h-28 text-gray-900 placeholder:text-[#A8A8A8]"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           />

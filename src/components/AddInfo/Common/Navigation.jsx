@@ -15,7 +15,7 @@ const Navigation = ({ currentStep, nextPath }) => {
       </div>
       <div className="flex">
         <div className="text-sm font-semibold">{currentStep}</div>
-        <div className="text-[#767676] text-sm font-semibold">/3</div>
+        <div className="text-[#767676] text-sm font-semibold">/2</div>
       </div>
     </section>
   );

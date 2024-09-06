@@ -12,6 +12,8 @@ import {
   useCommentsByPostingId,
 } from "../../../query/LikeCommentQuery";
 import CommentList from "./../Common/CommentList";
+import { useDetailPost } from "../../../query/FeedQuery";
+import axios from "axios";
 
 const FeedMenu = ({ postingId }) => {
   const [isAnimating, setIsAnimating] = useState(false);
@@ -37,6 +39,9 @@ const FeedMenu = ({ postingId }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [modalOffsetY, setModalOffsetY] = useState(0);
   const modalRef = useRef(null);
+
+  const { data: postDetail } = useDetailPost(postingId);
+  const authorId = postDetail?.posting?.userId || null;
 
   useEffect(() => {
     if (favoriteData !== undefined) {
@@ -81,7 +86,6 @@ const FeedMenu = ({ postingId }) => {
 
   const handleToggleFavorite = async () => {
     setIsAnimating(true);
-
     setLocalFavoriteStatus((prevStatus) => !prevStatus);
 
     try {
@@ -89,6 +93,23 @@ const FeedMenu = ({ postingId }) => {
 
       refetchFavoriteStatus();
       refetchFavoritesCount();
+
+      //알림 전송 //좋아요
+      if (!localFavoriteStatus) {
+        try {
+          await axios.post(`${import.meta.env.VITE_ALERT_IP}/checkLikeNotification`, null, {
+            params: {
+              sender: userId,
+              receiver: authorId,
+              recipeposting: postingId,
+            },
+          });
+          //console.log("알림이 성공적으로 전송되었습니다.");
+        } catch (error) {
+          //console.error("알림 전송 중 오류 발생:", error);
+          //alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
+        }
+      }
     } catch (error) {
       console.error("Failed to toggle favorite:", error);
 
@@ -236,6 +257,75 @@ const FeedMenu = ({ postingId }) => {
                   className="ml-2"
                 />
               </div>
+              <div className="flex w-[390px]">
+                {isFilterModalOpen && (
+                  <div>
+                    <div
+                      className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                      onClick={closeFilterModal}
+                    ></div>
+
+                    <div className="fixed bottom-0 bg-white w-[390px] h-[258px] px-6 z-50">
+                      <div className="flex justify-between items-center mt-1 h-[46px]">
+                        <div className="text-lg font-bold">댓글 필터링</div>
+                        <button
+                          onClick={closeFilterModal}
+                          className="text-lg font-bold"
+                        >
+                          &times;
+                        </button>
+                      </div>
+                      <div className="cursor-pointer mt-8 flex justify-evenly items-center w-[342px]">
+                        <div
+                          className={getButtonClassNames("latest")}
+                          onClick={() => handleFilterClick("latest")}
+                        >
+                          최신순
+                          {clickedFilter === "latest" && (
+                            <img
+                              src={`/assets/${getArrowIcon("latest")}`}
+                              alt="화살표"
+                              className="ml-1"
+                            />
+                          )}
+                        </div>
+                        <div
+                          className={getButtonClassNames("difficulty")}
+                          onClick={() => handleFilterClick("difficulty")}
+                        >
+                          난이도순
+                          {clickedFilter === "difficulty" && (
+                            <img
+                              src={`/assets/${getArrowIcon("difficulty")}`}
+                              alt="화살표"
+                              className="ml-1"
+                            />
+                          )}
+                        </div>
+                        <div
+                          className={getButtonClassNames("best")}
+                          onClick={() => handleFilterClick("best")}
+                        >
+                          베스트순
+                          {clickedFilter === "best" && (
+                            <img
+                              src={`/assets/${getArrowIcon("best")}`}
+                              alt="화살표"
+                              className="ml-1"
+                            />
+                          )}
+                        </div>
+                      </div>
+                      <div
+                        className="mt-6 w-[342px] h-[56px] cursor-pointer rounded-xl text-white flex justify-center items-center bg-[#2377EF]"
+                        onClick={closeFilterModal}
+                      >
+                        조회
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
               <div className="flex-1 w-full px-4 overflow-y-auto">
                 {sortedComments.length > 0 ? (
                   sortedComments.map((comment) => (
@@ -261,71 +351,6 @@ const FeedMenu = ({ postingId }) => {
                   닫기
                 </button>
               </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {isFilterModalOpen && (
-        <div>
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-40"
-            onClick={closeFilterModal}
-          ></div>
-
-          <div className="fixed bottom-0 bg-white w-[390px] h-[258px] z-50">
-            <div className="flex justify-between items-center mt-1 h-[46px]">
-              <div className="text-lg font-bold">댓글 필터링</div>
-              <button onClick={closeFilterModal} className="text-lg font-bold">
-                &times;
-              </button>
-            </div>
-            <div className="cursor-pointer mt-8 flex justify-evenly items-center w-[342px]">
-              <div
-                className={getButtonClassNames("latest")}
-                onClick={() => handleFilterClick("latest")}
-              >
-                최신순
-                {clickedFilter === "latest" && (
-                  <img
-                    src={`/assets/${getArrowIcon("latest")}`}
-                    alt="화살표"
-                    className="ml-1"
-                  />
-                )}
-              </div>
-              <div
-                className={getButtonClassNames("difficulty")}
-                onClick={() => handleFilterClick("difficulty")}
-              >
-                난이도순
-                {clickedFilter === "difficulty" && (
-                  <img
-                    src={`/assets/${getArrowIcon("difficulty")}`}
-                    alt="화살표"
-                    className="ml-1"
-                  />
-                )}
-              </div>
-              <div
-                className={getButtonClassNames("best")}
-                onClick={() => handleFilterClick("best")}
-              >
-                베스트순
-                {clickedFilter === "best" && (
-                  <img
-                    src={`/assets/${getArrowIcon("best")}`}
-                    alt="화살표"
-                    className="ml-1"
-                  />
-                )}
-              </div>
-            </div>
-            <div
-              className="mt-6 w-[342px] h-[56px] cursor-pointer rounded-xl text-white flex justify-center items-center bg-[#2377EF]"
-              onClick={closeFilterModal}
-            >
-              조회
             </div>
           </div>
         </div>

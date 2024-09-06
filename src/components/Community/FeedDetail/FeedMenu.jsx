@@ -12,6 +12,8 @@ import {
   useFavoritesCount,
   useCommentsByPostingId,
 } from "../../../query/LikeCommentQuery";
+import { useDetailPost } from "../../../query/FeedQuery";
+import axios from "axios";
 
 const FeedMenu = ({ postingId, userName }) => {
   const [isHidden, setIsHidden] = useState(false);
@@ -26,6 +28,9 @@ const FeedMenu = ({ postingId, userName }) => {
   const { data: commentsByPostingId } = useCommentsByPostingId(postingId);
   const [localFavoriteStatus, setLocalFavoriteStatus] = useState(false);
 
+  const { data: postDetail } = useDetailPost(postingId);
+  const authorId = postDetail?.posting?.userId || null;
+
   useEffect(() => {
     if (favoriteData !== undefined) {
       setLocalFavoriteStatus(favoriteData);
@@ -34,7 +39,6 @@ const FeedMenu = ({ postingId, userName }) => {
 
   const handleToggleFavorite = async () => {
     setIsAnimating(true);
-
     setLocalFavoriteStatus((prevStatus) => !prevStatus);
 
     try {
@@ -42,6 +46,24 @@ const FeedMenu = ({ postingId, userName }) => {
 
       refetchFavoriteStatus();
       refetchFavoritesCount();
+
+      //알림 전송 //좋아요
+      if (!localFavoriteStatus) {
+        try {
+          await axios.post(`${import.meta.env.VITE_ALERT_IP}/checkLikeNotification`, null, {
+            params: {
+              sender: userId,
+              receiver: authorId,
+              recipeposting: postingId,
+            },
+          });
+          //console.log("알림이 성공적으로 전송되었습니다.");
+        } catch (error) {
+          //console.error("알림 전송 중 오류 발생:", error);
+          //alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
+        }
+      }
+      
     } catch (error) {
       console.error("Failed to toggle favorite:", error);
 

@@ -57,7 +57,7 @@ export function ChatComponent({...props}) {
     }, [chatMessages, layoutContext?.widget])
 
     return (
-        <div {...props} className="lk-chat" style={{width:"100vh",height:"30vh",top:"70%",flexWrap:"wrap"}}>
+        <div {...props} className="lk-chat" style={{width:"100%",height:"34vh",position:"static"}}>
             <div className="lk-chat-header">
                 대화내용
             </div>

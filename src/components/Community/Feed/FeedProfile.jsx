@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../../store/useUserStore.js";
 import { subUserListFollow, usercreatesub, userdelete } from "../../../query/FeedQuery.jsx";
+import axios from "axios";
 
 const FeedProfile = ({ writeday, userProfile, userName, postingUserId }) => {
   const navigate = useNavigate();
@@ -12,6 +13,9 @@ const FeedProfile = ({ writeday, userProfile, userName, postingUserId }) => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [modalMessage, setModalMessage] = useState(""); // 모달 메시지 상태 관리
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 관리
+
+  //로그인 userid 가져오고, 로그인 상태확인
+  const { userId: myUserId } = useUserStore(); //알림용
 
   useEffect(() => {
     const fetchSubscriptionStatus = async () => {
@@ -43,6 +47,21 @@ const FeedProfile = ({ writeday, userProfile, userName, postingUserId }) => {
     if (!isSubscribed) {
       await usercreatesub(postingUserId, userId);
       setModalMessage("구독 되었습니다!"); // 구독 시 메시지 설정
+      
+      //알림 전송 //구독
+      try {
+        await axios.post(`${import.meta.env.VITE_ALERT_IP}/subscribeUser`, null, {
+          params: {
+            sender: userId,  // userId를 sender로 전송
+            receiver: postingUserId,
+          }
+        });
+        //console.log("알림이 성공적으로 전송되었습니다.");
+      } catch (error) {
+        //console.error("알림 전송 중 오류 발생:", error);
+        //alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
+      }
+   
     } else {
       await userdelete(postingUserId, userId);
       setModalMessage("구독 취소되었습니다!"); // 구독 취소 시 메시지 설정

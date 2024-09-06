@@ -2,8 +2,8 @@ import {create} from "zustand";
 import {devtools} from "zustand/middleware";
 
 const initState = {
-    habit: "",
-    favorite: "",
+    habit: "empty",
+    favorite: "empty",
     height:0,
     weight:0,
 }
