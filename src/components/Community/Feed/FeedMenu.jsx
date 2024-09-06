@@ -97,13 +97,17 @@ const FeedMenu = ({ postingId }) => {
       //알림 전송 //좋아요
       if (!localFavoriteStatus) {
         try {
-          await axios.post(`${import.meta.env.VITE_ALERT_IP}/checkLikeNotification`, null, {
-            params: {
-              sender: userId,
-              receiver: authorId,
-              recipeposting: postingId,
-            },
-          });
+          await axios.post(
+            `${import.meta.env.VITE_ALERT_IP}/checkLikeNotification`,
+            null,
+            {
+              params: {
+                sender: userId,
+                receiver: authorId,
+                recipeposting: postingId,
+              },
+            }
+          );
           //console.log("알림이 성공적으로 전송되었습니다.");
         } catch (error) {
           //console.error("알림 전송 중 오류 발생:", error);
@@ -232,19 +236,12 @@ const FeedMenu = ({ postingId }) => {
         >
           <div
             ref={modalRef}
-            className="bg-white rounded-lg w-[390px] h-full overflow-hidden"
+            className="bg-white rounded-lg h-full w-full overflow-hidden"
             style={{ transition: "transform 0.3s ease" }}
           >
             <div className="flex flex-col justify-between items-center h-full">
-              <div className="flex justify-between w-full px-4 py-3 bg-gray-100">
-                <div className="w-[18px]"></div>
+              <div className="flex justify-center w-full px-4 py-3 bg-gray-100">
                 <div className="text-lg font-semibold">댓글 목록</div>
-                <button
-                  onClick={closeCommentModal}
-                  className="text-lg font-bold"
-                >
-                  &times;
-                </button>
               </div>
               <div
                 className="my-5 cursor-pointer flex bg-white z-10 w-full px-4"
