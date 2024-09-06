@@ -94,7 +94,7 @@ const MyLiveKitApp = () => {
 
 
     return (
-        <div className='flex flex-col items-center pt-5 pb-2 mx-auto w-full max-w-[390px] h-auto'>
+        <div className='flex flex-col items-center pb-2 mx-auto w-full max-w-[390px] h-auto'>
             <LiveKitRoom
                 serverUrl={LIVEKIT_URL}
                 token={token}
