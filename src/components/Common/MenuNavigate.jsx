@@ -43,7 +43,7 @@ const MenuNavigate = ({ option, previousPage }) => {
   };
 
   return (
-    <div className="relative self-stretch flex items-center justify-between w-[342px] h-14 mt-[50px]">
+    <div className="relative self-stretch flex items-center justify-between w-[342px] h-14 mt-[30px]">
       <div className="absolute left-0 w-6 h-6 cursor-pointer" onClick={goBack}>
         {"<"}
       </div>
