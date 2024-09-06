@@ -14,7 +14,7 @@ const FeedTitle = ({ title, imageUrl, _id }) => {
   return (
     <div className="self-stretch cursor-pointer" onClick={detailNavigation}>
       <div>
-        <img src={imageUrl} alt={title} className="w-[342px] h-auto" />
+        <img src={imageUrl} alt={title} className="w-[342px] h-[200px] rounded-xl" />
       </div>
       <div className="my-[14px] text-[15px] font-medium">{title}</div>
     </div>

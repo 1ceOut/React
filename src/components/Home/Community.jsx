@@ -25,7 +25,7 @@ const Community = () => {
   };
 
   // 무작위 게시물 선택
-  const randomPosts = shufflePosts(safePosts).slice(0, 3);
+  const randomPosts = shufflePosts(safePosts).slice(0, 10);
 
   return (
     <section className="self-stretch">
@@ -40,7 +40,7 @@ const Community = () => {
           전체보기
         </div>
       </div>
-      <div className="mt-4 flex space-x-1">
+      <div className="mt-4 flex space-x-1 flex w-auto h-max-[340px] pl-4 mx-3 mt-1 rounded-lg overflow-x-auto scrollbar-hide">
         {randomPosts.length > 0 ? (
           randomPosts.map(({ posting }) => {
             // Date 객체를 사용하여 날짜 포맷팅
@@ -50,13 +50,13 @@ const Community = () => {
             return (
                 <div
                     key={posting.postingId}
-                    className="mb-6 flex justify-between cursor-pointer w-1/3 h-[300px]"
+                    className="min-w-52 h-100"
                     onClick={() => communityDetail(posting.postingId)}
                 >
-                  <div className="flex flex-col">
-                    <img src={posting.thumbnail} className="h-40 rounded-xl"/>
+                  <div className="flex flex-col items-center ml-3">
+                    <img src={posting.thumbnail} className="w-full h-40 rounded-xl"/>
                     <div>{posting.title}</div>
-                    <div className="font-normal text-[12px] text-[#767676]">
+                    <div className="flex items-start w-full p-2 font-normal text-[12px] text-[#767676]">
                       {formattedDate}
                     </div>
                   </div>
