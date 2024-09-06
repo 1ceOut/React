@@ -61,7 +61,7 @@ const MenuNavigate = ({ option, previousPage }) => {
         </div>
         <div className="pr-4">
           <img
-            src={hasUnread ? "/assets/alert_icon.png" : "/assets/alert.png"} 
+            src={hasUnread ? "/assets/alert2.png" : "/assets/alert.png"} 
             alt="alert"
             onClick={alertNavigation}
             className="cursor-pointer"
