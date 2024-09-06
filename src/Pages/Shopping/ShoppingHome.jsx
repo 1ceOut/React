@@ -57,7 +57,7 @@ const ShoppingHome = () => {
     }
 
     return (
-        <main className={`${animationClass} flex overflow-hidden flex-col pt-5 mx-auto w-full max-w-[390px]`}>
+        <main className={`${animationClass} flex overflow-hidden flex-col pt-5 mx-auto w-full max-w-[390px] pb-18`}>
             <div className="flex justify-center items-center">
                 <MenuNavigate option={"쇼핑"} alertPath="/addinfo/habit"/>
             </div>
