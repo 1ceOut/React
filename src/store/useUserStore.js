@@ -18,17 +18,13 @@ const initState = {
 
 // SSE 관리 훅
 const createSSE = (userId, onMessage) => {
-    //const encodedUserId = encodeURIComponent(userId);//encode타입 변환
-    const sse = new EventSource(`${import.meta.env.VITE_ALERT_IP}/subscribe/${userId}`);//이벤트 소스로 하는게 맞아
-    //const sse = new EventSource(`${import.meta.env.VITE_ALERT_IP}/subscribe/${encodedUserId}`);//이벤트 소스로 하는게 맞아
-    console.log(userId);
-    //console.log(encodedUserId);
+    const encodedUserId = encodeURIComponent(userId);//encode타입 변환
+    const sse = new EventSource(`${import.meta.env.VITE_ALERT_IP}/subscribe/${encodedUserId}`);//이벤트 소스로 하는게 맞아
 
     //알림이 존재하는지 확인
     sse.onmessage = async (event) => {
         const newNotification = JSON.parse(event.data);
-        //const hasUnreadResponse = await axios.get(`${import.meta.env.VITE_ALERT_IP}/hasUnread/${encodedUserId}`);
-        const hasUnreadResponse = await axios.get(`${import.meta.env.VITE_ALERT_IP}/hasUnread/${userId}`);
+        const hasUnreadResponse = await axios.get(`${import.meta.env.VITE_ALERT_IP}/hasUnread/${encodedUserId}`);
         onMessage(newNotification, hasUnreadResponse.data);
     };
 
@@ -59,7 +55,9 @@ const store = (set, get) => ({
         const state = get();
         if (state.isLogin && state.userAccessToken) {
             const jwt = parseJwt(state.userAccessToken);
-            const sse = createSSE(jwt.sub, get().handleSSEMessage);
+            const userId = jwt.sub;//////
+            const encodedUserId = encodeURIComponent(userId);//encode타입 변환
+            const sse = createSSE(encodedUserId, get().handleSSEMessage);
             set({ sse });
         }
     },
@@ -77,6 +75,8 @@ const store = (set, get) => ({
     LoginSuccessStatus: async (accessToken) => {
         const jwt = parseJwt(accessToken);
         const state = get();
+        const userId = jwt.sub;
+        const encodedUserId = encodeURIComponent(userId);//encode타입 변환//공백제거
 
         // 기존 SSE 연결 해제
         if (state.sse instanceof EventSource) {
@@ -84,11 +84,11 @@ const store = (set, get) => ({
         }
 
         // 새로운 SSE 구독 생성 및 알림 초기화
-        const sse = createSSE(jwt.sub, get().handleSSEMessage);
+        const sse = createSSE(encodedUserId, get().handleSSEMessage);
 
         try {
-            const hasUnreadResponse = await axios.get(`${import.meta.env.VITE_ALERT_IP}/hasUnread/${jwt.sub}`);
-            const notificationsResponse = await axios.get(`${import.meta.env.VITE_ALERT_IP}/getNotification/${jwt.sub}`);
+            const hasUnreadResponse = await axios.get(`${import.meta.env.VITE_ALERT_IP}/hasUnread/${encodedUserId}`);
+            const notificationsResponse = await axios.get(`${import.meta.env.VITE_ALERT_IP}/getNotification/${encodedUserId}`);
 
             set({
                 isLogin: true,
@@ -96,7 +96,7 @@ const store = (set, get) => ({
                 userName: jwt.name,
                 userProfile: jwt.photo,
                 userRole: jwt.role,
-                userId: jwt.sub,
+                userId: jwt.sub,//공백 포함 데이터
                 sse,
                 hasUnread: hasUnreadResponse.data,
                 notifications: notificationsResponse.data,

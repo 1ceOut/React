@@ -61,13 +61,19 @@ const MyFeedPage = () => {
       await usercreatesub(paramUserId, userId);
       setModalMessage("구독 되었습니다!");
 
-      // 알림 전송
-      await axios.post(`${import.meta.env.VITE_ALERT_IP}/subscribeUser`, null, {
-        params: {
-          sender: userId,
-          receiver: paramUserId,
-        },
-      });
+      //알림 전송 //구독
+      try {
+        await axios.post(`${import.meta.env.VITE_ALERT_IP}/subscribeUser`, {
+          sender: encodeURIComponent(userId),  // userId를 sender로 전송
+          receiver: encodeURIComponent(paramUserId),
+          memo: "",
+        });
+        //console.log("알림이 성공적으로 전송되었습니다.");
+      } catch (error) {
+        //console.error("알림 전송 중 오류 발생:", error);
+        //alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
+      }
+
     } else {
       await userdelete(paramUserId, userId);
       setModalMessage("구독 취소되었습니다!");

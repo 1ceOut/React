@@ -60,6 +60,7 @@ const addPosting = async (data) => {
       },
       withCredentials: true,
     });
+    console.log(response);
     return response.data;
   } catch (error) {
     console.error("게시물 추가 실패:", error);

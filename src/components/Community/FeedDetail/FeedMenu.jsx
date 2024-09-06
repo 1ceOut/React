@@ -50,12 +50,11 @@ const FeedMenu = ({ postingId, userName }) => {
       //알림 전송 //좋아요
       if (!localFavoriteStatus) {
         try {
-          await axios.post(`${import.meta.env.VITE_ALERT_IP}/checkLikeNotification`, null, {
-            params: {
-              sender: userId,
-              receiver: authorId,
-              recipeposting: postingId,
-            },
+          await axios.post(`${import.meta.env.VITE_ALERT_IP}/checkLikeNotification`, {
+            sender: encodeURIComponent(userId),
+            receiver: encodeURIComponent(authorId),
+            recipeposting: postingId,
+            memo: "",
           });
           //console.log("알림이 성공적으로 전송되었습니다.");
         } catch (error) {

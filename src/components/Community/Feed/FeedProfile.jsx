@@ -50,11 +50,10 @@ const FeedProfile = ({ writeday, userProfile, userName, postingUserId }) => {
       
       //알림 전송 //구독
       try {
-        await axios.post(`${import.meta.env.VITE_ALERT_IP}/subscribeUser`, null, {
-          params: {
-            sender: userId,  // userId를 sender로 전송
-            receiver: postingUserId,
-          }
+        await axios.post(`${import.meta.env.VITE_ALERT_IP}/subscribeUser`, {
+          sender: encodeURIComponent(userId),  // userId를 sender로 전송
+          receiver: encodeURIComponent(postingUserId),
+          memo: "",
         });
         //console.log("알림이 성공적으로 전송되었습니다.");
       } catch (error) {

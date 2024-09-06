@@ -184,8 +184,11 @@ const TalkDetail = () => {
     // 새로운 공지 알림을 전송하는 함수
     const sendNewChattingMasterNotification = async () => {
         try {
-            await axios.post(`${api_server}/api/newChattingMaster`, {
-                sender: currentUserId,  // 공지사항을 설정한 사용자
+            console.log(currentUserId);
+            console.log(chatroomSeq);
+            console.log(newAnnouncement);
+            await axios.post(`${import.meta.env.VITE_ALERT_IP}/newChattingMaster`, {
+                sender: encodeURIComponent(currentUserId),  // 공지사항을 설정한 사용자
                 senderrefri: chatroomSeq, // 현재 냉장고(채팅방) ID
                 memo: newAnnouncement,
             }, {

@@ -150,6 +150,10 @@ const Body = () => {
                 statusText = '냉장고가 삭제됐어요!';
                 titleText = `${userName}님이 ${refriName}냉장고를 삭제했어요.`;
                 break;
+            case '구성원 삭제':
+                statusText = '구성원이 나왔어요!';
+                titleText = `${userName}님이 ${refriName}냉장고에서 나왔어요.`;
+                break;
             case '채팅':
                 statusText = '채팅을 올라왔어요!';
                 titleText = `${userName}님이 채팅을 남겼어요.`;
