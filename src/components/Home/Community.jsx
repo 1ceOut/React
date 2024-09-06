@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { usePostsWithUserDetails } from "../../query/FeedQuery"; // 수정된 훅 이름
+import { usePostsWithUserDetails } from "../../query/FeedQuery";
+import {keyframes} from "@emotion/react"; // 수정된 훅 이름
 
 const Community = () => {
   const navigate = useNavigate();
@@ -21,11 +22,12 @@ const Community = () => {
 
   // 게시물 셔플 함수
   const shufflePosts = (array) => {
-    return array.sort(() => Math.random() - 0.5);
+    return array.sort(() => Math.random() - 0.9);
   };
 
   // 무작위 게시물 선택
   const randomPosts = shufflePosts(safePosts).slice(0, 10);
+
 
   return (
     <section className="self-stretch">
@@ -40,7 +42,7 @@ const Community = () => {
           전체보기
         </div>
       </div>
-      <div className="mt-4 flex space-x-1 flex w-auto h-max-[340px] pl-4 mx-3 mt-1 rounded-lg overflow-x-auto scrollbar-hide">
+      <div className="mt-4 flex space-x-2 flex w-auto h-max-[340px] mt-1 rounded-lg overflow-x-auto scrollbar-hide">
         {randomPosts.length > 0 ? (
           randomPosts.map(({ posting }) => {
             // Date 객체를 사용하여 날짜 포맷팅
@@ -48,18 +50,20 @@ const Community = () => {
             const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
             return (
+                <div className="bg-[] auto-slide-left rounded-xl">
                 <div
                     key={posting.postingId}
                     className="min-w-52 h-100"
                     onClick={() => communityDetail(posting.postingId)}
                 >
-                  <div className="flex flex-col items-center ml-3">
+                  <div className="flex flex-col items-center p-2.5">
                     <img src={posting.thumbnail} className="w-full h-40 rounded-xl"/>
-                    <div>{posting.title}</div>
+                    <div className="line-clamp-2 pl-2 pr-2 pt-1">{posting.title}</div>
                     <div className="flex items-start w-full p-2 font-normal text-[12px] text-[#767676]">
                       {formattedDate}
                     </div>
                   </div>
+                </div>
                 </div>
             );
           })
