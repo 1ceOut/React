@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { useEffect } from "react"; // useEffect 추가
 import FeedComment from "../../components/Community/FeedDetail/FeedComment";
 import FeedMenu from "../../components/Community/FeedDetail/FeedMenu";
 import FeedRecipe from "../../components/Community/FeedDetail/FeedRecipe";
@@ -24,6 +25,11 @@ const FeedDetailPage = () => {
     userId: state.userId,
   }));
 
+  // 페이지가 마운트될 때 스크롤을 맨 위로 이동시키기
+  useEffect(() => {
+    window.scrollTo(0, 0); // 스크롤 위치를 맨 위로 설정
+  }, []); // 빈 배열을 종속성으로 전달하여 컴포넌트가 처음 마운트될 때만 실행
+
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading data</div>;
 
@@ -32,7 +38,6 @@ const FeedDetailPage = () => {
   const userProfile = postWithUser?.userProfile || "default-profile-url";
 
   if (!post) {
-    console.error(`Post with ID ${postingId} not found`);
     return <div>Post not found</div>;
   }
 
