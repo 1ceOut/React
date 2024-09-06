@@ -189,8 +189,12 @@ export const useAddPost = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: addPosting,
-    onSuccess: () => {
+    onSuccess: (data) => {  // addPosting 함수가 반환한 데이터를 받습니다.
       queryClient.invalidateQueries(["postsWithUser"]);
+      if (data && data.postingId) {
+        console.log(`새로운 게시물이 생성되었습니다. ID: ${data.postingId}`);
+       
+      }
     },
   });
 };
