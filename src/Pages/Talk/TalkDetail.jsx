@@ -170,7 +170,7 @@ const TalkDetail = () => {
             }).then(() => {
                 setAnnouncement(newAnnouncement);
 
-                sendNewChattingMasterNotification(); // 알림 전송 함수 호출
+                //sendNewChattingMasterNotification(); // 알림 전송 함수 호출
 
                 setNewAnnouncement("");
                 setIsAnnouncementVisible(false);
