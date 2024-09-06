@@ -3,7 +3,6 @@ import { useState } from "react"; // 상태 관리를 위한 useState 추가
 import { useNavigate } from "react-router-dom"; // React Router의 useNavigate 사용
 import HorizontalLine from "./../../Common/HorizontalLine";
 import { usePostsByUser } from "./../../../query/FeedQuery";
-import { data } from "autoprefixer";
 
 const FeedContent = ({ userId, writeday }) => { // writeday를 props로 받습니다.
   const { data: posts } = usePostsByUser(userId);
@@ -23,7 +22,7 @@ const FeedContent = ({ userId, writeday }) => { // writeday를 props로 받습�
   const clickedStyle = {
     filter: "brightness(0.8) sepia(0.6) hue-rotate(200deg) saturate(2)", // 파스텔톤 색상 효과
   };
-  console.log(safePosts);
+
   return (
     <div>
       <div>
@@ -66,9 +65,7 @@ const FeedContent = ({ userId, writeday }) => { // writeday를 props로 받습�
               </div>
             ))}
           </div>
-        ) : (
-          <div>No posts available</div>
-        )}
+        ) : null} {/* No posts available 텍스트 제거 */}
       </div>
     </div>
   );

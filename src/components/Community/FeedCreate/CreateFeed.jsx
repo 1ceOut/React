@@ -16,12 +16,10 @@ const CreateFeed = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const navigate = useNavigate();
 
-  // React Query 훅에서 mutation 가져오기
   const { mutate: addPost } = useAddPost();
-  const { userId } = useUserStore(); // Zustand store에서 유저 ID 가져오기
+  const { userId } = useUserStore();
 
   useEffect(() => {
-    // 모든 필드가 채워졌는지 확인
     if (title && content && tag) {
       setIsEnabled(true);
     } else {
@@ -34,9 +32,9 @@ const CreateFeed = () => {
     if (file) {
       try {
         const imageUrl = await uploadImage(file);
-        setSelectedImage(imageUrl); // 업로드된 이미지 URL을 상태에 저장합니다.
+        setSelectedImage(imageUrl);
       } catch (error) {
-        console.error("이미지 업로드 실패:", error);
+        // 이미지 업로드 실패 처리
       }
     }
   };
@@ -46,9 +44,9 @@ const CreateFeed = () => {
     if (file) {
       try {
         const imageUrl = await uploadImage(file);
-        setStepImage(imageUrl); // 업로드된 스텝 이미지 URL을 상태에 저장합니다.
+        setStepImage(imageUrl);
       } catch (error) {
-        console.error("스텝 이미지 업로드 실패:", error);
+        // 스텝 이미지 업로드 실패 처리
       }
     }
   };
@@ -57,7 +55,7 @@ const CreateFeed = () => {
     if (stepDescription) {
       const newStep = {
         description: stepDescription,
-        image: stepImage || null, // 스텝 이미지가 없을 경우 null 처리
+        image: stepImage || null,
       };
       setSteps([...steps, newStep]);
       setStepDescription("");
@@ -75,16 +73,16 @@ const CreateFeed = () => {
         title,
         contents: content,
         tags: tag,
-        thumbnail: selectedImage || null, // 이미지 URL 포함
+        thumbnail: selectedImage || null,
         userId: userId,
-        writeday: new Date().toISOString(), // 작성일자 추가 (ISO 형식)
-        steps, // 스텝 데이터 추가
+        writeday: new Date().toISOString(),
+        steps,
       };
 
       try {
         await addPost(postingData);
 
-        //알림 전송 // 포스팅 작성
+        // 알림 전송 // 포스팅 작성
         await axios.post(`${import.meta.env.VITE_ALERT_IP}/writePosting`, null, {
           params: {
             sender: userId,
@@ -93,11 +91,8 @@ const CreateFeed = () => {
 
         navigate("/community/feed");
       } catch (err) {
-        console.error("Error adding posting:", err.response?.data || err);
-        alert("Failed to create post. Please check the console for details.");
+        // 포스트 작성 실패 처리
       }
-    } else {
-      alert("Please fill in all required fields.");
     }
   };
 
@@ -197,9 +192,7 @@ const CreateFeed = () => {
           {steps.map((s, index) => (
             <div key={index} className="border rounded p-2 mb-2">
               <div className="flex items-start mb-2">
-                <span className="flex-1">{`Step ${index + 1}: ${
-                  s.description
-                }`}</span>
+                <span className="flex-1">{`Step ${index + 1}: ${s.description}`}</span>
                 {s.image && (
                   <img
                     src={s.image}
