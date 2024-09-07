@@ -113,7 +113,6 @@ const FoodDetail = () => {
                     </p>
                 </div>
             </div>
-            <div className="w-[390px] h-[16px] bg-[#F4F4F4] mt-8"></div>
             {nutritionInfo ? (
                 <div className="border-2 border-black w-[342px] font-sans text-[#333] p-2 mt-8">
                     <div className="text-left">
