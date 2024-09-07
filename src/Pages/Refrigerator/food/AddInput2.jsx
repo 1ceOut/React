@@ -214,6 +214,7 @@ const AddInput2 = () => {
         <div className="w-[342px] mt-3">
           <LocalizationProvider dateAdapter={AdapterDateFns} locale={koKR}>
             <DatePicker
+                className='w-[342px] mt-3'
                 label="유통기한 선택"
                 value={expiryDate}
                 onChange={(newValue) => setExpiryDate(newValue)}

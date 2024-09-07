@@ -14,12 +14,12 @@
         transform: translateX(0); /* 시작 위치 */
     }
     100% {
-        transform: translateX(-100%); /* 왼쪽으로 이동 */
+        transform: translateX(-850%); /* 왼쪽으로 이동 */
     }
 }
 
 .auto-slide-left {
-    animation: slideLeft 5s linear infinite; /* 10초 동안 왼쪽으로 이동, 반복 */
+    animation: slideLeft 20s linear infinite; /* 10초 동안 왼쪽으로 이동, 반복 */
 }
 
 /* styles.css */

@@ -132,7 +132,7 @@ const Router = () => {
                     <Route path={"/liveroom/:roomName/:participantName"} element={<MyLiveKitApp/>}></Route>
                 </Routes>
             </BrowserRouter>
-            <ReactQueryDevtools buttonPosition={"relative"}/>
+            {/*<ReactQueryDevtools buttonPosition={"relative"}/>*/}
         </PersistQueryClientProvider>
     );
 };
