@@ -48,8 +48,7 @@ const UpdateFeed = () => {
         const imageUrl = await uploadImage(file);
         setSelectedImage(imageUrl);
       } catch (error) {
-        console.error("Image upload failed:", error);
-        alert("Failed to upload image. Please try again.");
+        // Handle error silently
       }
     }
   };
@@ -61,8 +60,7 @@ const UpdateFeed = () => {
         const imageUrl = await uploadImage(file);
         setStepImage(imageUrl);
       } catch (error) {
-        console.error("Step image upload failed:", error);
-        alert("Failed to upload step image. Please try again.");
+        // Handle error silently
       }
     }
   };
@@ -76,8 +74,6 @@ const UpdateFeed = () => {
       setSteps((prevSteps) => [...prevSteps, newStep]);
       setStepDescription("");
       setStepImage(null);
-    } else {
-      alert("Step description cannot be empty.");
     }
   };
 
@@ -97,17 +93,12 @@ const UpdateFeed = () => {
         steps,
       };
 
-      console.log("Submitting data:", postingData);
-
       try {
         await updatePosting(postingId, postingData);
         navigate("/community/feed");
       } catch (err) {
-        console.error("Error updating post:", err.response?.data || err);
-        alert("Failed to update post. Please check the console for details.");
+        // Handle error silently
       }
-    } else {
-      alert("Please fill in all required fields.");
     }
   };
 

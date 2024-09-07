@@ -3,6 +3,8 @@ import { useSpeechRecognition } from 'react-speech-kit';
 import SockJS from "sockjs-client";
 import {Stomp} from "@stomp/stompjs";
 import {useParams} from "react-router-dom";
+import PropTypes from "prop-types";
+import Items from "../Shopping/Items.jsx";
 
 const api_url = import.meta.env.VITE_API_IP;
 
@@ -30,7 +32,6 @@ const Subtitle = ({publisher}) => {
         // WebSocket 연결
         stompClient.current = Stomp.over(socket);
         stompClient.current.connect({}, () => {
-            console.log('WebSocket 연결됨');
             stompClient.current.subscribe(`/live/topic/${roomName}/subtitles`, (message) => {
                 setValue(message.body);
             });
@@ -47,15 +48,19 @@ const Subtitle = ({publisher}) => {
         <div>
             <div>{value}</div>
             {
-                publisher === participantName?(<button onMouseDown={listen} onMouseUp={stop}>
+                participantName.startsWith("방장")?(<button onMouseDown={listen} onMouseUp={stop}>
                         🎤
                     </button>):null
             }
             {
-                listening && <div>음성인식 활성화 중</div>
+                listening && <div></div>
             }
         </div>
     );
 }
+
+Subtitle.propTypes = {
+    publisher: PropTypes.string,
+};
 
 export default Subtitle;

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import MenuNavigate from '../../../components/Common/MenuNavigate';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { fetchNutritionInfo } from '../../../query/FoodDataSearch';
-import ConfirmModal from '../../../components/Mypage/FridgeDelete/ConfirmModal.jsx';
 import { foodDelete, updateCountByname } from "../../../query/FoodListQuery.jsx";
-import { getCategoryImage } from '../../../components/Refrigerator/FridgeManage/CategoryImage.jsx';  // 여기서 임포트
+import { getCategoryImage } from '../../../components/Refrigerator/FridgeManage/CategoryImage.jsx';
+import FoodModal from "../../../components/Refrigerator/FridgeManage/FoodModal.jsx";  // 여기서 임포트
 
 const FoodDetail = () => {
     const { state } = useLocation();
@@ -118,7 +118,7 @@ const FoodDetail = () => {
                 <div className="border-2 border-black w-[342px] font-sans text-[#333] p-2 mt-8">
                     <div className="text-left">
                         <h2 className="text-[1.5em] mb-2">영양정보</h2>
-                        <p style={{ margin: "5px 0", fontSize: "0.9em", color: "#aaa" }}>
+                        <p style={{margin: "5px 0", fontSize: "0.9em", color: "#aaa"}}>
                             총 내용량 {nutritionInfo.personal * count || basic * count}g
                             ({nutritionInfo.personal || basic}{nutritionInfo.personal_unit} x {count}개)
                         </p>
@@ -128,7 +128,9 @@ const FoodDetail = () => {
                         <thead>
                         <tr>
                             <th className="text-left text-[0.8em] text-[#777] pb-1 border-b border-[#ddd]">영양소</th>
-                            <th className="text-right text-[0.8em] text-[#777] pb-1 border-b border-[#ddd]">{nutritionInfo.personal || basic}({nutritionInfo.personal_unit || "g"})당 영양성분</th>
+                            <th className="text-right text-[0.8em] text-[#777] pb-1 border-b border-[#ddd]">{nutritionInfo.personal || basic}({nutritionInfo.personal_unit || "g"})당
+                                영양성분
+                            </th>
                         </tr>
                         </thead>
                         <tbody>
@@ -176,7 +178,7 @@ const FoodDetail = () => {
                     </table>
                 </div>
             ) : (
-                <p>영양정보 없는딩?</p>
+                <p></p>
             )}
             <div className="w-[342px] flex justify-between mt-8">
                 <button
@@ -186,12 +188,15 @@ const FoodDetail = () => {
                     수정
                 </button>
             </div>
-            <ConfirmModal
+            <FoodModal
                 option={option}
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
                 onConfirm={handleConfirmDelete}
+                onImg={getCategoryImage(lcategory)}
             />
+
+
         </main>
     );
 };

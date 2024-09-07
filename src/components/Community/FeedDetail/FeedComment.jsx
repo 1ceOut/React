@@ -96,9 +96,9 @@ const FeedComment = ({ postingId }) => {
   };
 
   return (
-    <div>
-      <div className="self-stretch mt-[50px] mx-auto max-w-[342px]">
-        <div className="flex flex-col justify-between items-center">
+    <div className="self-stretch mt-[10px] mx-auto max-w-[342px]">
+      <div className="flex flex-col justify-between items-center">
+        {sortedComments.length > 0 && (
           <div
             className="my-5 cursor-pointer flex justify-start"
             onClick={handleClick}
@@ -110,90 +110,86 @@ const FeedComment = ({ postingId }) => {
               className="ml-2 flex justify-center items-center"
             />
           </div>
+        )}
 
-          <div className="mt-4">
-            {sortedComments.length > 0 ? (
-              sortedComments.map((comment) => (
-                <div key={comment.comment.commentId}>
-                  <CommentList
-                    isOwner={isCommentOwner(comment.comment)}
-                    commentId={comment.commentId}
-                    comment={comment.comment}
-                    userProfile={comment.userProfile}
-                    userName={comment.userName}
-                  />
+        <div className="mt-4">
+          {sortedComments.map((comment) => (
+            <div key={comment.comment.commentId}>
+              <CommentList
+                isOwner={isCommentOwner(comment.comment)}
+                commentId={comment.commentId}
+                comment={comment.comment}
+                userProfile={comment.userProfile}
+                userName={comment.userName}
+              />
+            </div>
+          ))}
+        </div>
+        <div className="flex w-[390px] ">
+          {isModalVisible && (
+            <div>
+              <div
+                className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                onClick={closeModal}
+              ></div>
+
+              <div className="fixed bottom-0 bg-white w-[390px] h-[258px] px-6 z-50">
+                <div className="flex justify-between items-center mt-1 h-[46px]">
+                  <div className="text-lg font-bold">댓글 필터링</div>
+                  <button onClick={closeModal} className="text-lg font-bold">
+                    &times;
+                  </button>
                 </div>
-              ))
-            ) : (
-              <div>No comments available</div>
-            )}
-          </div>
-          <div className="flex w-[390px] ">
-            {isModalVisible && (
-              <div>
-                <div
-                  className="fixed inset-0 bg-black bg-opacity-50 z-40"
-                  onClick={closeModal}
-                ></div>
-
-                <div className="fixed bottom-0 bg-white w-[390px] h-[258px] px-6 z-50">
-                  <div className="flex justify-between items-center mt-1 h-[46px]">
-                    <div className="text-lg font-bold">댓글 필터링</div>
-                    <button onClick={closeModal} className="text-lg font-bold">
-                      &times;
-                    </button>
-                  </div>
-                  <div className="cursor-pointer mt-8 flex justify-evenly items-center w-[342px]">
-                    <div
-                      className={getButtonClassNames("latest")}
-                      onClick={() => handleFilterClick("latest")}
-                    >
-                      최신순
-                      {clickedFilter === "latest" && (
-                        <img
-                          src={`/assets/${getArrowIcon("latest")}`}
-                          alt="화살표"
-                          className="ml-1"
-                        />
-                      )}
-                    </div>
-                    <div
-                      className={getButtonClassNames("difficulty")}
-                      onClick={() => handleFilterClick("difficulty")}
-                    >
-                      난이도순
-                      {clickedFilter === "difficulty" && (
-                        <img
-                          src={`/assets/${getArrowIcon("difficulty")}`}
-                          alt="화살표"
-                          className="ml-1"
-                        />
-                      )}
-                    </div>
-                    <div
-                      className={getButtonClassNames("best")}
-                      onClick={() => handleFilterClick("best")}
-                    >
-                      베스트순
-                      {clickedFilter === "best" && (
-                        <img
-                          src={`/assets/${getArrowIcon("best")}`}
-                          alt="화살표"
-                          className="ml-1"
-                        />
-                      )}
-                    </div>
+                <div className="cursor-pointer mt-8 flex justify-evenly items-center w-[342px]">
+                  <div
+                    className={getButtonClassNames("latest")}
+                    onClick={() => handleFilterClick("latest")}
+                  >
+                    최신순
+                    {clickedFilter === "latest" && (
+                      <img
+                        src={`/assets/${getArrowIcon("latest")}`}
+                        alt="화살표"
+                        className="ml-1"
+                      />
+                    )}
                   </div>
                   <div
-                    className="mt-6 w-[342px] h-[56px] cursor-pointer rounded-xl text-white flex justify-center items-center bg-[#2377EF]"
-                    onClick={closeModal}
+                    className={getButtonClassNames("difficulty")}
+                    onClick={() => handleFilterClick("difficulty")}
                   >
-                    조회
+                    난이도순
+                    {clickedFilter === "difficulty" && (
+                      <img
+                        src={`/assets/${getArrowIcon("difficulty")}`}
+                        alt="화살표"
+                        className="ml-1"
+                      />
+                    )}
+                  </div>
+                  <div
+                    className={getButtonClassNames("best")}
+                    onClick={() => handleFilterClick("best")}
+                  >
+                    베스트순
+                    {clickedFilter === "best" && (
+                      <img
+                        src={`/assets/${getArrowIcon("best")}`}
+                        alt="화살표"
+                        className="ml-1"
+                      />
+                    )}
                   </div>
                 </div>
+                <div
+                  className="mt-6 w-[342px] h-[56px] cursor-pointer rounded-xl text-white flex justify-center items-center bg-[#2377EF]"
+                  onClick={closeModal}
+                >
+                  조회
+                </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

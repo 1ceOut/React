@@ -248,19 +248,12 @@ const FeedMenu = ({ postingId }) => {
         >
           <div
             ref={modalRef}
-            className="bg-white rounded-lg w-[390px] h-full overflow-hidden"
+            className="bg-white rounded-lg h-full w-full overflow-hidden"
             style={{ transition: "transform 0.3s ease" }}
           >
             <div className="flex flex-col justify-between items-center h-full">
-              <div className="flex justify-between w-full px-4 py-3 bg-gray-100">
-                <div className="w-[18px]"></div>
+              <div className="flex justify-center w-full px-4 py-3 bg-gray-100">
                 <div className="text-lg font-semibold">댓글 목록</div>
-                <button
-                  onClick={closeCommentModal}
-                  className="text-lg font-bold"
-                >
-                  &times;
-                </button>
               </div>
               <div
                 className="my-5 cursor-pointer flex bg-white z-10 w-full px-4"

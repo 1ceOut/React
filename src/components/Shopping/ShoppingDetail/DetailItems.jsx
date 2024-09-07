@@ -9,11 +9,11 @@ const DetailItems = ({ item }) => {
 
     return (
         <div className='flex justify-center items-center my-4'>
-            <div className='flex mr-3 w-[120px] h-[140px] min-w-[120px] min-h-[120px]'>
+            <div className='flex mr-3 w-[120px] h-[140px] min-w-[120px] min-h-[120px] cursor-pointer'>
                 <img src={item.image} alt={item.title || '상품 이미지'} className="rounded-lg w-full h-full object-fill" onClick={click_function}/>
             </div>
             <div className='flex flex-col justify-evenly'>
-                <div className='flex flex-col space-y-2'>
+                <div className='flex flex-col'>
                     <div className='font-normal text-[15px] overflow-hidden text-ellipsis whitespace-nowrap w-[200px]'>
                         {item.title || '제목 없음'}
                     </div>
@@ -23,16 +23,20 @@ const DetailItems = ({ item }) => {
                     </div>
                     <div className="text-[12px]">리뷰 : {item.review_count || 0}개</div>
                 </div>
-                <div className='flex justify-between items-end'>
-                    <div className='text-[#EC3A3A] font-semibold text-[18px]'>
-                        {item.discount_percent ? (
+                <div className='flex flex-col'>
+                    <div className='font-semibold'>
+                        {item.discount_percent!=null ? (
                             <div className="flex mt-1">
-                                <del className="text-[0.9rem] text-gray-400 mr-4">{item.origin_price}원</del>
-                                <p className="text-[1.2rem]">{item.discount_percent}</p>
+                                <p className="text-base text-[#EC3A3A] mr-2">{item.discount_percent}</p>
+                                <div className='font-bold text-base'>{item.price}원</div>
                             </div>
-                        ) : ("")}
+                        ) : (<div className="flex mt-1">
+                            <div className='font-bold text-base'>{item.price}원</div>
+                        </div>)}
                     </div>
-                    <div className='font-bold text-[15px]'>{item.price}원</div>
+                    {item.discount_percent!=null ? (
+                        <del className="text-[0.9rem] text-gray-400 mr-4">{item.origin_price}원</del>):null}
+
                 </div>
             </div>
         </div>
