@@ -12,7 +12,7 @@ import "../../../public/css/ChatCSS/chat.css";
 const Talk = () => {
     const navigate = useNavigate();
 
-    const { userId, isLogin, LoginSuccessStatus } = useUserStore();
+    const { userId, isLogin, LoginSuccessStatus, foodExpirationNotifications  } = useUserStore();
     const { data, error, isLoading, } = useFridgeOptions(userId);
     const [filteredFridges, setFilteredFridges] = useState([]);
     const [fridgeIds, setFridgeIds] = useState([]); // fridgeIds 상태 추가

@@ -24,7 +24,7 @@ const AnnouncementModal = ({ onRefri, isOpen, onClose }) => {
                 setNewAnnouncement("");
 
                 //공지 알림 전송 함수 호출
-                sendNewChattingMasterNotification();
+                //sendNewChattingMasterNotification();
 
                 // 모달을 닫음
                 onClose();

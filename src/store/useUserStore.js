@@ -48,8 +48,8 @@ const store = (set, get) => ({
         set({ foodExpirationNotifications: expirationNotifications });
     },
 
-    AddinfoSuccessStatus : () =>{
-        set({userRole:"ROLE_USER"})
+    AddinfoSuccessStatus: () => {
+        set({ userRole: "ROLE_USER" })
     },
 
     initialize: () => {
@@ -97,6 +97,12 @@ const store = (set, get) => ({
             const notificationsResponse = await axios.get(`${import.meta.env.VITE_ALERT_IP}/getNotification/${encodedUserId}`);
             const foodExpirationNotifications = notificationsResponse.data.filter(n => n.alerttype === '유통기한 임박');
 
+            // 추천 API 호출 (예시)
+            const recommendationResponse = await axios.get(`${import.meta.env.VITE_ALERT_IP}/recommendations/${encodedUserId}`);
+            const recommendations = recommendationResponse.data;
+
+            // 콘솔에 추천 결과 출력
+            console.log("추천 결과:", recommendations);
 
             set({
                 isLogin: true,
