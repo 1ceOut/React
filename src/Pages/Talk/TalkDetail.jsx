@@ -171,6 +171,8 @@ const TalkDetail = () => {
         setIsModalOpen(false);
     };
 
+                //sendNewChattingMasterNotification(); // 알림 전송 함수 호출
+
 
     const handleCloseAModal = () => {
         setIsAModalOpen(false);

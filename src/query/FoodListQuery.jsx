@@ -36,7 +36,6 @@ export const listFromLcategory = async (selectedFridge, category) => {
 }
 
 export const foodDelete = async (productName, id) => {
-    console.log("ㅂㅂㅂㅂㅂㅂㅂ",productName);
     try {
         const response = await axios.delete(`${API_URL}/api/food/barcodes/${encodeURIComponent(productName)}/${id}`,{
             // withCredentials: true,

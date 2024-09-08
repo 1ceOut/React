@@ -99,34 +99,32 @@ const FeedComment = ({ postingId }) => {
     <div>
       <div className="self-stretch mt-[50px] mx-auto max-w-[342px]">
         <div className="flex flex-col justify-between items-center">
-          <div
-            className="my-5 cursor-pointer flex justify-start"
-            onClick={handleClick}
-          >
-            관련성 높은 댓글
-            <img
-              src="/assets/downarrow.png"
-              alt="아래방향"
-              className="ml-2 flex justify-center items-center"
-            />
-          </div>
+          {sortedComments.length > 0 && (
+            <div
+              className="my-5 cursor-pointer flex justify-start"
+              onClick={handleClick}
+            >
+              관련성 높은 댓글
+              <img
+                src="/assets/downarrow.png"
+                alt="아래방향"
+                className="ml-2 flex justify-center items-center"
+              />
+            </div>
+          )}
 
           <div className="mt-4">
-            {sortedComments.length > 0 ? (
-              sortedComments.map((comment) => (
-                <div key={comment.comment.commentId}>
-                  <CommentList
-                    isOwner={isCommentOwner(comment.comment)}
-                    commentId={comment.commentId}
-                    comment={comment.comment}
-                    userProfile={comment.userProfile}
-                    userName={comment.userName}
-                  />
-                </div>
-              ))
-            ) : (
-              <div>No comments available</div>
-            )}
+            {sortedComments.map((comment) => (
+              <div key={comment.comment.commentId}>
+                <CommentList
+                  isOwner={isCommentOwner(comment.comment)}
+                  commentId={comment.commentId}
+                  comment={comment.comment}
+                  userProfile={comment.userProfile}
+                  userName={comment.userName}
+                />
+              </div>
+            ))}
           </div>
           <div className="flex w-[390px] ">
             {isModalVisible && (
