@@ -101,6 +101,11 @@ const MyFeedPage = () => {
         userProfile={user.photo}
         userName={user.name}
         userId={user.userId}
+<<<<<<< HEAD
+        isSubscribed={isSubscribed}
+        setIsSubscribed={setIsSubscribed}
+=======
+>>>>>>> 98d40ceccff6be15de1e2a13c9c8600cb89456dc
       />
 
       {/* 구독 버튼 */}
