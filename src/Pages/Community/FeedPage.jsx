@@ -124,7 +124,7 @@ const FeedPage = () => {
   );
 
   return (
-    <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-auto">
+    <main className="flex flex-col items-center px-6 pt-5 pb-20 mx-auto w-full max-w-[390px] h-auto">
       <MenuNavigate option="커뮤니티" previousPage="/" />
       <Profile profiles={sortedProfiles} />
       {sortedPosts.length > 0 ? (

@@ -79,7 +79,7 @@ const FridgeManagePage = () => {
   const groupedFoodList = groupByCategory(saveFoodList);
 
   return (
-    <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px]">
+    <main className="flex flex-col items-center px-6 pt-5 pb-20 mx-auto w-full max-w-[390px]">
       <MenuNavigate option={"나의 냉장고"} previousPage="/" />
       <FridgeSelect onSelectFridge={setSelectedFridge} />
       <div className="self-stretch pt-3 text-lg font-semibold">
