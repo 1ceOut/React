@@ -188,37 +188,35 @@ export const useDetailPost = (postingId) => {
   });
 };
 
-export const useAddPost = (userId, title) => {
+export const useAddPost = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: addPosting,
-    onSuccess: async (data) => {  // addPosting 함수가 반환한 데이터를 받습니다.
+    onSuccess: async (data, variables) => {  // addPosting 함수가 반환한 데이터를 받습니다.
       queryClient.invalidateQueries(["postsWithUser"]);
       console.log("mutation data", data);
-      if (data) {
-        console.log(`새로운 게시물이 생성되었습니다. ID: ${data}`);
+      //알림 전송 // 포스팅 작성
+      try {
+        //console.log("userId : ", variables.userId);
+        //console.log("encodeURIComponent(userId) : ", encodeURIComponent(variables.userId));
         //console.log("data : ", data);
-        //console.log("userId : ", userId);
-        //console.log("title : ", title);
-        //알림 전송 // 포스팅 작성
-        try {
-          const response = await axios.post(
-            `${import.meta.env.VITE_ALERT_IP}/writePosting`,
-            {
-              sender: userId,
-              recipeposting: data,
-              memo: title,
+        //console.log("title : ", variables.title);
+        const response = await axios.post(
+          `${import.meta.env.VITE_ALERT_IP}/writePosting`,
+          {
+            sender: encodeURIComponent(variables.userId),
+            recipeposting: data,
+            memo: variables.title,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json", // 반드시 명시해야 함
             },
-            {
-              headers: {
-                "Content-Type": "application/json", // 반드시 명시해야 함
-              },
-            }
-          );
-          console.log(response);
-        } catch (error) {
-          console.error("알림 전송 중 오류 발생:", error);
-        }
+          }
+        );
+        //console.log(response);
+      } catch (error) {
+        //console.error("알림 전송 중 오류 발생:", error);
       }
     },
   });
