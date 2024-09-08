@@ -82,13 +82,6 @@ const CreateFeed = () => {
       try {
         await addPost(postingData);
 
-        // // 알림 전송 // 포스팅 작성
-        // await axios.post(`${import.meta.env.VITE_ALERT_IP}/writePosting`, null, {
-        //   params: {
-        //     sender: userId,
-        //   },
-        // });
-
         navigate("/community/feed");
       } catch (err) {
         // 포스트 작성 실패 처리
