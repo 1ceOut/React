@@ -57,29 +57,26 @@ const MyFeedPage = () => {
 
   // 구독 버튼 클릭 핸들러
   const handleSubscribeClick = async () => {
-    try {
-      if (!isSubscribed) {
-        await usercreatesub(paramUserId, userId);
-        setModalMessage("구독 되었습니다!");
-        setFollowerCount((prev) => prev + 1);
+    setIsSubscribed((prevState) => !prevState);
+    if (!isSubscribed) {
+      await usercreatesub(paramUserId, userId);
+      setModalMessage("구독 되었습니다!");
 
-        // 알림 전송
-        await axios.post(`${import.meta.env.VITE_ALERT_IP}/subscribeUser`, null, {
-          params: {
-            sender: userId,
-            receiver: paramUserId,
-          },
+      //알림 전송 //구독
+      try {
+        await axios.post(`${import.meta.env.VITE_ALERT_IP}/subscribeUser`, {
+          sender: encodeURIComponent(userId), // userId를 sender로 전송
+          receiver: encodeURIComponent(paramUserId),
+          memo: "",
         });
-      } else {
-        await userdelete(paramUserId, userId);
-        setModalMessage("구독 취소되었습니다!");
-        setFollowerCount((prev) => prev - 1);
+        //console.log("알림이 성공적으로 전송되었습니다.");
+      } catch (error) {
+        //console.error("알림 전송 중 오류 발생:", error);
+        //alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
       }
-
-      setIsSubscribed((prevState) => !prevState);
-      setIsModalOpen(true);
-    } catch (error) {
-      console.error("구독 처리 중 오류 발생:", error);
+    } else {
+      await userdelete(paramUserId, userId);
+      setModalMessage("구독 취소되었습니다!");
     }
   };
 
@@ -88,18 +85,35 @@ const MyFeedPage = () => {
   };
 
   return (
-      <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
-        <MenuNavigate option={`${user.name}님 게시판`} />
+    <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
+      <MenuNavigate option={`${user.name}님 게시판`} />
 
-        <ProfileMenu
-            userProfile={user.photo}
-            userName={user.name}
-            userId={user.userId}
-            followerCount={followerCount}
-        />
+      <ProfileMenu
+        userProfile={user.photo}
+        userName={user.name}
+        userId={user.userId}
+        isSubscribed={isSubscribed}
+        setIsSubscribed={setIsSubscribed}
+      />
 
-        {/* 구독 버튼 */}
-        {userId !== user.userId && (
+      {/* 구독 버튼 */}
+      {userId !== user.userId && (
+        <button
+          className={`px-32 py-1 mb-3 rounded-full text-sm font-semibold cursor-pointer transition-colors duration-300 ${
+            isSubscribed ? "bg-gray-200 text-gray-700" : "bg-blue-600 text-white"
+          }`}
+          onClick={handleSubscribeClick}
+        >
+          {isSubscribed ? "구독 중" : "구독"}
+        </button>
+      )}
+      <FeedContent userId={user.userId} />
+
+      {/* 모달 창 */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-4 rounded-lg shadow-lg w-64">
+            <div className="text-center mb-4">{modalMessage}</div>
             <button
                 className={`px-32 py-1 mb-3 rounded-full text-sm font-semibold cursor-pointer transition-colors duration-300 ${
                     isSubscribed ? "bg-gray-200 text-gray-700" : "bg-blue-600 text-white"

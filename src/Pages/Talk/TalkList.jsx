@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import HorizontalLine from "../../components/Common/HorizontalLine";
 import MenuNavigate from "../../components/Common/MenuNavigate";
 import useUserStore from "../../store/useUserStore.js";
-import useFridgeOptions, {masterUserList,inviteUserList} from "../../query/RefriQuery.jsx";
+import useFridgeOptions, {masterUserList} from "../../query/RefriQuery.jsx";
 import {useEffect, useState} from "react";
 import axios from "axios";
 
@@ -168,7 +168,7 @@ const Talk = () => {
                             </div>
                             <div className="flex items-center w-52 overflow-hidden h-1/2">
                                 <p className="w-[50px] h-[16px] m-0 font-normal text-[12.7px] text-gray-500 flex-1">
-                                    {lastMessages[refri.refrigerator_id]?.message || 'No messages yet'}
+                                    {lastMessages[refri.refrigerator_id]?.message || ''}
                                 </p>
                             </div>
                         </div>

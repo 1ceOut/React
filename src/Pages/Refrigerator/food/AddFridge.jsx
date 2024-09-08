@@ -52,20 +52,17 @@ const AddFridge = () => {
           // 알림 전송 - 냉장고 생성
           await axios.post(
             `${import.meta.env.VITE_ALERT_IP}/createRefrigeratorNotification`,
-            null,
             {
-              params: {
-                sender: userId, // userId를 sender로 전송
-                memo:product.refrigeratorName
-              },
+              sender: encodeURIComponent(userId), // userId를 sender로 전송
+              memo: product.refrigeratorName,
             }
           );
-          //console.log("알림이 성공적으로 전송되었습니다.");
         } catch (error) {
-          //console.error("알림 전송 중 오류 발생:", error);
-          //alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
+          // 알림 전송 중 오류 처리
         }
-        setModalMessage(`${product.refrigeratorName} 냉장고가 성공적으로 생성되었습니다.`);
+        setModalMessage(
+          `${product.refrigeratorName} 냉장고가 성공적으로 생성되었습니다.`
+        );
         setForm({ refrigeratorName: "" });
 
         navigate("/fridge/fridgemanage");
@@ -89,48 +86,49 @@ const AddFridge = () => {
   };
 
   return (
-      <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
-        <MenuNavigate option={"냉장고 추가"} />
-        <div className="w-[342px] h-[111px] font-semibold text-2xl mt-6">
-          냉장고 이름을 입력해주세요.
-          <br />
-          <div className="w-[342px] h-[21px] font-medium text-sm text-gray-500 mt-3">
-            냉장고를 등록해 음식을 편리하게 관리해보세요.
-          </div>
+    <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
+      <MenuNavigate option={"냉장고 추가"} />
+      <div className="w-[342px] h-[111px] font-semibold text-2xl mt-6">
+        냉장고 이름을 입력해주세요.
+        <br />
+        <div className="w-[342px] h-[21px] font-medium text-sm text-gray-500 mt-3">
+          냉장고를 등록해 음식을 편리하게 관리해보세요.
         </div>
-        <img
-            className="w-[240px] h-[240px] mt-6"
-            src="/assets/refridge.png"
-            alt="냉장고 이미지"
+      </div>
+      <img
+        className="w-[240px] h-[240px] mt-6"
+        src="/assets/refridge.png"
+        alt="냉장고 이미지"
+      />
+      <div className="w-[342px] mt-3">
+        <input
+          type="text"
+          id="addFridge"
+          placeholder="최대 12자까지 입력가능합니다."
+          name="refrigeratorName"
+          value={form.refrigeratorName}
+          onChange={handleInputChange}
+          maxLength={12} // 글자 수 제한 추가
+          className="w-full h-[56px] p-2 rounded-lg border border-gray-300 bg-white text-sm text-gray-500 mt-7"
         />
-        <div className="w-[342px] mt-3">
-          <input
-              type="text"
-              id="addFridge"
-              placeholder="냉장고 이름을 입력해주세요"
-              name="refrigeratorName"
-              value={form.refrigeratorName}
-              onChange={handleInputChange}
-              className="w-full h-[56px] p-2 rounded-lg border border-gray-300 bg-white text-sm text-gray-500 mt-7"
-          />
-        </div>
-        <div
-            className={`flex text-[#868686] rounded-xl self-stretch justify-center items-center w-[342px] h-14 cursor-pointer mt-6 ${
-                isEnabled ? "bg-blue-500 text-white" : "bg-[#D1D1D1]"
-            }`}
-            onClick={isEnabled ? handleOpenModal : null} // 클릭 시 모달 열기
-        >
-          <div className="font-medium text-lg">냉장고 등록하기</div>
-        </div>
+      </div>
+      <div
+        className={`flex text-[#868686] rounded-xl self-stretch justify-center items-center w-[342px] h-14 cursor-pointer mt-6 ${
+          isEnabled ? "bg-blue-500 text-white" : "bg-[#D1D1D1]"
+        }`}
+        onClick={isEnabled ? handleOpenModal : null} // 클릭 시 모달 열기
+      >
+        <div className="font-medium text-lg">냉장고 등록하기</div>
+      </div>
 
-        {/* ConfirmModal 컴포넌트 */}
-        <ConfirmModal
-            isOpen={isModalOpen}
-            onClose={handleCloseModal}
-            onConfirm={handleConfirmModal}
-            fridgeName={form.refrigeratorName} // 냉장고 이름 전달
-        />
-      </main>
+      {/* ConfirmModal 컴포넌트 */}
+      <ConfirmModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmModal}
+        fridgeName={form.refrigeratorName} // 냉장고 이름 전달
+      />
+    </main>
   );
 };
 

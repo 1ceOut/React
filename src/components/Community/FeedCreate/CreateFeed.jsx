@@ -6,7 +6,7 @@ import useUserStore from "../../../store/useUserStore"; // Zustand store import
 import axios from "axios";
 
 const CreateFeed = () => {
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null); // 썸네일 이미지 상태
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tag, setTag] = useState("");
@@ -20,12 +20,12 @@ const CreateFeed = () => {
   const { userId } = useUserStore();
 
   useEffect(() => {
-    if (title && content && tag) {
+    if (title && content && tag && selectedImage) {
       setIsEnabled(true);
     } else {
       setIsEnabled(false);
     }
-  }, [title, content, tag]);
+  }, [title, content, tag, selectedImage]);
 
   const handleImageChange = async (event) => {
     const file = event.target.files[0];
@@ -82,14 +82,12 @@ const CreateFeed = () => {
       try {
         await addPost(postingData);
 
-
         // 알림 전송 // 포스팅 작성
         await axios.post(`${import.meta.env.VITE_ALERT_IP}/writePosting`, null, {
           params: {
             sender: userId,
           },
         });
-
 
         navigate("/community/feed");
       } catch (err) {

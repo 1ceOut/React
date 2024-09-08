@@ -22,7 +22,7 @@ const Community = () => {
 
   // 게시물 셔플 함수
   const shufflePosts = (array) => {
-    return array.sort(() => Math.random() - 0.9);
+    return array.sort(() => Math.random() - 0.1);
   };
 
   // 무작위 게시물 선택
@@ -30,7 +30,7 @@ const Community = () => {
 
 
   return (
-    <section className="self-stretch">
+    <section className="self-stretch h-[350px]">
       <div className="flex gap-5 justify-between whitespace-nowrap">
         <h2 className="text-lg font-semibold tracking-tight text-gray-900">
           오늘 뭐 먹지~?
@@ -50,7 +50,7 @@ const Community = () => {
             const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
             return (
-                <div className="bg-gray-200 auto-slide-left rounded-xl">
+                <div className="bg-[#EEEFE5] auto-slide-left rounded-xl">
                 <div
                     key={posting.postingId}
                     className="min-w-52 h-100"
@@ -58,7 +58,7 @@ const Community = () => {
                 >
                   <div className="flex flex-col items-center p-2.5">
                     <img src={posting.thumbnail} className="w-full h-40 rounded-xl"/>
-                    <div className="line-clamp-2 pl-2 pr-2 pt-1">{posting.title}</div>
+                    <div className="line-clamp-2 pl-2 pr-2 pt-1 font-bold text-[#807D72]">{posting.title}</div>
                     <div className="flex items-start w-full p-2 font-normal text-[12px] text-[#767676]">
                       {formattedDate}
                     </div>

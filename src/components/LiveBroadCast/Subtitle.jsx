@@ -3,6 +3,8 @@ import { useSpeechRecognition } from 'react-speech-kit';
 import SockJS from "sockjs-client";
 import {Stomp} from "@stomp/stompjs";
 import {useParams} from "react-router-dom";
+import PropTypes from "prop-types";
+import Items from "../Shopping/Items.jsx";
 
 const api_url = import.meta.env.VITE_API_IP;
 
@@ -46,7 +48,7 @@ const Subtitle = ({publisher}) => {
         <div>
             <div>{value}</div>
             {
-                publisher === participantName?(<button onMouseDown={listen} onMouseUp={stop}>
+                participantName.startsWith("방장")?(<button onMouseDown={listen} onMouseUp={stop}>
                         🎤
                     </button>):null
             }
@@ -56,5 +58,9 @@ const Subtitle = ({publisher}) => {
         </div>
     );
 }
+
+Subtitle.propTypes = {
+    publisher: PropTypes.string,
+};
 
 export default Subtitle;
