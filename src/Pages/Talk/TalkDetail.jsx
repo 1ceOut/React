@@ -99,7 +99,7 @@ const TalkDetail = () => {
             console.log("Connected: " + frame);
             console.log("WebSocket readyState:", stompClient.current.ws.readyState);
 
-            stompClient.current.subscribe(`/topic/messages`, (message) => {
+            stompClient.current.subscribe(`/topic/messages/${chatroomSeq}`, (message) => {
                 console.log("Received message:", message.body);
                 try {
                     const newMessage = JSON.parse(message.body);  // 메시지를 JSON으로 파싱
@@ -129,21 +129,6 @@ const TalkDetail = () => {
             })
             .catch((error) => console.error("Failed to fetch chat messages.", error));
     };
-    // 새로운 공지 알림을 전송하는 함수
-    const sendNewChattingMasterNotification = async () => {
-        try {
-            await axiosApi.post(`${api_server}/api/newChattingMaster`, {
-                sender: currentUserId,  // 공지사항을 설정한 사용자
-                senderrefri: chatroomSeq, // 현재 냉장고(채팅방) ID
-                memo: newAnnouncement,
-            }, {
-                withCredentials: true
-            });
-            //console.log("공지 알림이 성공적으로 전송되었습니다.");
-        } catch (error) {
-            //console.error("공지 알림 전송 중 오류 발생:", error);
-        }
-    };
 
     const fetchAnnouncement = () => {
         // 공지사항 불러오기
@@ -171,7 +156,7 @@ const TalkDetail = () => {
                 timestamp: new Date().toLocaleTimeString(),
                 datestamp: new Date().toLocaleDateString()
             };
-            stompClient.current.send(`/pub/message`, {}, JSON.stringify(messageObj));
+            stompClient.current.send(`/pub/message/${chatroomSeq}`, {}, JSON.stringify(messageObj));
             setNewMessage("");
         } else {
             console.error("WebSocket connection is not open.");
