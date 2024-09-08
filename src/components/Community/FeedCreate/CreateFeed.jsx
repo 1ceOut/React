@@ -6,7 +6,7 @@ import useUserStore from "../../../store/useUserStore"; // Zustand store import
 import axios from "axios";
 
 const CreateFeed = () => {
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null); // 썸네일 이미지 상태
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tag, setTag] = useState("");
@@ -16,22 +16,16 @@ const CreateFeed = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const navigate = useNavigate();
 
-  // React Query 훅에서 mutation 가져오기
   const { mutate: addPost } = useAddPost();
   const { userId } = useUserStore();
 
-   // React Query 훅에서 mutation 가져오기
-   const addPostMutation = useAddPost(userId, title); // 여기서 userId와 title을 전달
-
-
   useEffect(() => {
-    // 모든 필드가 채워졌는지 확인
-    if (title && content && tag) {
+    if (title && content && tag && selectedImage) {
       setIsEnabled(true);
     } else {
       setIsEnabled(false);
     }
-  }, [title, content, tag]);
+  }, [title, content, tag, selectedImage]);
 
   const handleImageChange = async (event) => {
     const file = event.target.files[0];
@@ -86,9 +80,14 @@ const CreateFeed = () => {
       };
 
       try {
-        //await addPost(postingData,userId,title);
-        //await addPost(postingData);
-        addPostMutation.mutate(postingData); 
+        await addPost(postingData);
+
+        // 알림 전송 // 포스팅 작성
+        await axios.post(`${import.meta.env.VITE_ALERT_IP}/writePosting`, null, {
+          params: {
+            sender: userId,
+          },
+        });
 
         navigate("/community/feed");
       } catch (err) {

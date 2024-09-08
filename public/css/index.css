@@ -19,7 +19,7 @@
 }
 
 .auto-slide-left {
-    animation: slideLeft 20s linear infinite; /* 10초 동안 왼쪽으로 이동, 반복 */
+    animation: slideLeft 50s linear infinite; /* 50초 동안 왼쪽으로 이동, 반복 */
 }
 
 /* styles.css */
