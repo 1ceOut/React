@@ -17,6 +17,13 @@ const Profile = () => {
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
   const [profilesToDisplay, setProfilesToDisplay] = useState([]);
 
+  const login_type = () => {
+    const login_type = userId.split(" ")[0];
+    if (login_type === "naver") return "네이버";
+    else if (login_type === "google") return "구글";
+    else return "카카오";
+  }
+
   useEffect(() => {
     if (!isLoading && !isError) {
       const profiles = Array.isArray(users) ? users : [];
@@ -76,19 +83,20 @@ const Profile = () => {
       // 서버에서 broadcast 상태를 true로 변경
       await start(userId);
 
-      // //알림 전송 // 방송 시작
       try {
-        await axios.post(`${import.meta.env.VITE_ALERT_IP}/startBroadcasting`, null, {
-          params: { sender: userId },
+        await axios.post(`${import.meta.env.VITE_ALERT_IP}/startBroadcasting`, {
+          sender: encodeURIComponent(userId),  // userId를 sender로 전송
+          memo: "",
         });
-        //console.log("Broadcast notification sent.");
+        //console.log("알림이 성공적으로 전송되었습니다.");
       } catch (error) {
         //console.error("알림 전송 중 오류 발생:", error);
         //alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
       }
 
-    // 현재 페이지에서 라이브 방송을 시작하도록 navigate 사용
-    navigate(`/liveroom/${userId}/${userName}`);
+      const login_type = userId.split(" ")[0];
+      navigate(`/liveroom/${userId}/방장_${userName}`);
+
   } catch (error) {
     console.error("Failed to start live broadcast", error); // 에러 처리
   }

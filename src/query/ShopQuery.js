@@ -26,4 +26,12 @@ const ShoppingHeader = async () => {
     }
 }
 
+export const fetchUserRecommendations = async (userId) => {
+    const response = await fetch(`/api/recommendations/${userId}`);
+    if (!response.ok) {
+        throw new Error("추천 목록을 불러오는 중 오류가 발생했습니다.");
+    }
+    return response.json();  // 추천된 postingId 리스트를 반환
+};
+
 export {BestShoppingList,ShoppingHeader}
