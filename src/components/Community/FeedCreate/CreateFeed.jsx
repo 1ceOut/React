@@ -16,10 +16,16 @@ const CreateFeed = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const navigate = useNavigate();
 
+  // React Query 훅에서 mutation 가져오기
   const { mutate: addPost } = useAddPost();
   const { userId } = useUserStore();
 
+   // React Query 훅에서 mutation 가져오기
+   const addPostMutation = useAddPost(userId, title); // 여기서 userId와 title을 전달
+
+
   useEffect(() => {
+    // 모든 필드가 채워졌는지 확인
     if (title && content && tag) {
       setIsEnabled(true);
     } else {
@@ -80,22 +86,9 @@ const CreateFeed = () => {
       };
 
       try {
-        await addPost(postingData);
-        ////////////
-
-        ////////////
-
-        try {
-          await axios.post(`${import.meta.env.VITE_ALERT_IP}/writePosting`, {
-            sender: encodeURIComponent(userId),
-            //recipeposting : ,
-            memo: postingData.title,
-          });
-          //console.log("알림이 성공적으로 전송되었습니다.");
-        } catch (error) {
-          //console.error("알림 전송 중 오류 발생:", error);
-          //alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
-        }
+        //await addPost(postingData,userId,title);
+        //await addPost(postingData);
+        addPostMutation.mutate(postingData); 
 
         navigate("/community/feed");
       } catch (err) {

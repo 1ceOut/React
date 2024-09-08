@@ -9,18 +9,22 @@ const Body = () => {
     const navigate = useNavigate();
     const [userInfoMap, setUserInfoMap] = useState({}); // 사용자 정보를 저장할 상태
     const [refrigeratorNameMap, setRefrigeratorNameMap] = useState({}); // 냉장고 이름을 저장할 상태
-
+    const [postingMap, setPostingMap] = useState({});
 
     // 알림의 sender 값을 기반으로 사용자 정보를 API로부터 가져옴
     useEffect(() => {
         const fetchUserInfos = async () => {
             const promises = notifications.map(async (notification) => {
                 try {
+                    const decodedSender = decodeURIComponent(notification.sender);  // 디코딩 수행
+                    //console.log("notification.sender : ", notification.sender);
+                    //console.log("decodedSender : ", decodedSender);
                     const response = await axios.get(
                         `https://api.icebuckwheat.kro.kr/api/login/getuser`,
                         {
                             params: {
-                                user_id: notification.sender, // notification.sender 값으로 사용자 정보를 요청
+                                //user_id: notification.sender, // notification.sender 값으로 사용자 정보를 요청
+                                user_id: decodedSender, // decodedSender 값으로 사용자 정보를 요청
                             },
                         }
                     );
@@ -32,7 +36,6 @@ const Body = () => {
             });
 
             const userInfoArray = await Promise.all(promises);
-
             const newUserInfoMap = userInfoArray.reduce((map, { sender, userInfo }) => {
                 map[sender] = userInfo;
                 return map;
@@ -40,7 +43,6 @@ const Body = () => {
 
             setUserInfoMap(newUserInfoMap);
         };
-
         if (notifications.length > 0) {
             fetchUserInfos();
         }
@@ -50,7 +52,12 @@ const Body = () => {
     useEffect(() => {
         const fetchRefrigeratorNames = async () => {
             const promises = notifications.map(async (notification) => {
+                if (!notification.senderrefri) {
+                    //console.error(`Notification ${notification.alert_id} does not have senderrefri`);
+                    return { senderrefri: null, refriName: null };
+                }
                 try {
+                    //console.log("notification.senderrefri : ", notification.senderrefri);
                     const response = await axios.get(
                         `https://api.icebuckwheat.kro.kr/api/food/find/refriName`,
                         {
@@ -67,20 +74,16 @@ const Body = () => {
             });
 
             const refrigeratorNameArray = await Promise.all(promises);
-
             const newRefrigeratorNameMap = refrigeratorNameArray.reduce((map, { senderrefri, refriName }) => {
                 map[senderrefri] = refriName; // 냉장고 ID를 키로 하고 이름을 값으로 저장
                 return map;
             }, {});
-
             setRefrigeratorNameMap(newRefrigeratorNameMap); // 상태 업데이트
         };
-
         if (notifications.length > 0) {
             fetchRefrigeratorNames();
         }
     }, [notifications]);
-
 
     const updateHasUnread = (updatedNotifications) => {
         const hasUnread = updatedNotifications.some(notification => !notification.alertcheck);
@@ -117,6 +120,24 @@ const Body = () => {
         }
     };
 
+    // 날짜별 알림 모두 삭제하는 함수
+    const handleDeleteAllNotificationsForDate = async (date) => {
+        const notificationsForDate = groupedNotifications[date];
+        const deletePromises = notificationsForDate.map((notification) =>
+            axios.delete(`${import.meta.env.VITE_ALERT_IP}/delete/${notification.alert_id}`)
+        );
+        try {
+            await Promise.all(deletePromises);
+            const updatedNotifications = notifications.filter(
+                (notification) => format(new Date(notification.alertday), 'yyyy.MM.dd') !== date
+            );
+            setNotifications(updatedNotifications);
+            updateHasUnread(updatedNotifications);
+        } catch (error) {
+            console.error("Failed to delete notifications for the date:", error);
+        }
+    };
+
     //알림 전부 지워지면 자동 이동
     useEffect(() => {
         if (notifications.length === 0) {
@@ -132,15 +153,14 @@ const Body = () => {
         const imgSrc = userInfo ? userInfo.photo : "default-profile.png"; // 사용자 이미지 또는 기본 이미지
         const refriName = refrigeratorNameMap[notification.senderrefri]; // 냉장고 이름 매핑
 
-
         switch (notification.alerttype) {
             case '냉장고 생성':
                 statusText = '냉장고를 생성했어요!';
-                titleText = `${userName}님이 냉장고를 생성했어요.`;
+                titleText = `${userName}님이 ${notification.memo}냉장고를 생성했어요.`;
                 break;
             case '냉장고 수정':
                 statusText = '냉장고 이름이 수정됐어요!';
-                titleText = `${userName}님이 ${refriName}냉장고 이름을 ${notification.memo}로 수정했어요.`;
+                titleText = `${userName}님이 ${notification.memo}냉장고 이름을 ${refriName}로 수정했어요.`;
                 break;
             case '냉장고 등록':
                 statusText = '냉장고에 참가했어요!';
@@ -148,7 +168,7 @@ const Body = () => {
                 break;
             case '냉장고 삭제':
                 statusText = '냉장고가 삭제됐어요!';
-                titleText = `${userName}님이 ${refriName}냉장고를 삭제했어요.`;
+                titleText = `${userName}님이 ${notification.memo}냉장고를 삭제했어요.`;
                 break;
             case '구성원 삭제':
                 statusText = '구성원이 나왔어요!';
@@ -168,7 +188,7 @@ const Body = () => {
                 break;
             case '포스팅 작성':
                 statusText = '레시피 등록!';
-                titleText = `${userName}님이 새로운 레시피를 남겼어요.`;
+                titleText = `${userName}님이 "${notification.memo}" 레시피를 작성했어요.`;
                 break;
             case '좋아요':
                 statusText = '좋아요를 받았어요!';
@@ -237,7 +257,15 @@ const Body = () => {
         <div className="w-[390px] p-6 bg-gray-50">
             {sortedDates.map((date) => (
                 <div key={date} className="mb-6">
-                    <div className="text-sm font-bold mb-2">{date}</div>
+                    <div className="flex justify-between items-center mb-2">
+                        <div className="text-sm font-bold">{date}</div>
+                        <button
+                            className="text-red-500 text-sm"
+                            onClick={() => handleDeleteAllNotificationsForDate(date)}
+                        >
+                            알림 전체 지우기
+                        </button>
+                    </div>
                     {groupedNotifications[date]
                         .slice()  // 원본 배열을 변경하지 않기 위해 복사
                         .sort((a, b) => new Date(b.alertday) - new Date(a.alertday)) // 날짜 내에서 최신순으로 정렬
