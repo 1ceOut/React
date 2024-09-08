@@ -13,6 +13,7 @@ const MyFeedPage = () => {
   const { data: users, isLoading, isError } = useAllUsers();
 
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [followerCount, setFollowerCount] = useState(0); // 팔로워 수 상태 추가
   const [modalMessage, setModalMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -37,7 +38,6 @@ const MyFeedPage = () => {
     return <div>User not found</div>;
   }
 
-  // 구독 상태를 확인하는 함수
   useEffect(() => {
     const fetchSubscriptionStatus = async () => {
       try {
@@ -45,9 +45,10 @@ const MyFeedPage = () => {
         if (Array.isArray(subUser)) {
           const isSubscribedUser = subUser.some((user) => user.id === paramUserId);
           setIsSubscribed(isSubscribedUser);
+          setFollowerCount(subUser.length);
         }
       } catch (error) {
-        // 구독 상태를 가져오는 중 오류가 발생해도 추가적인 처리 생략
+        console.log(error);
       }
     };
 
@@ -77,10 +78,8 @@ const MyFeedPage = () => {
       await userdelete(paramUserId, userId);
       setModalMessage("구독 취소되었습니다!");
     }
-    setIsModalOpen(true);
   };
 
-  // 모달 닫기 핸들러
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
@@ -116,15 +115,31 @@ const MyFeedPage = () => {
           <div className="bg-white p-4 rounded-lg shadow-lg w-64">
             <div className="text-center mb-4">{modalMessage}</div>
             <button
-              className="bg-blue-600 text-white px-4 py-2 rounded-full mx-auto block"
-              onClick={handleCloseModal}
+                className={`px-32 py-1 mb-3 rounded-full text-sm font-semibold cursor-pointer transition-colors duration-300 ${
+                    isSubscribed ? "bg-gray-200 text-gray-700" : "bg-blue-600 text-white"
+                }`}
+                onClick={handleSubscribeClick}
             >
-              닫기
+              {isSubscribed ? "구독 중" : "구독"}
             </button>
-          </div>
-        </div>
-      )}
-    </main>
+        )}
+        <FeedContent userId={user.userId} />
+
+        {/* 모달 창 */}
+        {isModalOpen && (
+            <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
+              <div className="bg-white p-4 rounded-lg shadow-lg w-64">
+                <div className="text-center mb-4">{modalMessage}</div>
+                <button
+                    className="bg-blue-600 text-white px-4 py-2 rounded-full mx-auto block"
+                    onClick={handleCloseModal}
+                >
+                  닫기
+                </button>
+              </div>
+            </div>
+        )}
+      </main>
   );
 };
 

@@ -15,7 +15,6 @@ const ProfileMenu = ({ userProfile, userName, userId, isSubscribed, setIsSubscri
   const [showFollowingModal, setShowFollowingModal] = useState(false);
 
   const navigate = useNavigate();
-
   useEffect(() => {
     const fetchCounts = async () => {
       try {
