@@ -84,7 +84,13 @@ const MyFeedPage = () => {
     <main className="flex flex-col items-center px-6 pt-5 pb-2 mx-auto w-full max-w-[390px] h-screen">
       <MenuNavigate option={`${user.name}님 게시판`} />
 
-      <ProfileMenu userProfile={user.photo} userName={user.name} userId={user.userId} />
+      <ProfileMenu
+        userProfile={user.photo}
+        userName={user.name}
+        userId={user.userId}
+        isSubscribed={isSubscribed}
+        setIsSubscribed={setIsSubscribed}
+      />
 
       {/* 구독 버튼 */}
       {userId !== user.userId && (
