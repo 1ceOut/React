@@ -99,7 +99,7 @@ const TalkDetail = () => {
             console.log("Connected: " + frame);
             console.log("WebSocket readyState:", stompClient.current.ws.readyState);
 
-            stompClient.current.subscribe(`/topic/messages`, (message) => {
+            stompClient.current.subscribe(`/topic/messages/${chatroomSeq}`, (message) => {
                 console.log("Received message:", message.body);
                 try {
                     const newMessage = JSON.parse(message.body);  // 메시지를 JSON으로 파싱
@@ -156,7 +156,7 @@ const TalkDetail = () => {
                 timestamp: new Date().toLocaleTimeString(),
                 datestamp: new Date().toLocaleDateString()
             };
-            stompClient.current.send(`/pub/message`, {}, JSON.stringify(messageObj));
+            stompClient.current.send(`/pub/message/${chatroomSeq}`, {}, JSON.stringify(messageObj));
             setNewMessage("");
         } else {
             console.error("WebSocket connection is not open.");
@@ -230,8 +230,7 @@ const TalkDetail = () => {
 
                             <button
                                 className="mb-2 bg-[#69E392] text-white px-4 py-2 rounded-xl hover:bg-green-600 text-sm"
-                                onClick={handleAnnouncementModalClick}
-                            >
+                                onClick={handleAnnouncementModalClick}>
                                 공지사항 설정
                             </button>
 
