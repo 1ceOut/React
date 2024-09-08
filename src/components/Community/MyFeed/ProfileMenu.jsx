@@ -1,13 +1,9 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
-import {
-  usePostsByUser,
-  subUserListFollowing,
-  subUserListFollow,
-} from "./../../../query/FeedQuery";
-import { useNavigate } from "react-router-dom";
+import { usePostsByUser, subUserListFollowing, subUserListFollow } from "./../../../query/FeedQuery";
+import { useNavigate } from 'react-router-dom';
 
-const ProfileMenu = ({ userProfile, userName, userId }) => {
+const ProfileMenu = ({ userProfile, userName, userId, isSubscribed, setIsSubscribed }) => {
   const { data: posts } = usePostsByUser(userId);
   const postCount = posts ? posts.length : 0;
 
@@ -19,7 +15,7 @@ const ProfileMenu = ({ userProfile, userName, userId }) => {
   const [showFollowingModal, setShowFollowingModal] = useState(false);
 
   const navigate = useNavigate();
-  console.log("fsdafdasfassf", followers);
+
   useEffect(() => {
     const fetchCounts = async () => {
       try {
@@ -47,9 +43,7 @@ const ProfileMenu = ({ userProfile, userName, userId }) => {
   const handleCloseFollowingModal = () => setShowFollowingModal(false);
 
   const handleUserClick = (userId) => {
-    // Navigate to the user's page
     navigate(`/community/myfeed/${userId}`);
-    // Close both modals
     setShowFollowerModal(false);
     setShowFollowingModal(false);
   };
@@ -72,21 +66,15 @@ const ProfileMenu = ({ userProfile, userName, userId }) => {
             </div>
             <div className="text-[#767676] font-semibold text-base">게시물</div>
           </div>
-          <div
-            className="flex flex-col justify-center items-center w-[114px] cursor-pointer"
-            onClick={handleShowFollowingModal}
-          >
+          <div className="flex flex-col justify-center items-center w-[114px] cursor-pointer" onClick={handleShowFollowerModal}>
             <div className="text-black font-semibold text-base">
-              {followingCount}
+              {followerCount}
             </div>
             <div className="text-[#767676] font-semibold text-base">팔로워</div>
           </div>
-          <div
-            className="flex flex-col justify-center items-center w-[114px] cursor-pointer"
-            onClick={handleShowFollowerModal}
-          >
+          <div className="flex flex-col justify-center items-center w-[114px] cursor-pointer" onClick={handleShowFollowingModal}>
             <div className="text-black font-semibold text-base">
-              {followerCount}
+              {followingCount}
             </div>
             <div className="text-[#767676] font-semibold text-base">팔로잉</div>
           </div>
@@ -96,8 +84,8 @@ const ProfileMenu = ({ userProfile, userName, userId }) => {
       {/* 팔로워 모달 */}
       {showFollowerModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-lg w-96 max-w-md max-h-[644px] overflow-y-scroll ">
-            <h2 className="text-xl font-semibold mb-4">팔로잉</h2>
+          <div className="bg-white p-6 rounded-lg w-96 max-w-md">
+            <h2 className="text-xl font-semibold mb-4">팔로워</h2>
             <ul>
               {followers.length > 0 ? (
                 followers.map((follower) => (
@@ -115,15 +103,10 @@ const ProfileMenu = ({ userProfile, userName, userId }) => {
                   </li>
                 ))
               ) : (
-                <div>팔로잉이 없습니다.</div>
+                <div>팔로워가 없습니다.</div>
               )}
             </ul>
-            <button
-              className="mt-4 text-blue-500"
-              onClick={handleCloseFollowerModal}
-            >
-              닫기
-            </button>
+            <button className="mt-4 text-blue-500" onClick={handleCloseFollowerModal}>닫기</button>
           </div>
         </div>
       )}
@@ -131,8 +114,8 @@ const ProfileMenu = ({ userProfile, userName, userId }) => {
       {/* 팔로잉 모달 */}
       {showFollowingModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-lg w-96 max-w-md max-w-md max-h-[644px] overflow-y-scroll ">
-            <h2 className="text-xl font-semibold mb-4">팔로워</h2>
+          <div className="bg-white p-6 rounded-lg w-96 max-w-md">
+            <h2 className="text-xl font-semibold mb-4">팔로잉</h2>
             <ul>
               {followings.length > 0 ? (
                 followings.map((following) => (
@@ -150,15 +133,10 @@ const ProfileMenu = ({ userProfile, userName, userId }) => {
                   </li>
                 ))
               ) : (
-                <div>팔로워가 없습니다.</div>
+                <div>팔로잉이 없습니다.</div>
               )}
             </ul>
-            <button
-              className="mt-4 text-blue-500"
-              onClick={handleCloseFollowingModal}
-            >
-              닫기
-            </button>
+            <button className="mt-4 text-blue-500" onClick={handleCloseFollowingModal}>닫기</button>
           </div>
         </div>
       )}
@@ -170,6 +148,8 @@ ProfileMenu.propTypes = {
   userProfile: PropTypes.string.isRequired,
   userName: PropTypes.string.isRequired,
   userId: PropTypes.string.isRequired,
+  isSubscribed: PropTypes.bool.isRequired,
+  setIsSubscribed: PropTypes.func.isRequired,
 };
 
 export default ProfileMenu;

@@ -6,7 +6,7 @@ import useUserStore from "../../../store/useUserStore"; // Zustand store import
 import axios from "axios";
 
 const CreateFeed = () => {
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null); // 썸네일 이미지 상태
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tag, setTag] = useState("");
@@ -16,21 +16,16 @@ const CreateFeed = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const navigate = useNavigate();
 
-  // React Query 훅에서 mutation 가져오기
   const { mutate: addPost } = useAddPost();
   const { userId } = useUserStore();
 
-  // React Query 훅에서 mutation 가져오기
-  const addPostMutation = useAddPost(userId, title); // 여기서 userId와 title을 전달
-
   useEffect(() => {
-    // 모든 필드가 채워졌는지 확인
-    if (title && content && tag) {
+    if (title && content && tag && selectedImage) {
       setIsEnabled(true);
     } else {
       setIsEnabled(false);
     }
-  }, [title, content, tag]);
+  }, [title, content, tag, selectedImage]);
 
   const handleImageChange = async (event) => {
     const file = event.target.files[0];
@@ -85,9 +80,14 @@ const CreateFeed = () => {
       };
 
       try {
-        //await addPost(postingData,userId,title);
-        //await addPost(postingData);
-        addPostMutation.mutate(postingData);
+        await addPost(postingData);
+
+        // 알림 전송 // 포스팅 작성
+        await axios.post(`${import.meta.env.VITE_ALERT_IP}/writePosting`, null, {
+          params: {
+            sender: userId,
+          },
+        });
 
         navigate("/community/feed");
       } catch (err) {
@@ -130,17 +130,17 @@ const CreateFeed = () => {
           name="title"
           type="text"
           placeholder="30글자 이내로 제목을 입력해 주세요"
-          className="block outline-none w-[302px] h-14 p-4 text-gray-900 placeholder:text-[#A8A8A8] bg-[]"
+          className="block outline-none w-[302px] h-14 text-gray-900 placeholder:text-[#A8A8A8] bg-[]"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
       </div>
-      <div className="self-stretch border rounded-[12px] w-[342px] h-[300px] flex justify-center my-8">
+      <div className="self-stretch border bg-white rounded-[12px] w-[342px] h-[300px] flex justify-center my-8">
         <textarea
           id="content"
           name="content"
           placeholder="컨텐츠를 적어주세요."
-          className="block outline-none w-[302px] h-[298px] p-4 text-gray-900 placeholder:text-[#A8A8A8] resize-none"
+          className="block outline-none w-[302px] h-[300px] p-4 text-gray-900 placeholder:text-[#A8A8A8] resize-none"
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
@@ -150,8 +150,8 @@ const CreateFeed = () => {
           id="tag"
           name="tag"
           type="text"
-          placeholder="# 해시태그"
-          className="block outline-none w-[302px] h-14 p-4 text-gray-900 placeholder:text-[#A8A8A8]"
+          placeholder="# 해시테그"
+          className="block outline-none w-[302px] h-14 text-gray-900 placeholder:text-[#A8A8A8]"
           value={tag}
           onChange={(e) => setTag(e.target.value)}
         />
@@ -162,7 +162,7 @@ const CreateFeed = () => {
           name="step-description"
           type="text"
           placeholder="단계 설명을 입력해 주세요."
-          className="block outline-none w-full h-12 p-2 text-gray-900 placeholder:text-[#A8A8A8] mb-4"
+          className="block outline-none w-full h-12 text-gray-900 placeholder:text-[#A8A8A8] mb-4"
           value={stepDescription}
           onChange={(e) => setStepDescription(e.target.value)}
         />
@@ -192,9 +192,7 @@ const CreateFeed = () => {
           {steps.map((s, index) => (
             <div key={index} className="border rounded p-2 mb-2">
               <div className="flex items-start mb-2">
-                <span className="flex-1">{`Step ${index + 1}: ${
-                  s.description
-                }`}</span>
+                <span className="flex-1">{`Step ${index + 1}: ${s.description}`}</span>
                 {s.image && (
                   <img
                     src={s.image}
