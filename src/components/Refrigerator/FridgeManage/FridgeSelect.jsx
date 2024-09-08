@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../../store/useUserStore";
 import useFridgeOptions from "../../../query/RefriQuery";
@@ -8,11 +8,7 @@ const FridgeSelect = ({ onSelectFridge }) => {
   const { userId, isLogin, LoginSuccessStatus } = useUserStore();
   const navigate = useNavigate();
 
-  const {
-    data: fridgeOptions = [],
-    isLoading,
-    error,
-  } = useFridgeOptions(userId);
+  const { data: fridgeOptions = [] } = useFridgeOptions(userId);
 
   useEffect(() => {
     const savedToken = localStorage.getItem("accessToken");
@@ -51,25 +47,31 @@ const FridgeSelect = ({ onSelectFridge }) => {
 
   return (
     <div className="self-stretch w-[342px] h-[60px] border rounded-xl bg-[#F3F3F3]">
-      <div className="flex my-1 mx-[10px] overflow-x-auto whitespace-nowrap">
-        {fridgeOptions.map((option, index) => (
-          <div
-            key={index}
-            onClick={() => handleSelection(option)}
-            className={`flex items-center justify-center h-[46px] text-gray-900 cursor-pointer ${
-              selectedOption?.refrigeratorName === option.refrigeratorName
-                ? "bg-white border-2 border-gray-900 rounded-xl"
-                : "bg-[#F3F3F3] rounded-xl"
-            }`}
-            style={{
-              minWidth: fridgeOptions.length === 1 ? "320px" : "161px",
-              padding: "4px 10px",
-            }}
-          >
-            {option.refrigeratorName}
-          </div>
-        ))}
-      </div>
+      {fridgeOptions.length === 0 ? (
+        <div className="flex items-center justify-center h-full text-gray-900">
+          지금은 냉장고가 없어요...
+        </div>
+      ) : (
+        <div className="flex my-1 mx-[10px] overflow-x-auto whitespace-nowrap">
+          {fridgeOptions.map((option, index) => (
+            <div
+              key={index}
+              onClick={() => handleSelection(option)}
+              className={`flex items-center justify-center h-[46px] text-gray-900 cursor-pointer ${
+                selectedOption?.refrigeratorName === option.refrigeratorName
+                  ? "bg-white border-2 border-gray-900 rounded-xl"
+                  : "bg-[#F3F3F3] rounded-xl"
+              }`}
+              style={{
+                minWidth: fridgeOptions.length === 1 ? "320px" : "161px",
+                padding: "4px 10px",
+              }}
+            >
+              {option.refrigeratorName}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
