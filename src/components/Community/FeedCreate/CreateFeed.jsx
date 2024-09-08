@@ -16,10 +16,16 @@ const CreateFeed = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const navigate = useNavigate();
 
+  // React Query 훅에서 mutation 가져오기
   const { mutate: addPost } = useAddPost();
   const { userId } = useUserStore();
 
+   // React Query 훅에서 mutation 가져오기
+   const addPostMutation = useAddPost(userId, title); // 여기서 userId와 title을 전달
+
+
   useEffect(() => {
+    // 모든 필드가 채워졌는지 확인
     if (title && content && tag) {
       setIsEnabled(true);
     } else {
@@ -80,16 +86,9 @@ const CreateFeed = () => {
       };
 
       try {
-        await addPost(postingData);
-
-
-        // 알림 전송 // 포스팅 작성
-        await axios.post(`${import.meta.env.VITE_ALERT_IP}/writePosting`, null, {
-          params: {
-            sender: userId,
-          },
-        });
-
+        //await addPost(postingData,userId,title);
+        //await addPost(postingData);
+        addPostMutation.mutate(postingData); 
 
         navigate("/community/feed");
       } catch (err) {

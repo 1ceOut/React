@@ -23,11 +23,21 @@ const FridgeSelect = () => {
 
     const refriDelete = async (optionId) => {
         try {
-            //알림 전송 // 냉장고 삭제
+            // 1. 냉장고 이름 가져오기
+            const response = await axios.get(`https://api.icebuckwheat.kro.kr/api/food/find/refriName`, {
+                params: { refrigerator_id: optionId }
+            });
+            const refrigeratorName = response.data; // 냉장고 이름
+            //console.log(optionId);
+            //console.log(refrigeratorName);
+
+            //2. 알림 전송 // 냉장고 삭제
             try {
                 await axios.post(`${import.meta.env.VITE_ALERT_IP}/deleteRefrigeratorNotification`, {
-                    sender: userId,
+                    sender: encodeURIComponent(userId),
+                    //sender: userId,
                     senderrefri: optionId,
+                    memo: refrigeratorName,
                 });
                 //console.log("알림이 성공적으로 전송되었습니다.");
             } catch (error) {

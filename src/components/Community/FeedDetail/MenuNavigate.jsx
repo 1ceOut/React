@@ -2,12 +2,19 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { useDeletePost } from "../../../query/FeedQuery";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-const MenuNavigate = ({ userName, userProfile, writeDay, postingId, isOwner }) => {
+const MenuNavigate = ({
+  userName,
+  userProfile,
+  writeDay,
+  postingId,
+  isOwner,
+}) => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { mutate: deletePost } = useDeletePost();
-  
+
   const modalRef = useRef(null); // 모달의 ref
 
   const goBack = () => {
@@ -23,8 +30,8 @@ const MenuNavigate = ({ userName, userProfile, writeDay, postingId, isOwner }) =
   };
 
   const updatePosting = () => {
-    navigate('/community/feedupdate', {
-      state: { postingId } // 필요한 데이터는 UpdateFeed에서 조회함
+    navigate("/community/feedupdate", {
+      state: { postingId }, // 필요한 데이터는 UpdateFeed에서 조회함
     });
   };
 
@@ -34,7 +41,10 @@ const MenuNavigate = ({ userName, userProfile, writeDay, postingId, isOwner }) =
       console.log("게시물 삭제 성공");
       navigate(-1);
     } catch (error) {
-      console.error("게시물 삭제 실패:", error.response ? error.response.data : error.message);
+      console.error(
+        "게시물 삭제 실패:",
+        error.response ? error.response.data : error.message
+      );
       // Optional: Display user-friendly error message
     } finally {
       closeModal();
@@ -50,8 +60,9 @@ const MenuNavigate = ({ userName, userProfile, writeDay, postingId, isOwner }) =
     };
 
     if (isModalOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [isModalOpen]);
 
@@ -62,14 +73,14 @@ const MenuNavigate = ({ userName, userProfile, writeDay, postingId, isOwner }) =
           className="w-6 h-6 cursor-pointer flex justify-center items-center"
           onClick={goBack}
         >
-          {"<"}
+          <ArrowBackIcon />
         </div>
         <div className="flex">
           <div className="flex justify-center items-center">
             <img
               src={userProfile}
               alt="유저 사진"
-              className="w-8 h-8 rounded-full"
+              className="w-8 h-8 ml-4 rounded-full"
             />
           </div>
           <div className="flex flex-col ml-2">
@@ -86,7 +97,7 @@ const MenuNavigate = ({ userName, userProfile, writeDay, postingId, isOwner }) =
 
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div 
+          <div
             className="bg-white rounded-lg p-6 w-[342px]"
             ref={modalRef} // 모달에 ref를 설정
           >

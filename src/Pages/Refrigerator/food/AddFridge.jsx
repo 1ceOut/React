@@ -52,12 +52,9 @@ const AddFridge = () => {
           // 알림 전송 - 냉장고 생성
           await axios.post(
             `${import.meta.env.VITE_ALERT_IP}/createRefrigeratorNotification`,
-            null,
             {
-              params: {
-                sender: userId, // userId를 sender로 전송
-                memo:product.refrigeratorName
-              },
+              sender: encodeURIComponent(userId), // userId를 sender로 전송
+              memo: product.refrigeratorName,
             }
           );
           //console.log("알림이 성공적으로 전송되었습니다.");
