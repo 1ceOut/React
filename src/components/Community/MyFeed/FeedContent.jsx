@@ -1,15 +1,17 @@
 import PropTypes from "prop-types";
-import { useState } from "react"; // 상태 관리를 위한 useState 추가
 import { useNavigate } from "react-router-dom"; // React Router의 useNavigate 사용
 import HorizontalLine from "./../../Common/HorizontalLine";
 import { usePostsByUser } from "./../../../query/FeedQuery";
 
-const FeedContent = ({ userId, writeday }) => { // writeday를 props로 받습니다.
+const FeedContent = ({ userId, writeday }) => {
+  // writeday를 props로 받습니다.
   const { data: posts } = usePostsByUser(userId);
   const safePosts = Array.isArray(posts) ? posts : [];
 
   // 최신순으로 게시물 정렬 (가장 최근 게시물이 먼저 나오도록)
-  safePosts.sort((a, b) => new Date(b.posting.writeday) - new Date(a.posting.writeday));
+  safePosts.sort(
+    (a, b) => new Date(b.posting.writeday) - new Date(a.posting.writeday)
+  );
 
   const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅
 
@@ -18,31 +20,10 @@ const FeedContent = ({ userId, writeday }) => { // writeday를 props로 받습�
     navigate(`/community/feeddetail/${postingId}`); // 클릭된 게시물의 ID로 이동
   };
 
-  // 클릭 시 적용될 스타일
-  const clickedStyle = {
-    filter: "brightness(0.8) sepia(0.6) hue-rotate(200deg) saturate(2)", // 파스텔톤 색상 효과
-  };
-
   return (
     <div>
-      <div>
-        {/* 이미지 버튼 */}
-        <div className="flex justify-center items-center h-8">
-          {/* 게시물 섹션 선택 이미지 */}
-          <div className="flex justify-center items-center cursor-pointer">
-            <img
-              src="../../assets/post5.png"
-              style={{
-                width: 27,
-                ...clickedStyle, // 클릭된 이미지 스타일 적용
-              }}
-              alt="게시물"
-            />
-          </div>
-        </div>
-        <div className="mt-[10px] mb-4">
-          <HorizontalLine />
-        </div>
+      <div className="mt-[10px] mb-4">
+        <HorizontalLine />
       </div>
 
       {/* 게시물 섹션 */}
@@ -65,7 +46,8 @@ const FeedContent = ({ userId, writeday }) => { // writeday를 props로 받습�
               </div>
             ))}
           </div>
-        ) : null} {/* No posts available 텍스트 제거 */}
+        ) : null}{" "}
+        {/* No posts available 텍스트 제거 */}
       </div>
     </div>
   );

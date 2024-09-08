@@ -48,23 +48,32 @@ const HomePage = () => {
     });
   }, [queryClient]);
 
+  useEffect(() => {
+    window.history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
+
+    return () => {
+      window.history.scrollRestoration = "auto";
+    };
+  }, []);
+
   return (
-      <main
-          className={`${animationClass} flex flex-col items-center px-6 pt-5 pb-32 mx-auto w-full max-w-[390px] min-h-[844px] h-auto relative`}
-      >
-        <MenuNavigate PageTitle={""}/>
-        <ProductCard/>
-        <div className="bg-gray-100 flex w-[390px] h-[10px] mb-6"></div>
-        <Refrigerator/>
-        <div className="bg-gray-100 flex w-[390px] h-[10px] mb-6"></div>
-        <Community/>
-        <div className="bg-gray-100 flex w-[390px] h-[500px] "></div>
-        <BarNavigate
-            shoppingsrc="/assets/shopping.png"
-            homesrc="/assets/homeselect.png"
-            searchsrc="/assets/search.png"
-        />
-      </main>
+    <main
+      className={`${animationClass} flex flex-col items-center px-6 pt-5 pb-32 mx-auto w-full max-w-[390px] min-h-[844px] h-auto relative`}
+    >
+      <MenuNavigate PageTitle={""} />
+      <ProductCard />
+      <div className="bg-gray-100 flex w-[390px] h-[10px] mb-6"></div>
+      <Refrigerator />
+      <div className="bg-gray-100 flex w-[390px] h-[10px] mb-6"></div>
+      <Community />
+      <div className="bg-gray-100 flex w-[390px] h-[500px] "></div>
+      <BarNavigate
+        shoppingsrc="/assets/shopping.png"
+        homesrc="/assets/homeselect.png"
+        searchsrc="/assets/search.png"
+      />
+    </main>
   );
 };
 

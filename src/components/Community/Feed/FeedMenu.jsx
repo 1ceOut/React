@@ -5,6 +5,7 @@ import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { red } from "@mui/material/colors";
 import useUserStore from "./../../../store/useUserStore";
+import CommentModal from "./../Common/CommentModal";
 import {
   useToggleFavorite,
   useCheckFavorite,
@@ -16,6 +17,9 @@ import { useDetailPost } from "../../../query/FeedQuery";
 import axios from "axios";
 
 const FeedMenu = ({ postingId }) => {
+  const [isHidden, setIsHidden] = useState(false);
+  const { data: postWithUser } = useDetailPost(postingId);
+  const userName = postWithUser?.userName || "Unknown User";
   const [isAnimating, setIsAnimating] = useState(false);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -196,6 +200,14 @@ const FeedMenu = ({ postingId }) => {
     }
   };
 
+  const closeHidden = () => {
+    setIsHidden(false);
+  };
+
+  const showHidden = () => {
+    setIsHidden(true);
+  };
+
   return (
     <div className="self-stretch">
       <div className="flex flex-col font-medium text-[#767676]">
@@ -235,19 +247,12 @@ const FeedMenu = ({ postingId }) => {
         >
           <div
             ref={modalRef}
-            className="bg-white rounded-lg w-[390px] h-full overflow-hidden"
+            className="bg-white rounded-lg h-full w-full overflow-hidden"
             style={{ transition: "transform 0.3s ease" }}
           >
             <div className="flex flex-col justify-between items-center h-full">
-              <div className="flex justify-between w-full px-4 py-3 bg-gray-100">
-                <div className="w-[18px]"></div>
+              <div className="flex justify-center w-full px-4 py-3 bg-gray-100">
                 <div className="text-lg font-semibold">댓글 목록</div>
-                <button
-                  onClick={closeCommentModal}
-                  className="text-lg font-bold"
-                >
-                  &times;
-                </button>
               </div>
               <div
                 className="my-5 cursor-pointer flex bg-white z-10 w-full px-4"
@@ -346,13 +351,20 @@ const FeedMenu = ({ postingId }) => {
                   <div>댓글이 없습니다.</div>
                 )}
               </div>
-              <div className="flex justify-center items-center w-full mt-4">
+              <div className="flex justify-center items-center w-full mb-4">
                 <button
-                  onClick={closeCommentModal}
+                  onClick={showHidden}
                   className="px-4 py-2 w-[342px] h-12 bg-gray-300 rounded-lg"
                 >
-                  닫기
+                  댓글 달기
                 </button>
+                {isHidden && (
+                  <CommentModal
+                    userName={userName}
+                    closeHidden={closeHidden}
+                    postingId={postingId}
+                  />
+                )}
               </div>
             </div>
           </div>

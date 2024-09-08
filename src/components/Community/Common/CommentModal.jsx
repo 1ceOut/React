@@ -47,8 +47,6 @@ const CommentModal = ({ closeHidden, postingId, userName }) => {
 
     addComment(formData, {
       onSuccess: async () => {
-        alert("Comment submitted successfully!");
-
         // 알림 전송// 댓글 작성
         try {
           await axios.post(`${import.meta.env.VITE_ALERT_IP}/writeReply`, {
@@ -67,7 +65,6 @@ const CommentModal = ({ closeHidden, postingId, userName }) => {
       },
       onError: (error) => {
         console.error("Failed to submit comment:", error);
-        alert("Failed to submit the comment. Please try again.");
       },
     });
   };
