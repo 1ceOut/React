@@ -16,11 +16,21 @@ const CreateFeed = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const navigate = useNavigate();
 
+  // React Query 훅에서 mutation 가져오기
   const { mutate: addPost } = useAddPost();
   const { userId } = useUserStore();
 
+   // React Query 훅에서 mutation 가져오기
+   const addPostMutation = useAddPost(userId, title); // 여기서 userId와 title을 전달
+
+
   useEffect(() => {
+<<<<<<< HEAD
     if (title && content && tag && selectedImage) {
+=======
+    // 모든 필드가 채워졌는지 확인
+    if (title && content && tag) {
+>>>>>>> 98d40ceccff6be15de1e2a13c9c8600cb89456dc
       setIsEnabled(true);
     } else {
       setIsEnabled(false);
@@ -80,6 +90,7 @@ const CreateFeed = () => {
       };
 
       try {
+<<<<<<< HEAD
         await addPost(postingData);
 
         // 알림 전송 // 포스팅 작성
@@ -88,6 +99,11 @@ const CreateFeed = () => {
             sender: userId,
           },
         });
+=======
+        //await addPost(postingData,userId,title);
+        //await addPost(postingData);
+        addPostMutation.mutate(postingData); 
+>>>>>>> 98d40ceccff6be15de1e2a13c9c8600cb89456dc
 
         navigate("/community/feed");
       } catch (err) {

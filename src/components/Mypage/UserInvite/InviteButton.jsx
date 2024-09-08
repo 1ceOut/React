@@ -28,15 +28,14 @@ const InviteButton = () => {
             // 알림 전송 // 냉장고 등록
             try {
                 await axios.post(`${import.meta.env.VITE_ALERT_IP}/registRefrigeratorUserNotification`, {
-                    sender: userId, // 이벤트를 발생시킨 사용자 ID
-                    senderrefri: code // 초대된 냉장고 ID (API에서 반환된 값 사용)
+                    sender: encodeURIComponent(userId), // 이벤트를 발생시킨 사용자 ID
+                    senderrefri: code, // 초대된 냉장고 ID (API에서 반환된 값 사용)
                 });
                 //console.log("알림이 성공적으로 전송되었습니다.");
             } catch (error) {
                 //console.error("알림 전송 중 오류 발생:", error);
                 //alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
             }
-
             alert(`초대 코드: ${code}`);
             navigate("/");
         } catch (error) {

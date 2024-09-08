@@ -2,9 +2,11 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import useUserStore from "./../../store/useUserStore";
 import { Auto_Login } from "../../query/LoginQuery";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const MenuNavigate = ({ option, previousPage }) => {
-  const { isLogin, userProfile, LoginSuccessStatus, hasUnread, notifications } = useUserStore();
+  const { isLogin, userProfile, LoginSuccessStatus, hasUnread, notifications } =
+    useUserStore();
 
   const AutoLogin = () => {
     Auto_Login().then((response) => {
@@ -43,9 +45,9 @@ const MenuNavigate = ({ option, previousPage }) => {
   };
 
   return (
-    <div className="relative self-stretch flex items-center justify-between w-[342px] h-14 mt-[50px]">
+    <div className="relative self-stretch flex items-center justify-between w-[342px] h-14 mt-[30px]">
       <div className="absolute left-0 w-6 h-6 cursor-pointer" onClick={goBack}>
-        {"<"}
+        <ArrowBackIcon />
       </div>
       <div className="absolute left-1/2 transform -translate-x-1/2">
         {option}
@@ -61,7 +63,7 @@ const MenuNavigate = ({ option, previousPage }) => {
         </div>
         <div className="pr-4">
           <img
-            src={hasUnread ? "/assets/alert2.png" : "/assets/alert.png"} 
+            src={hasUnread ? "/assets/alert2.png" : "/assets/alert.png"}
             alt="alert"
             onClick={alertNavigation}
             className="cursor-pointer"

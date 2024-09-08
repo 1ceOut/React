@@ -140,8 +140,8 @@ const DetailMainContent = ({setIsModalVisible}) => {
     }, [storedata, discount, review, priceFilter]);
 
     return (
-        <div>
-            <div className='self-stretch mt-[50px] mx-auto max-w-[342px]'>
+        <div className="max-h-[830px]">
+            <div className='self-stretch mt-[30px] mx-auto max-w-[342px]'>
                 <div className='flex justify-between items-center h-6'>
                     <div className='font-medium text-[18px]'>상세필터</div>
                     <div>
@@ -169,8 +169,8 @@ const DetailMainContent = ({setIsModalVisible}) => {
                 </div>
                 <div className='mt-[10px] mb-8'>
                 </div>
-                <div className="max-h-[690px] overflow-y-auto">
-                    <div className='w-[390px]'>
+                <div className="max-h-[500px] overflow-y-auto overscroll-y-none">
+                    <div className='w-[340px]'>
                         {isModalVisible && (
                             <div className='w-[390px]'>
                                 <div

@@ -41,11 +41,15 @@ const UpdateForm = () => {
 
             // 서버에서 현재 저장된 냉장고 데이터를 불러와서 비교
             const currentData = await masterUserList(userId);
-            // 이름이 변경된 냉장고만 필터링
-            const modifiedData = userData.filter((newRefri, index) => {
-                const currentRefri = currentData[index];
-                return newRefri.refrigeratorName !== currentRefri.refrigeratorName;
-            });
+
+            // 이름이 변경된 냉장고만 필터링 (변경 전 이름도 함께 저장)
+            const modifiedData = userData
+                .filter((newRefri, index) => newRefri.refrigeratorName !== currentData[index].refrigeratorName)
+                .map((newRefri, index) => ({
+                    ...newRefri,
+                    previousName: currentData[index].refrigeratorName, // 변경 전 이름을 저장
+                    refrigeratorId: newRefri.refrigerator_id // 냉장고 ID를 저장
+                }));
 
             // 만약 수정된 데이터가 없다면 알림을 보내지 않고 바로 종료
             if (modifiedData.length === 0) {
@@ -53,19 +57,34 @@ const UpdateForm = () => {
             }
 
             const updatedData = await masterUserRefri(requestPayload);
-            const updatedNames = userData.map(refri => refri.refrigeratorName).join(', ');
+
+            // 변경된 각 냉장고에 대해 알림 전송
+            for (const refri of modifiedData) {
+                try {
+                    await axios.post(`${import.meta.env.VITE_ALERT_IP}/editRefrigeratorNotification`, {
+                        sender: encodeURIComponent(userId),
+                        senderrefri: refri.refrigeratorId,
+                        memo: refri.previousName,
+                    });
+                    //console.log(`냉장고 ${refri.refrigeratorName} 알림이 성공적으로 전송되었습니다.`);
+                } catch (error) {
+                    //console.error(`냉장고 ${refri.refrigeratorName} 알림 전송 중 오류 발생:`, error);
+                }
+            }
 
             // 알림 전송 // 냉장고 수정
-            try {
-                await axios.post(`${import.meta.env.VITE_ALERT_IP}/editRefrigeratorNotification`, {
-                    sender: userId,
-                    senderrefri: modifiedData.map(refri => refri.refrigerator_id) // 개별 냉장고 ID
-                });
-                //console.log(`${refri.refrigeratorName} 알림이 성공적으로 전송되었습니다.`);
-            } catch (error) {
-                //console.error(`${refri.refrigeratorName} 알림 전송 중 오류 발생:`, error);
-                //alert(`${refri.refrigeratorName} 알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.`);
-            }
+            // try {
+            //     await axios.post(`${import.meta.env.VITE_ALERT_IP}/editRefrigeratorNotification`, {
+            //         sender: encodeURIComponent(userId),
+            //         senderrefri: modifiedData.map(refri => refri.refrigerator_id) // 개별 냉장고 ID
+            //     });
+            //     //console.log(`${refri.refrigeratorName} 알림이 성공적으로 전송되었습니다.`);
+            // } catch (error) {
+            //     //console.error(`${refri.refrigeratorName} 알림 전송 중 오류 발생:`, error);
+            //     //alert(`${refri.refrigeratorName} 알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.`);
+            // }
+
+            const updatedNames = userData.map(refri => refri.refrigeratorName).join(', ');
 
             alert(`"${updatedNames}"으로 수정되었습니다.`);
             navigate("/mypage/profile");

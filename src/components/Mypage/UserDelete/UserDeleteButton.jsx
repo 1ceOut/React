@@ -3,6 +3,7 @@ import ConfirmModal from './ConfirmModal';
 import PropTypes from 'prop-types';
 import { inviteUserDelete } from "../../../query/RefriQuery.jsx";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 const UserDeleteButton = ({ isEnabled, checkedUsers }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,6 +33,20 @@ const UserDeleteButton = ({ isEnabled, checkedUsers }) => {
                     await inviteUserDelete(userIds, refriId);
                     console.log(`삭제할 사용자 ID (냉장고 ${refriId}):`, userIds);
                     console.log(`삭제할 사용자 이름:`, userNames);
+                    
+                    // 사용자별로 삭제 알림 전송
+                    for (const userId of userIds) {
+                        //await sendDeleteNotification(userId, refriId, userNames.find(name => name === userId));
+                        try {
+                            await axios.post(`${import.meta.env.VITE_ALERT_IP}/deleteUserFromRefrigerator`, {
+                                sender: encodeURIComponent(userId), // 삭제된 유저 이름
+                                senderrefri: refriId, // 냉장고 ID
+                                memo: encodeURIComponent(userId),
+                            });
+                        } catch (error) {
+                            //console.error(`사용자 ${userId} 삭제 알림 전송 중 오류 발생:`, error);
+                        }
+                    }
                     alert(`${userNames.join(', ')} 사용자 삭제했습니다`);
                 }
             }
