@@ -37,7 +37,7 @@ const SearchForm = ({ selectedFridge, onSearchResults }) => {
           value={inputValue}
           onChange={handleInputChange}
           placeholder="찾고 있는 음식을 검색해주세요"
-          className="flex items-center justify-center rounded-xl px-5 w-full h-14 text-gray-900 outline-none"
+          className="flex items-center justify-center rounded-xl px-5 w-full h-14 p-4 text-gray-900 outline-none"
         />
         <div>
           <img
