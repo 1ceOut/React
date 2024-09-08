@@ -171,7 +171,7 @@ const TalkDetail = () => {
             }).then(() => {
                 setAnnouncement(newAnnouncement);
 
-                //sendNewChattingMasterNotification(); // 알림 전송 함수 호출
+                sendNewChattingMasterNotification(); // 알림 전송 함수 호출
 
                 setNewAnnouncement("");
                 setIsAnnouncementVisible(false);
@@ -183,6 +183,7 @@ const TalkDetail = () => {
 
     // 새로운 공지 알림을 전송하는 함수
     const sendNewChattingMasterNotification = async () => {
+        console.log('sendNewChattingMasterNotification 함수 수행');
         try {
             console.log(currentUserId);
             console.log(chatroomSeq);

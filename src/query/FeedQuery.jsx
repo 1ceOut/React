@@ -197,9 +197,9 @@ export const useAddPost = (userId, title) => {
       console.log("mutation data", data);
       if (data) {
         console.log(`새로운 게시물이 생성되었습니다. ID: ${data}`);
-        console.log("data : ", data);
-        console.log("userId : ", userId);
-        console.log("title : ", title);
+        //console.log("data : ", data);
+        //console.log("userId : ", userId);
+        //console.log("title : ", title);
         //알림 전송 // 포스팅 작성
         try {
           const response = await axios.post(

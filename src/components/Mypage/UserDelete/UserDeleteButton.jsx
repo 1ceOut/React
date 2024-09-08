@@ -41,6 +41,7 @@ const UserDeleteButton = ({ isEnabled, checkedUsers }) => {
                             await axios.post(`${import.meta.env.VITE_ALERT_IP}/deleteUserFromRefrigerator`, {
                                 sender: encodeURIComponent(userId), // 삭제된 유저 이름
                                 senderrefri: refriId, // 냉장고 ID
+                                memo: encodeURIComponent(userId),
                             });
                         } catch (error) {
                             //console.error(`사용자 ${userId} 삭제 알림 전송 중 오류 발생:`, error);

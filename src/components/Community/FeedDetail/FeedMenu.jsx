@@ -54,7 +54,7 @@ const FeedMenu = ({ postingId, userName }) => {
             sender: encodeURIComponent(userId),
             receiver: encodeURIComponent(authorId),
             recipeposting: postingId,
-            memo: "",
+            memo: title,
           });
           //console.log("알림이 성공적으로 전송되었습니다.");
         } catch (error) {
