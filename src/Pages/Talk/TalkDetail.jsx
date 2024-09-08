@@ -233,8 +233,7 @@ const TalkDetail = () => {
 
                             <button
                                 className="mb-2 bg-[#69E392] text-white px-4 py-2 rounded-xl hover:bg-green-600 text-sm"
-                                onClick={handleAnnouncementModalClick}
-                            >
+                                onClick={handleAnnouncementModalClick}>
                                 공지사항 설정
                             </button>
 
