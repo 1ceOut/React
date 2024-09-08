@@ -129,13 +129,14 @@ const TalkDetail = () => {
             })
             .catch((error) => console.error("Failed to fetch chat messages.", error));
     };
+
     // 새로운 공지 알림을 전송하는 함수
     const sendNewChattingMasterNotification = async () => {
         try {
             await axiosApi.post(`${api_server}/api/newChattingMaster`, {
                 sender: currentUserId,  // 공지사항을 설정한 사용자
                 senderrefri: chatroomSeq, // 현재 냉장고(채팅방) ID
-                memo: newAnnouncement,
+                memo: newMessage,
             }, {
                 withCredentials: true
             });
@@ -186,7 +187,7 @@ const TalkDetail = () => {
         setIsModalOpen(false);
     };
 
-                //sendNewChattingMasterNotification(); // 알림 전송 함수 호출
+                sendNewChattingMasterNotification(); // 알림 전송 함수 호출
 
 
     const handleCloseAModal = () => {

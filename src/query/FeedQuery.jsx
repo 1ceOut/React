@@ -60,6 +60,7 @@ const addPosting = async (data) => {
       },
       withCredentials: true,
     });
+    console.log(response);
     return response.data;
   } catch (error) {
     console.error("게시물 추가 실패:", error);
@@ -73,7 +74,7 @@ const updatePosting = async (postingId, data) => {
     console.log(typeof data)
     const response = await axios.put(
       `${API_URL}/posting/update/${postingId}`,  // postingId를 URL 경로에 포함
-       data,  // data를 본문(body)로 전달
+      data,  // data를 본문(body)로 전달
       {
         headers: {
           "Content-Type": "application/json",
@@ -93,7 +94,7 @@ const deletePosting = async (postingId) => {
   try {
     await axios.delete(`${API_URL}/posting/delete`, {
       withCredentials: true,
-      params: {postingId},
+      params: { postingId },
     });
   } catch (error) {
     console.error("게시물 삭제 실패:", error.response ? error.response.data : error.message);
@@ -111,9 +112,10 @@ export const usercreatesub = async (postingUserId, userId) => {
     });
     return response.data;
   } catch (e) {
+    //예외처리
   }
 };
-export const userdelete = async (postingUserId, userId)=>{
+export const userdelete = async (postingUserId, userId) => {
   try {
     const response = await axios.post(`${API_URL1}/api/food/delete/subUser`, null, {
       params: {
@@ -123,6 +125,7 @@ export const userdelete = async (postingUserId, userId)=>{
     });
     return response.data;
   } catch (e) {
+    //예외처리
   }
 };
 
@@ -130,29 +133,29 @@ export const userdelete = async (postingUserId, userId)=>{
 //죄송합니다.
 export const subUserListFollow = async (userId) => {
   try {
-    const response = await axios.get(`${API_URL1}/api/food/find/subUser`,{
-      params:{
-        userId:userId,
+    const response = await axios.get(`${API_URL1}/api/food/find/subUser`, {
+      params: {
+        userId: userId,
       }
     });
     return response.data;
-  }catch (e) {
-    console.log(e);
-  }
-};
-export const subUserListFollowing = async (userId) => {
-  try {
-    const response = await axios.get(`${API_URL1}/api/food/find/Usersub`,{
-      params:{
-        userId:userId,
-      }
-    });
-    return response.data;
-  }catch (e) {
+  } catch (e) {
     console.log(e);
   }
 };
 
+export const subUserListFollowing = async (userId) => {
+  try {
+    const response = await axios.get(`${API_URL1}/api/food/find/Usersub`, {
+      params: {
+        userId: userId,
+      }
+    });
+    return response.data;
+  } catch (e) {
+    console.log(e);
+  }
+};
 
 // React Query 훅들
 export const usePostsWithUserDetails = () => {
@@ -185,15 +188,37 @@ export const useDetailPost = (postingId) => {
   });
 };
 
-export const useAddPost = () => {
+export const useAddPost = (userId, title) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: addPosting,
-    onSuccess: (data) => {  // addPosting 함수가 반환한 데이터를 받습니다.
+    onSuccess: async (data) => {  // addPosting 함수가 반환한 데이터를 받습니다.
       queryClient.invalidateQueries(["postsWithUser"]);
-      if (data && data.postingId) {
-        console.log(`새로운 게시물이 생성되었습니다. ID: ${data.postingId}`);
-       
+      console.log("mutation data", data);
+      if (data) {
+        console.log(`새로운 게시물이 생성되었습니다. ID: ${data}`);
+        //console.log("data : ", data);
+        //console.log("userId : ", userId);
+        //console.log("title : ", title);
+        //알림 전송 // 포스팅 작성
+        try {
+          const response = await axios.post(
+            `${import.meta.env.VITE_ALERT_IP}/writePosting`,
+            {
+              sender: userId,
+              recipeposting: data,
+              memo: title,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json", // 반드시 명시해야 함
+              },
+            }
+          );
+          console.log(response);
+        } catch (error) {
+          console.error("알림 전송 중 오류 발생:", error);
+        }
       }
     },
   });
@@ -219,4 +244,4 @@ export const useUpdatePost = () => {
   });
 };
 
-export { uploadImage,updatePosting };
+export { uploadImage, updatePosting };

@@ -98,20 +98,20 @@ const FeedMenu = ({ postingId }) => {
       refetchFavoriteStatus();
       refetchFavoritesCount();
 
+      //console.log(userId);
+      //console.log(authorId);
+      //console.log(encodeURIComponent(userId));
+      //console.log(encodeURIComponent(authorId));
+
       //알림 전송 //좋아요
       if (!localFavoriteStatus) {
         try {
-          await axios.post(
-            `${import.meta.env.VITE_ALERT_IP}/checkLikeNotification`,
-            null,
-            {
-              params: {
-                sender: userId,
-                receiver: authorId,
-                recipeposting: postingId,
-              },
-            }
-          );
+          await axios.post(`${import.meta.env.VITE_ALERT_IP}/checkLikeNotification`, {
+            sender: encodeURIComponent(userId),
+            receiver: encodeURIComponent(authorId),
+            recipeposting: postingId,
+            memo: "",
+          });
           //console.log("알림이 성공적으로 전송되었습니다.");
         } catch (error) {
           //console.error("알림 전송 중 오류 발생:", error);
@@ -214,9 +214,8 @@ const FeedMenu = ({ postingId }) => {
         <div className="flex items-center text-[12px] mb-[10px]">
           <div className="flex justify-center items-center mr-2">
             <div
-              className={`flex justify-center items-center cursor-pointer mr-1 transition-transform duration-300 ${
-                isAnimating ? "scale-75" : "scale-100"
-              }`}
+              className={`flex justify-center items-center cursor-pointer mr-1 transition-transform duration-300 ${isAnimating ? "scale-75" : "scale-100"
+                }`}
               onClick={handleToggleFavorite}
             >
               {localFavoriteStatus ? (
