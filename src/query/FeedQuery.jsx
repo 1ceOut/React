@@ -201,7 +201,7 @@ export const useAddPost = () => {
         //console.log("encodeURIComponent(userId) : ", encodeURIComponent(variables.userId));
         //console.log("data : ", data);
         //console.log("title : ", variables.title);
-        const response = await axios.post(
+        await axios.post(
           `${import.meta.env.VITE_ALERT_IP}/writePosting`,
           {
             sender: encodeURIComponent(variables.userId),
