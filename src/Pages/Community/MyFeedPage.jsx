@@ -1,14 +1,9 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import MenuNavigate from "./../../components/Common/MenuNavigate";
 import ProfileMenu from "./../../components/Community/MyFeed/ProfileMenu";
 import FeedContent from "./../../components/Community/MyFeed/FeedContent";
-import {
-  useAllUsers,
-  subUserListFollow,
-  usercreatesub,
-  userdelete,
-} from "../../query/FeedQuery";
+import { useAllUsers, subUserListFollow, usercreatesub, userdelete } from "../../query/FeedQuery";
 import axios from "axios";
 import useUserStore from "../../store/useUserStore.js";
 
@@ -20,25 +15,6 @@ const MyFeedPage = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // 구독 상태를 확인하는 함수
-  useEffect(() => {
-    const fetchSubscriptionStatus = async () => {
-      try {
-        const subUser = await subUserListFollow(userId);
-        if (Array.isArray(subUser)) {
-          const isSubscribedUser = subUser.some(
-            (user) => user.id === paramUserId
-          );
-          setIsSubscribed(isSubscribedUser);
-        }
-      } catch (error) {
-        // 구독 상태를 가져오는 중 오류가 발생해도 추가적인 처리 생략
-      }
-    };
-
-    fetchSubscriptionStatus();
-  }, [userId, paramUserId]);
 
   // 로딩 중일 때 또는 에러 발생 시 처리
   if (isLoading) {
@@ -61,6 +37,23 @@ const MyFeedPage = () => {
     return <div>User not found</div>;
   }
 
+  // 구독 상태를 확인하는 함수
+  useEffect(() => {
+    const fetchSubscriptionStatus = async () => {
+      try {
+        const subUser = await subUserListFollow(userId);
+        if (Array.isArray(subUser)) {
+          const isSubscribedUser = subUser.some((user) => user.id === paramUserId);
+          setIsSubscribed(isSubscribedUser);
+        }
+      } catch (error) {
+        // 구독 상태를 가져오는 중 오류가 발생해도 추가적인 처리 생략
+      }
+    };
+
+    fetchSubscriptionStatus();
+  }, [userId, paramUserId]);
+
   // 구독 버튼 클릭 핸들러
   const handleSubscribeClick = async () => {
     setIsSubscribed((prevState) => !prevState);
@@ -68,19 +61,13 @@ const MyFeedPage = () => {
       await usercreatesub(paramUserId, userId);
       setModalMessage("구독 되었습니다!");
 
-      //알림 전송 //구독
-      try {
-        await axios.post(`${import.meta.env.VITE_ALERT_IP}/subscribeUser`, {
-          sender: encodeURIComponent(userId),  // userId를 sender로 전송
-          receiver: encodeURIComponent(paramUserId),
-          memo: "",
-        });
-        //console.log("알림이 성공적으로 전송되었습니다.");
-      } catch (error) {
-        //console.error("알림 전송 중 오류 발생:", error);
-        //alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
-      }
-
+      // 알림 전송
+      await axios.post(`${import.meta.env.VITE_ALERT_IP}/subscribeUser`, null, {
+        params: {
+          sender: userId,
+          receiver: paramUserId,
+        },
+      });
     } else {
       await userdelete(paramUserId, userId);
       setModalMessage("구독 취소되었습니다!");
@@ -101,20 +88,15 @@ const MyFeedPage = () => {
         userProfile={user.photo}
         userName={user.name}
         userId={user.userId}
-<<<<<<< HEAD
         isSubscribed={isSubscribed}
         setIsSubscribed={setIsSubscribed}
-=======
->>>>>>> 98d40ceccff6be15de1e2a13c9c8600cb89456dc
       />
 
       {/* 구독 버튼 */}
       {userId !== user.userId && (
         <button
           className={`px-32 py-1 mb-3 rounded-full text-sm font-semibold cursor-pointer transition-colors duration-300 ${
-            isSubscribed
-              ? "bg-gray-200 text-gray-700"
-              : "bg-blue-600 text-white"
+            isSubscribed ? "bg-gray-200 text-gray-700" : "bg-blue-600 text-white"
           }`}
           onClick={handleSubscribeClick}
         >
