@@ -1,76 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../../store/useUserStore.js";
-import { subUserListFollow, usercreatesub, userdelete } from "../../../query/FeedQuery.jsx";
-import axios from "axios";
 
-const FeedProfile = ({ writeday, userProfile, userName, postingUserId }) => {
+const FeedProfile = ({ writeday, userProfile, userName, postingUserId, isSubscribed, onSubscribeToggle }) => {
   const navigate = useNavigate();
   const { userId } = useUserStore();
 
-  // 구독 상태를 관리하기 위한 useState 훅
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  const [modalMessage, setModalMessage] = useState(""); // 모달 메시지 상태 관리
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태 관리
-
-  //로그인 userid 가져오고, 로그인 상태확인
-  const { userId: myUserId } = useUserStore(); //알림용
-
-  useEffect(() => {
-    const fetchSubscriptionStatus = async () => {
-      try {
-        const subUser = await subUserListFollow(userId);
-        // subUser가 배열인지 확인
-        if (Array.isArray(subUser)) {
-          // 구독된 사용자의 ID 목록에서 postingUserId가 포함되어 있는지 확인
-          const isSubscribedUser = subUser.some(user => user.id === postingUserId);
-          setIsSubscribed(isSubscribedUser);
-        } else {
-          console.error("구독 목록이 배열이 아닙니다.");
-        }
-      } catch (error) {
-        console.error("구독 상태를 가져오는 중 오류 발생:", error);
-      }
-    };
-
-    fetchSubscriptionStatus();
-  }, [userId, postingUserId]);
-
   const handleProfileClick = () => {
     navigate(`/community/myfeed/${postingUserId}`);
-  };
-
-  // 구독 버튼 클릭 핸들러
-  const handleSubscribeClick = async () => {
-    setIsSubscribed(prevState => !prevState); // 구독 상태를 토글
-    if (!isSubscribed) {
-      await usercreatesub(postingUserId, userId);
-      setModalMessage("구독 되었습니다!"); // 구독 시 메시지 설정
-      
-      //알림 전송 //구독
-      try {
-        await axios.post(`${import.meta.env.VITE_ALERT_IP}/subscribeUser`, {
-          sender: encodeURIComponent(userId),  // userId를 sender로 전송
-          receiver: encodeURIComponent(postingUserId),
-          memo: "",
-        });
-        //console.log("알림이 성공적으로 전송되었습니다.");
-      } catch (error) {
-        //console.error("알림 전송 중 오류 발생:", error);
-        //alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
-      }
-   
-    } else {
-      await userdelete(postingUserId, userId);
-      setModalMessage("구독 취소되었습니다!"); // 구독 취소 시 메시지 설정
-    }
-    setIsModalOpen(true); // 모달 열기
-  };
-
-  // 모달 닫기 핸들러
-  const handleCloseModal = () => {
-    setIsModalOpen(false); // 모달 닫기
   };
 
   return (
@@ -92,33 +30,17 @@ const FeedProfile = ({ writeday, userProfile, userName, postingUserId }) => {
             <div className="font-normal text-xs">{writeday}</div>
           </div>
         </div>
-        {/* 구독 버튼: 내가 작성한 게시물에서는 버튼을 표시하지 않음 */}
         {userId !== postingUserId && (
           <button
             className={`px-4 py-1 rounded-full text-sm font-semibold cursor-pointer transition-colors duration-300 ${
               isSubscribed ? "bg-gray-200 text-gray-700" : "bg-blue-600 text-white"
             }`}
-            onClick={handleSubscribeClick}
+            onClick={() => onSubscribeToggle(postingUserId)}
           >
             {isSubscribed ? "구독 중" : "구독"}
           </button>
         )}
       </div>
-
-      {/* 모달 창 */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-4 rounded-lg shadow-lg w-64">
-            <div className="text-center mb-4">{modalMessage}</div>
-            <button
-              className="bg-blue-600 text-white px-4 py-2 rounded-full mx-auto block"
-              onClick={handleCloseModal}
-            >
-              닫기
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
@@ -128,6 +50,8 @@ FeedProfile.propTypes = {
   userProfile: PropTypes.string.isRequired,
   userName: PropTypes.string.isRequired,
   postingUserId: PropTypes.string.isRequired,
+  isSubscribed: PropTypes.bool.isRequired,
+  onSubscribeToggle: PropTypes.func.isRequired,
 };
 
 export default FeedProfile;
