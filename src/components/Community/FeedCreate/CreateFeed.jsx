@@ -82,13 +82,6 @@ const CreateFeed = () => {
       try {
         await addPost(postingData);
 
-        // 알림 전송 // 포스팅 작성
-        await axios.post(`${import.meta.env.VITE_ALERT_IP}/writePosting`, null, {
-          params: {
-            sender: userId,
-          },
-        });
-
         navigate("/community/feed");
       } catch (err) {
         // 포스트 작성 실패 처리
@@ -213,9 +206,8 @@ const CreateFeed = () => {
         </div>
       </div>
       <div
-        className={`flex text-[#868686] rounded-xl self-stretch justify-center items-center w-[342px] mt-5 h-14 cursor-pointer ${
-          isEnabled ? "bg-blue-500 text-white" : "bg-[#D1D1D1]"
-        }`}
+        className={`flex text-[#868686] rounded-xl self-stretch justify-center items-center w-[342px] mt-5 h-14 cursor-pointer ${isEnabled ? "bg-blue-500 text-white" : "bg-[#D1D1D1]"
+          }`}
         onClick={isEnabled ? handleSubmit : undefined}
       >
         게시하기
