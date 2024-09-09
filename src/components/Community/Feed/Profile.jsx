@@ -4,9 +4,8 @@ import { useAllUsers } from "../../../query/FeedQuery";
 import useUserStore from "../../../store/useUserStore";
 import HorizontalLine from "../../Common/HorizontalLine";
 
-import { start } from "../../../query/LiveroomQuery.js"
+import { start } from "../../../query/LiveroomQuery.js";
 import axios from "axios";
-
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -23,11 +22,11 @@ const Profile = () => {
 
       const userProfileInfo = isLogin
         ? {
-          userId,
-          name: userName,
-          photo: userProfile,
-          writeday: new Date().toISOString(),
-        }
+            userId,
+            name: userName,
+            photo: userProfile,
+            writeday: new Date().toISOString(),
+          }
         : null;
 
       const uniqueProfiles = new Map();
@@ -38,18 +37,29 @@ const Profile = () => {
         uniqueProfiles.set(profile.userId, profile);
       });
 
-      const finalProfiles = Array.from(uniqueProfiles.values());
-      const [loggedInProfile] = finalProfiles;
+      console.log(uniqueProfiles);
 
+      const finalProfiles = Array.from(uniqueProfiles.values());
       // 방송 중인 사용자와 아닌 사용자를 분리하고 섞기
-      const broadcastUsers = finalProfiles
-        .filter((profile) => profile.broadcast && profile.userId !== userId); // 로그인한 사용자는 제외
+      const broadcastUsers = finalProfiles.filter(
+        (profile) => profile.broadcast && profile.userId !== userId
+      ); // 로그인한 사용자는 제외
       const nonBroadcastUsers = finalProfiles
         .filter((profile) => !profile.broadcast && profile.userId !== userId) // 로그인한 사용자는 제외
         .sort(() => Math.random() - 0.5); // 랜덤 섞기
 
       // 로그인한 사용자 -> 방송 중인 사용자 -> 나머지 사용자 순으로 정렬
-      setProfilesToDisplay([loggedInProfile, ...broadcastUsers, ...nonBroadcastUsers]);
+      const loginUser = finalProfiles.filter(
+        (profile) => profile.userId === userId
+      );
+
+      loginUser === null
+        ? setProfilesToDisplay([...broadcastUsers, ...nonBroadcastUsers])
+        : setProfilesToDisplay([
+            ...loginUser,
+            ...broadcastUsers,
+            ...nonBroadcastUsers,
+          ]);
     }
   }, [isLoading, isError, users, isLogin, userId, userName, userProfile]);
 
@@ -62,28 +72,25 @@ const Profile = () => {
   }
 
   const handleProfileClick = (profile) => {
-
-   if (profile.broadcast) {
-     if (!isLogin){
-       navigate("/login")
-     }
-     else {
-       navigate(`/liveroom/${profile.userId}/${userName}`); // 현재 페이지에서 방송을 시작
-     }
+    if (profile.broadcast) {
+      if (!isLogin) {
+        navigate("/login");
+      } else {
+        navigate(`/liveroom/${profile.userId}/${userName}`); // 현재 페이지에서 방송을 시작
+      }
     } else {
       navigate(`/community/myfeed/${profile.userId}`); // 현재 페이지에서 프로필 피드를 표시
     }
   };
 
   const handleLiveBroadcast = async () => {
-
     try {
       // 서버에서 broadcast 상태를 true로 변경
       await start(userId);
 
       try {
         await axios.post(`${import.meta.env.VITE_ALERT_IP}/startBroadcasting`, {
-          sender: encodeURIComponent(userId),  // userId를 sender로 전송
+          sender: encodeURIComponent(userId), // userId를 sender로 전송
           memo: "",
         });
         //console.log("알림이 성공적으로 전송되었습니다.");
@@ -93,13 +100,10 @@ const Profile = () => {
       }
 
       navigate(`/liveroom/${userId}/방장_${userName}`);
-
-  } catch (error) {
-    console.error("Failed to start live broadcast", error); // 에러 처리
-  }
-};
-
-
+    } catch (error) {
+      console.error("Failed to start live broadcast", error); // 에러 처리
+    }
+  };
 
   const handlePlusButtonClick = (e) => {
     e.stopPropagation();
@@ -126,7 +130,10 @@ const Profile = () => {
           >
             {profilesToDisplay.length > 0 ? (
               profilesToDisplay.map((profile) => (
-                <div key={profile.userId} className="flex flex-col items-center">
+                <div
+                  key={profile.userId}
+                  className="flex flex-col items-center"
+                >
                   <div className="flex justify-end items-end relative h-24">
                     {profile.broadcast && (
                       <img
@@ -138,8 +145,9 @@ const Profile = () => {
                     <img
                       src={profile.photo || "/assets/cha.png"}
                       alt={`Profile of ${profile.name}`}
-                      className={`w-20 h-20 rounded-full object-cover cursor-pointer ${profile.broadcast ? "border-4 border-red-500" : ""
-                        }`} // 방송 중인 프로필에만 빨간색 테두리
+                      className={`w-20 h-20 rounded-full object-cover cursor-pointer ${
+                        profile.broadcast ? "border-4 border-red-500" : ""
+                      }`} // 방송 중인 프로필에만 빨간색 테두리
                       onClick={() => handleProfileClick(profile)}
                     />
                     {profile.userId === userId && isLogin && (
