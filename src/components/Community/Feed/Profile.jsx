@@ -17,13 +17,6 @@ const Profile = () => {
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
   const [profilesToDisplay, setProfilesToDisplay] = useState([]);
 
-  const login_type = () => {
-    const login_type = userId.split(" ")[0];
-    if (login_type === "naver") return "네이버";
-    else if (login_type === "google") return "구글";
-    else return "카카오";
-  }
-
   useEffect(() => {
     if (!isLoading && !isError) {
       const profiles = Array.isArray(users) ? users : [];
@@ -71,7 +64,12 @@ const Profile = () => {
   const handleProfileClick = (profile) => {
 
    if (profile.broadcast) {
-      navigate(`/liveroom/${profile.userId}/${userName}`); // 현재 페이지에서 방송을 시작
+     if (!isLogin){
+       navigate("/login")
+     }
+     else {
+       navigate(`/liveroom/${profile.userId}/${userName}`); // 현재 페이지에서 방송을 시작
+     }
     } else {
       navigate(`/community/myfeed/${profile.userId}`); // 현재 페이지에서 프로필 피드를 표시
     }
@@ -94,7 +92,6 @@ const Profile = () => {
         //alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
       }
 
-      const login_type = userId.split(" ")[0];
       navigate(`/liveroom/${userId}/방장_${userName}`);
 
   } catch (error) {
