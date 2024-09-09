@@ -21,14 +21,23 @@ const MenuNavigate = ({ option, previousPage }) => {
   const navigate = useNavigate();
 
   const chatNavigation = () => {
-    navigate("/Talk/TalkList");
+    if (!isLogin) {
+      navigate("/login");
+    }
+    else
+      navigate("/Talk/TalkList");
   };
 
   const alertNavigation = () => {
-    if (notifications.length > 0) {
-      navigate("/alert/alert");
-    } else {
-      navigate("/alert/noalert");
+    if (!isLogin) {
+      navigate("/login")
+    }
+    else {
+      if (notifications.length > 0) {
+        navigate("/alert/alert");
+      } else {
+        navigate("/alert/noalert");
+      }
     }
   };
 

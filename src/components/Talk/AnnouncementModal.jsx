@@ -3,10 +3,11 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import axiosApi from "../../Pages/Talk/axiosApi.js";
 
-const AnnouncementModal = ({ onRefri, isOpen, onClose }) => {
+const AnnouncementModal = ({ onRefri, isOpen, onClose, refreshAnnouncement }) => {
     const [announcement, setAnnouncement] = useState("");
     const [newAnnouncement, setNewAnnouncement] = useState("");
     const api_server = import.meta.env.VITE_API_IP;
+    const chatroomSeq = onRefri;
 
     // 공지사항 업데이트 후 확인 및 처리
     const handleConfirmClick = () => {
@@ -51,15 +52,15 @@ const AnnouncementModal = ({ onRefri, isOpen, onClose }) => {
     // 모달이 열리면 해당 냉장고의 유저 목록을 가져오는 함수
     useEffect(() => {
         if (isOpen) {
-            fetchCurrentAnnouncement(onRefri); // 현재 설정된 공지사항 가져오기
+            fetchCurrentAnnouncement(chatroomSeq); // 현재 설정된 공지사항 가져오기
         }
-    }, [isOpen, onRefri]);
+    }, [isOpen, chatroomSeq]);
 
     // 현재 공지사항 불러오기
-    const fetchCurrentAnnouncement = async (onRefri) => {
+    const fetchCurrentAnnouncement = async () => {
         try {
-            // const response = await axios.get(`/api/announcement/${onRefri}`, {
-            const response = await axios.get(`${api_server}/api/announcement/${onRefri}`, {
+            const response = await axios.get(`${api_server}/api/announcement/${chatroomSeq}`, {
+           // const response = await axios.get(`/api/announcement/${chatroomSeq}`, {
                 withCredentials: true,
             });
             setAnnouncement(response.data.announcement); // 서버로부터 공지사항을 가져와 상태로 저장
@@ -70,9 +71,16 @@ const AnnouncementModal = ({ onRefri, isOpen, onClose }) => {
 
     if (!isOpen) return null;
 
+    // 모달 바깥을 클릭했을 때 닫히게 하는 함수
+    const handleBackdropClick = (e) => {
+        if (e.target === e.currentTarget) {
+            onClose();
+        }
+    };
+
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white rounded-lg p-6 w-[342px]">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={handleBackdropClick}>
+            <div className="bg-white rounded-lg p-6 w-[342px]" onClick={(e) => e.stopPropagation()}>
                 <div className="text-lg font-semibold mb-8 flex flex-col justify-center items-center">
                     <p>공지사항을 등록해주세요 !</p>
                     <br />
