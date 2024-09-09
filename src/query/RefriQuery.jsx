@@ -27,20 +27,7 @@ const useFridgeOptions = (userId) => {
 };
 export default useFridgeOptions;
 
-// export const inviteRefri = async (userId, refrigeratorId) => {
-//     try {
-//         const response = await axios.post(`${API_URL}/api/food/refri/invite/user`,{
-//             params:{
-//                 userId : userId,
-//                 refrigeratorId:refrigeratorId
-//             },
-//             withCredentials: true // 옵션으로 설정
-//         });
-//         return response.data;
-//     }catch (e) {
-//         console.log("추가에서 에러나는거임?~~₩",e)
-//     }
-// }
+
 export const inviteRefri = async (userId, refrigeratorId) => {
     try {
         const response = await axios.post(`${API_URL}/api/food/refri/invite/user`,
@@ -55,6 +42,7 @@ export const inviteRefri = async (userId, refrigeratorId) => {
 };
 
 //마스터 사용자가 만든 냉장고 조회
+
 export const masterUserList = async (userId) => {
     try {
         const response = await axios.get(`${API_URL}/api/food/refri/master/refrilist`, {
@@ -63,13 +51,20 @@ export const masterUserList = async (userId) => {
             },
             withCredentials: true // 옵션으로 설정
         });
-         // 여기서 response.data는 refrigerator 객체 리스트가 됨
+        // 여기서 response.data는 refrigerator 객체 리스트가 됨
         return response.data;
     } catch (error) {
-        console.error("Error fetching master user list:", error);
-        throw error;
+        // 에러가 HTTP 500일 경우에만 콘솔에 로그를 찍지 않음 //현재는 마스터 사용자가 아니면 모두 500번에러를 반환함
+        if (error.response && error.response.status === 500) {
+            return null;
+        } else {
+            // 다른 에러는 콘솔에 출력
+            console.error("Error fetching master user list:", error);
+            throw error;
+        }
     }
 }
+
 
 //마스터 냉장고 사용자가 이름 변경
 export const masterUserRefri = async ({ userId, data }) => {
