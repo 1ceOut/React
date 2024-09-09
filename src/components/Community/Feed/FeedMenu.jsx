@@ -43,6 +43,7 @@ const FeedMenu = ({ postingId }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [modalOffsetY, setModalOffsetY] = useState(0);
   const modalRef = useRef(null);
+  const { isLogin } = useUserStore();
 
   const { data: postDetail } = useDetailPost(postingId);
   const authorId = postDetail?.posting?.userId || null;
@@ -106,12 +107,15 @@ const FeedMenu = ({ postingId }) => {
       //알림 전송 //좋아요
       if (!localFavoriteStatus) {
         try {
-          await axios.post(`${import.meta.env.VITE_ALERT_IP}/checkLikeNotification`, {
-            sender: encodeURIComponent(userId),
-            receiver: encodeURIComponent(authorId),
-            recipeposting: postingId,
-            memo: "",
-          });
+          await axios.post(
+            `${import.meta.env.VITE_ALERT_IP}/checkLikeNotification`,
+            {
+              sender: encodeURIComponent(userId),
+              receiver: encodeURIComponent(authorId),
+              recipeposting: postingId,
+              memo: "",
+            }
+          );
           //console.log("알림이 성공적으로 전송되었습니다.");
         } catch (error) {
           //console.error("알림 전송 중 오류 발생:", error);
@@ -213,26 +217,28 @@ const FeedMenu = ({ postingId }) => {
       <div className="flex flex-col font-medium text-[#767676]">
         <div className="flex items-center text-[12px] mb-[10px]">
           <div className="flex justify-center items-center mr-2">
-            <div
-              className={`flex justify-center items-center cursor-pointer mr-1 transition-transform duration-300 ${isAnimating ? "scale-75" : "scale-100"
-                }`}
+            <button
+              className={`flex justify-center items-center cursor-pointer mr-1 transition-transform duration-300 ${
+                isAnimating ? "scale-75" : "scale-100"
+              }`}
               onClick={handleToggleFavorite}
+              disabled={!isLogin}
             >
               {localFavoriteStatus ? (
                 <FavoriteIcon sx={{ color: red[500] }} className="mr-1" />
               ) : (
                 <FavoriteBorderIcon className="mr-1" />
               )}
-            </div>
+            </button>
             <div>{favoritesCount || 0}</div>
           </div>
           <div className="flex justify-center items-center">
-            <div
+            <button
               className="flex justify-center items-center cursor-pointer"
               onClick={openCommentModal}
             >
               <ChatBubbleOutlineIcon className="mr-1" />
-            </div>
+            </button>
             <div>{commentCount}</div>
           </div>
         </div>
@@ -355,6 +361,7 @@ const FeedMenu = ({ postingId }) => {
                 <button
                   onClick={showHidden}
                   className="px-4 py-2 w-[342px] h-12 bg-gray-300 rounded-lg"
+                  disabled={!isLogin}
                 >
                   댓글 달기
                 </button>
