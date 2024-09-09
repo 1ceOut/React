@@ -8,6 +8,7 @@ import { BestShoppingList, ShoppingHeader } from "../../query/ShopQuery.js";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import useUserStore from "./../../store/useUserStore";
+import AboutUs from "../../components/Home/AboutUs.jsx";
 
 const HomePage = () => {
   const [animationClass, setAnimationClass] = useState("animate-slideInUp");
@@ -67,7 +68,8 @@ const HomePage = () => {
       <Refrigerator />
       <div className="bg-gray-100 flex w-[390px] h-[10px] mb-6"></div>
       <Community />
-      <div className="bg-gray-100 flex w-[390px] h-[500px] "></div>
+      <div className="bg-gray-100 flex w-[390px] h-[10px] mb-6"></div>
+      <AboutUs/>
       <BarNavigate
         shoppingsrc="/assets/shopping.png"
         homesrc="/assets/homeselect.png"
