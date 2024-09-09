@@ -14,12 +14,12 @@ const HomePage = () => {
   const navigate = useNavigate();
   const { userRole } = useUserStore();
 
+  if (userRole === "ROLE_NEED_INSERT") {
+    navigate("/addinfo/habit");
+  }
+
   useEffect(() => {
     setAnimationClass("animate-slideInUp");
-
-    if (userRole === "ROLE_NEED_INSERT") {
-      navigate("/addinfo/habit");
-    }
 
     return () => {
       setAnimationClass("animate-slideOutDown");
