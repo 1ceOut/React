@@ -3,9 +3,16 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import useUserStore from "../../../store/useUserStore.js";
 
-const FeedProfile = ({ writeday, userProfile, userName, postingUserId, isSubscribed, onSubscribeToggle }) => {
+const FeedProfile = ({
+  writeday,
+  userProfile,
+  userName,
+  postingUserId,
+  isSubscribed,
+  onSubscribeToggle,
+}) => {
   const navigate = useNavigate();
-  const { userId } = useUserStore();
+  const { isLogin, userId } = useUserStore();
 
   const handleProfileClick = () => {
     navigate(`/community/myfeed/${postingUserId}`);
@@ -33,11 +40,16 @@ const FeedProfile = ({ writeday, userProfile, userName, postingUserId, isSubscri
         {userId !== postingUserId && (
           <button
             className={`px-4 py-1 rounded-full text-sm font-semibold cursor-pointer transition-colors duration-300 ${
-              isSubscribed ? "bg-gray-200 text-gray-700" : "bg-blue-600 text-white"
+              isLogin
+                ? isSubscribed
+                  ? "bg-gray-200 text-gray-700"
+                  : "bg-blue-600 text-white"
+                : "bg-blue-600 text-white cursor-not-allowed"
             }`}
             onClick={() => onSubscribeToggle(postingUserId)}
+            hidden={!isLogin}
           >
-            {isSubscribed ? "구독 중" : "구독"}
+            {isLogin ? (isSubscribed ? "구독 중" : "구독") : "구독"}
           </button>
         )}
       </div>

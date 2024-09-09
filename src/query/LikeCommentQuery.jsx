@@ -12,13 +12,29 @@ const fetchFavoritesCount = async (postingId) => {
     withCredentials: true,
     params: { postingId },
   });
-  return response.data; 
+  return response.data;
 };
 
 export const useFavoritesCount = (postingId) => {
   return useQuery({
     queryKey: ["favoritesCount", postingId],
     queryFn: () => fetchFavoritesCount(postingId),
+    enabled: !!postingId,
+  });
+};
+
+const fetchCommentsCount = async (postingId) => {
+  const response = await axios.get(`${API_URL}/comment/count`, {
+    withCredentials: true,
+    params: { postingId },
+  });
+  return response.data;
+};
+
+export const useCommentsCount = (postingId) => {
+  return useQuery({
+    queryKey: ["favoritesCount", postingId],
+    queryFn: () => fetchCommentsCount(postingId),
     enabled: !!postingId,
   });
 };
