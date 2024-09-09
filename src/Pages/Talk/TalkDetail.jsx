@@ -142,6 +142,7 @@ const TalkDetail = () => {
             .catch((error) => console.error("Failed to fetch announcement.", error));
     };
 
+
     const sendMessage = () => {
         if (!newMessage.trim()) {
             return; // 공백 또는 빈 메시지일 경우 전송 안함
@@ -178,8 +179,6 @@ const TalkDetail = () => {
     const handleAnnouncementModalClick = () => {
         setIsAModalOpen(true);
     };
-
-
 
     const toggleAnnouncementVisibility = () => {
         setIsAnnouncementVisible(!isAnnouncementVisible);
@@ -377,7 +376,12 @@ const TalkDetail = () => {
                 onClose={handleCloseModal}
                 onRefri={chatroomSeq}
             />
-            <AnnouncementModal onRefri={chatroomSeq} onClose={handleCloseAModal} isOpen={isAModalOpen}/>
+            <AnnouncementModal
+                onRefri={chatroomSeq}
+                onClose={handleCloseAModal}
+                isOpen={isAModalOpen}
+                refreshAnnouncement={fetchAnnouncement}
+            />
         </main>
 
 );
