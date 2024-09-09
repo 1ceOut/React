@@ -14,15 +14,24 @@ const MenuNavigate = ({PageTitle}) => {
 
     //채팅으로 이동
     const chatNavigation = () => {
-        navigate("/Talk/TalkList");
+        if (!isLogin) {
+            navigate("/login");
+        }
+        else
+            navigate("/Talk/TalkList");
     }
 
     //알림 페이지로 이동
     const alertNavigation = () => {
-        if (notifications.length > 0) {
-            navigate("/alert/alert");
-        } else {
-            navigate("/alert/noalert");
+        if (!isLogin) {
+            navigate("/login")
+        }
+        else {
+            if (notifications.length > 0) {
+                navigate("/alert/alert");
+            } else {
+                navigate("/alert/noalert");
+            }
         }
     }
 
