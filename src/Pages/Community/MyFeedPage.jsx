@@ -117,7 +117,7 @@ const MyFeedPage = () => {
             followerCount={followerCount}
             followingCount={followingCount}
         />
-        {userId !== user.userId && (
+        {userId && userId !== user.userId && (
             <button
                 className={`px-32 py-1 mb-3 rounded-full text-sm font-semibold cursor-pointer transition-colors duration-300 ${
                     isSubscribed ? "bg-gray-200 text-gray-700" : "bg-blue-600 text-white"
