@@ -5,6 +5,7 @@ import useUserStore from "./../../../store/useUserStore";
 import { useAddComment } from "../../../query/LikeCommentQuery";
 import { useDetailPost } from "../../../query/FeedQuery";
 import axios from "axios";
+import { IoClose } from "react-icons/io5";
 
 const CommentModal = ({ closeHidden, postingId, userName }) => {
   const { userId: currentUserId } = useUserStore((state) => ({
@@ -32,6 +33,19 @@ const CommentModal = ({ closeHidden, postingId, userName }) => {
         return "좋아요";
       case 5:
         return "최고에요";
+      default:
+        return "";
+    }
+  };
+
+  const getDifficultyText = (difficulty) => {
+    switch (difficulty) {
+      case "상":
+        return "어려워요";
+      case "중":
+        return "평범해요";
+      case "하":
+        return "쉬워요";
       default:
         return "";
     }
@@ -80,13 +94,16 @@ const CommentModal = ({ closeHidden, postingId, userName }) => {
       <div className="relative bg-white w-[90%] max-w-lg p-5 rounded-lg shadow-lg">
         <div className="flex justify-between text-lg">
           <div className="w-6 h-6"></div>
-          <div className="flex">요리후기(리뷰)</div>
-          <div className="cursor-pointer w-6 h-6" onClick={closeHidden}>
-            X
+          <div className="flex mb-2 font-bold">요리후기(리뷰)</div>
+          <div
+            className="cursor-pointer w-6 h-6 flex justify-center items-center"
+            onClick={closeHidden}
+          >
+            <IoClose size="w-5 h-5" />
           </div>
         </div>
-        <div className="flex justify-center items-center">
-          요리사진, 메세지를 {userName}님께 보냅니다!
+        <div className="flex justify-center items-center mb-2">
+          요리후기를 {userName}님께 보냅니다!
         </div>
         <div className="flex flex-col justify-center items-center">
           <Rating
@@ -98,33 +115,40 @@ const CommentModal = ({ closeHidden, postingId, userName }) => {
           />
           <div className="text-xs text-[#A8A8A8]">{getRatingText(rate)}</div>
         </div>
-        <div className="flex justify-center items-center mt-2">
+        <div className="flex justify-center items-center my-2">
           <select
             value={selectedQuality}
             onChange={(e) => setSelectedQuality(e.target.value)}
             className="border p-2 rounded-md"
           >
             <option value="" disabled>
-              상중하 선택
+              난이도 선택
             </option>
             <option value="상">상</option>
             <option value="중">중</option>
             <option value="하">하</option>
           </select>
         </div>
-        <div className="border-[2px] w-full min-h-28 h-auto mt-2">
+        <div className="flex justify-center items-center">
+          {selectedQuality && (
+            <div className="text-xs text-[#A8A8A8]">
+              {getDifficultyText(selectedQuality)}
+            </div>
+          )}
+        </div>
+        <div className="border-[2px] rounded-xl w-full min-h-28 h-auto mt-2">
           <textarea
             id="food"
             name="food"
             type="text"
             placeholder="감사의 한마디 부탁드려요!"
-            className="block outline-none pl-3 w-full h-28 text-gray-900 placeholder:text-[#A8A8A8]"
+            className="block outline-none pl-3 w-full h-28 text-gray-900 rounded-xl placeholder:text-[#A8A8A8]"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           />
         </div>
         <div
-          className="bg-blue-600 rounded-md cursor-pointer text-white flex justify-center items-center h-9"
+          className="bg-blue-600 rounded-md cursor-pointer text-white flex justify-center items-center h-9 mt-2"
           onClick={submitForm}
         >
           요리후기 남기기
