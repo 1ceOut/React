@@ -12,8 +12,8 @@ const AnnouncementModal = ({ onRefri, isOpen, onClose, refreshAnnouncement }) =>
     // 공지사항 업데이트 후 확인 및 처리
     const handleConfirmClick = () => {
         if (newAnnouncement.trim() !== "") {
-            axiosApi.post(`${api_server}/api/announcement/${chatroomSeq}`, {
-            // axiosApi.post(`/api/announcement/${chatroomSeq}`, {
+            // axiosApi.post(`/api/announcement/${onRefri}`, {
+            axiosApi.post(`${api_server}/api/announcement/${onRefri}`, {
                 announcement: newAnnouncement
             }, {
                 withCredentials: true
@@ -24,12 +24,28 @@ const AnnouncementModal = ({ onRefri, isOpen, onClose, refreshAnnouncement }) =>
                 // 입력 필드 초기화
                 setNewAnnouncement("");
 
-                refreshAnnouncement(); // 공지사항 새로고침
+                //공지 알림 전송 함수 호출
+                //sendNewChattingMasterNotification();
+
                 // 모달을 닫음
                 onClose();
             }).catch((error) => {
                 console.error("Failed to update announcement.", error);
             });
+        }
+    };
+
+    // 새로운 공지 알림을 전송하는 함수
+    const sendNewChattingMasterNotification = async () => {
+        try {
+            await axiosApi.post(`${import.meta.env.VITE_ALERT_IP}/newChattingMaster`, {
+                sender: null,  // 공지사항을 설정한 사용자
+                senderrefri: onRefri, // 현재 냉장고(채팅방) ID
+                memo: newAnnouncement,
+            });
+            //console.log("공지 알림이 성공적으로 전송되었습니다.");
+        } catch (error) {
+            //console.error("공지 알림 전송 중 오류 발생:", error);
         }
     };
 

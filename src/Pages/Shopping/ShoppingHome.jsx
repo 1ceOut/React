@@ -5,7 +5,7 @@ import MenuNavigate from "../../components/Common/MenuNavigate";
 import HomeMainContent from "../../components/Shopping/ShoppingHome/HomeMainContent";
 import HomeTopContent from "../../components/Shopping/ShoppingHome/HomeTopContent";
 import useUserStore from "../../store/useUserStore.js";
-import { BestShoppingList, fetchUserRecommendations, ShoppingHeader } from "../../query/ShopQuery.js";
+import { BestShoppingList, ShoppingHeader } from "../../query/ShopQuery.js";
 import LoadingBar from "../../components/Login/LoadingBar.jsx";
 import dummyListData from "../../testdata/shopingdata.json"
 import dummyBannerData from "../../testdata/banner.json"
@@ -39,13 +39,7 @@ const ShoppingHome = () => {
         return Number(a.price.replace(/[^\d]+/g, "")) - Number(b.price.replace(/[^\d]+/g, ""));
     }) : [];
 
-     const { userName, userId } = useUserStore();
-    // // 추천 데이터 가져오기 (userId를 기반으로 API 호출)
-    // const { data: userRecommendations, isLoading: isRecLoading, isError: isRecError } = useQuery({
-    //     queryKey: ["UserRecommendations", userId],
-    //     queryFn: () => fetchUserRecommendations(userId),
-    //     enabled: !!userId, // userId가 있을 때만 호출
-    // });
+    const { userName } = useUserStore();
 
     useEffect(() => {
         setAnimationClass('animate-slideInUp');

@@ -206,9 +206,8 @@ const CreateFeed = () => {
         </div>
       </div>
       <div
-        className={`flex text-[#868686] rounded-xl self-stretch justify-center items-center w-[342px] mt-5 h-14 cursor-pointer ${
-          isEnabled ? "bg-blue-500 text-white" : "bg-[#D1D1D1]"
-        }`}
+        className={`flex text-[#868686] rounded-xl self-stretch justify-center items-center w-[342px] mt-5 h-14 cursor-pointer ${isEnabled ? "bg-blue-500 text-white" : "bg-[#D1D1D1]"
+          }`}
         onClick={isEnabled ? handleSubmit : undefined}
       >
         게시하기
