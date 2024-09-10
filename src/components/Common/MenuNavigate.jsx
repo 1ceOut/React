@@ -63,14 +63,14 @@ const MenuNavigate = ({ option, previousPage }) => {
       <div className="absolute right-0 flex flex-row">
         <div className="pr-4 flex justify-center items-center">
           <IoChatbubbleSharp
-            className="w-5 h-5"
+            className="w-5 h-5 cursor-pointer"
             color="grey"
             onClick={chatNavigation}
           />
         </div>
         <div className="pr-4 flex justify-center items-center">
           <IoNotifications
-            className="w-5 h-5"
+            className="w-5 h-5 cursor-pointer"
             color={hasUnread ? "#F2DC00" : "grey"}
             onClick={alertNavigation}
           />
