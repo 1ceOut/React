@@ -57,14 +57,15 @@ const SearchForm = ({ onSearch }) => {
     <div
       className={`transition-all duration-500 ${
         hasSearched ? "mt-5" : "mt-[50px]"
-      } flex flex-col items-center`}
+      } flex flex-col items-center `}
     >
+      <div>
+      <img src="/assets/searchlogo.png"/>
+      </div>
       <div
-        className={`self-stretch h-14 flex justify-center items-center space-x-[14px] ${
-          hasSearched ? "" : "mt-[200px]"
-        }`}
+        className={`self-stretch h-14 flex justify-center items-center space-x-[14px]`}
       >
-        <div className="self-stretch flex items-center border rounded-xl w-[300px]">
+        <div className="bg-white self-stretch flex items-center border rounded-xl w-[300px]">
           <input
             type="text"
             value={inputValue}
