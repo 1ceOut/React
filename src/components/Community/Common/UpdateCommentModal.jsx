@@ -123,7 +123,7 @@ const UpdateCommentModal = ({
           </select>
         </div>
         <div className="border-[2px] w-full min-h-28 h-auto mt-2">
-          <input
+          <textarea
             id="food"
             name="food"
             type="text"
