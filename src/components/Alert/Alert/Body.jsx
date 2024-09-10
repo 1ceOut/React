@@ -38,21 +38,21 @@ const Body = () => {
                     return { sender: notification.sender, userInfo: null };
                 }
             });
-    
+
             const userInfoArray = await Promise.all(promises);
             const newUserInfoMap = userInfoArray.reduce((map, { sender, userInfo }) => {
                 map[sender] = userInfo;
                 return map;
             }, {});
-    
+
             setUserInfoMap(newUserInfoMap);
         };
-    
+
         if (notifications.length > 0) {
             fetchUserInfos();
         }
     }, [notifications]);
-    
+
 
     //알림의 senderrefri 값을 기반으로 냉장고 이름을 API로부터 가져옴
     useEffect(() => {
@@ -104,12 +104,14 @@ const Body = () => {
                                 },
                             }
                         );
-                        const foodData = response.data[0]; 
-                        return { sender: notification.sender, 
+                        const foodData = response.data[0];
+                        return {
+                            sender: notification.sender,
                             foodInfo: {
                                 productName: foodData.productName, // productName 가져오기
                                 lcategory: foodData.lcategory // lcategory 가져오기
-                            } }; // API 응답에서 첫 번째 데이터 사용
+                            }
+                        }; // API 응답에서 첫 번째 데이터 사용
                     } catch (error) {
                         console.error(`Failed to fetch food info for food_id: ${notification.sender}`, error);
                         return { sender: notification.sender, foodInfo: null };
@@ -130,13 +132,48 @@ const Body = () => {
             fetchFoodInfos();
         }
     }, [notifications]);
-    
+
     const updateHasUnread = (updatedNotifications) => {
         const hasUnread = updatedNotifications.some(notification => !notification.alertcheck);
         setHasUnread(hasUnread);
     };
 
-    const handleMarkAsRead = async (alert_id) => {
+    const handleMarkAsRead = async (alert_id, recipeposting, alerttype, sender) => {
+        const notification = notifications.find(n => n.alert_id === alert_id);
+    
+        // 이미 읽음 처리된 알림이면 읽기 처리하지 않음
+        if (notification && notification.alertcheck) {
+            console.log("alerttype : ", alerttype);
+            if (alerttype === '포스팅 작성' || alerttype === '좋아요' || alerttype === '댓글 작성') {
+                // 포스팅 상세 페이지로 이동
+                navigate(`/community/feeddetail/${recipeposting}`);
+            } else if (alerttype === '구독') {
+                // 구독 관련 페이지로 이동
+                navigate(`/community/myfeed/${sender}`);
+            } else if (alerttype === '냉장고 생성' || alerttype === '냉장고 수정' || alerttype === '냉장고 등록') {
+                console.log(alerttype);
+                // 냉장고 관리 페이지로 이동
+                navigate('/fridge/fridgemanage');
+            } else if (alerttype === '방송 시작') {
+                // 방송 룸으로 이동
+                navigate(`/liveroom/${sender}`);
+            } else if (alerttype === '유통기한 임박') {
+                try {
+                    const response = await axios.get(
+                        `https://api.icebuckwheat.kro.kr/api/food/find/FoodName`, 
+                        { params: { food_id: sender } }
+                    );
+                    const foodData = response.data[0]; // 첫 번째 음식 데이터
+                    // FoodDetail 페이지로 이동할 때 음식 데이터를 전달
+                    navigate(`/Refrigerator/food/FoodDetail/${sender}`, { state: { foodData } });
+                } catch (error) {
+                    //console.error("Failed to fetch food info:", error);
+                }
+            }
+            
+            return;
+        }
+    
         try {
             const response = await axios.post(`${import.meta.env.VITE_ALERT_IP}/markAsRead/${alert_id}`);
             if (response.status === 200) {
@@ -147,6 +184,32 @@ const Body = () => {
                 );
                 setNotifications(updatedNotifications);
                 updateHasUnread(updatedNotifications);
+    
+                if (alerttype === '포스팅 작성' || alerttype === '좋아요' || alerttype === '댓글 작성') {
+                    // 포스팅 상세 페이지로 이동
+                    navigate(`/community/feeddetail/${recipeposting}`);
+                } else if (alerttype === '구독') {
+                    // 구독 관련 페이지로 이동
+                    navigate(`/community/myfeed/${sender}`);
+                } else if (alerttype === '냉장고 생성' || alerttype === '냉장고 수정' || alerttype === '냉장고 등록') {
+                    // 냉장고 관리 페이지로 이동
+                    navigate(`/fridge/fridgemanage/`);
+                } else if (alerttype === '방송 시작') {
+                    // 방송 룸으로 이동
+                    navigate(`/liveroom/${sender}/`);
+                } else if (alerttype === '유통기한 임박') {
+                    try {
+                        const response = await axios.get(
+                            `https://api.icebuckwheat.kro.kr/api/food/find/FoodName`, 
+                            { params: { food_id: sender } }
+                        );
+                        const foodData = response.data[0]; // 첫 번째 음식 데이터
+                        // FoodDetail 페이지로 이동할 때 음식 데이터를 전달
+                        navigate(`/Refrigerator/food/FoodDetail/${sender}`, { state: { foodData } });
+                    } catch (error) {
+                        //console.error("Failed to fetch food info:", error);
+                    }
+                }
             }
         } catch (error) {
             console.error("Failed to mark notification as read:", error);
@@ -246,7 +309,7 @@ const Body = () => {
                 break;
             case '유통기한 임박':
                 if (foodInfo) { // foodInfo가 있는 경우만 처리
-                    imgSrc = getCategoryImage(foodInfo.lcategory); 
+                    imgSrc = getCategoryImage(foodInfo.lcategory);
                     // notification.memo가 음수일 경우 "유통기한이 지났어요"로 출력
                     if (parseInt(notification.memo, 10) < 0) {
                         statusText = '유통기한이 지났어요';
@@ -302,7 +365,7 @@ const Body = () => {
                     </div>
                     <div
                         className={`flex-1 ${notification.alertcheck ? "text-gray-500" : "text-black"}`}
-                        onClick={() => handleMarkAsRead(notification.alert_id)}
+                        onClick={() => handleMarkAsRead(notification.alert_id, notification.recipeposting, notification.alerttype, notification.sender)}
                         style={{ cursor: "pointer" }}>
                         <div className="text-xs mb-1">
                             {statusText}

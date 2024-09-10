@@ -125,6 +125,7 @@ const Community = () => {
         </div>
       </div>
       <div className="mt-4 flex space-x-2 flex w-auto h-max-[340px] mt-1 rounded-lg overflow-x-auto scrollbar-hide">
+        {/* 추천 데이터가 있으면 추천 게시물 출력 */}
         {recommendedPosts.length > 0 ? (
           recommendedPosts.map(({ posting }) => {
             const date = new Date(posting.writeday);
@@ -148,9 +149,28 @@ const Community = () => {
             );
           })
         ) : hasError || recommendationData.length === 0 ? (
-          <div className="flex flex-col items-center mt-12">
-            <img src="/assets/basket.png" alt="No Data" className="w-60 h-60" />
-          </div>
+          // 오류 발생 또는 추천 데이터가 없으면 랜덤 게시물 출력
+          randomPosts.map(({ posting }) => {
+            const date = new Date(posting.writeday);
+            const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
+            return (
+              <div className="bg-[#EEEFE5] auto-slide-left rounded-xl" key={posting.postingId}>
+                <div
+                  className="min-w-52 h-100"
+                  onClick={() => communityDetail(posting.postingId)}
+                >
+                  <div className="flex flex-col items-center p-2.5">
+                    <img src={posting.thumbnail} className="w-full h-40 rounded-xl" />
+                    <div className="line-clamp-2 pl-2 pr-2 pt-1 font-bold text-[#807D72]">{posting.title}</div>
+                    <div className="flex items-start w-full p-2 font-normal text-[12px] text-[#767676]">
+                      {formattedDate}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })
         ) : (
           <div>No posts available</div>
         )}
