@@ -6,7 +6,11 @@ import FeedTitle from "../../components/Community/Feed/FeedTitle";
 import FeedProfile from "../../components/Community/Feed/FeedProfile";
 import FeedMenu from "../../components/Community/Feed/FeedMenu";
 import BarNavigate from "../../components/Common/BarNavigate";
-import { subUserListFollow, usercreatesub, userdelete } from "../../query/FeedQuery";
+import {
+  subUserListFollow,
+  usercreatesub,
+  userdelete,
+} from "../../query/FeedQuery";
 import useUserStore from "../../store/useUserStore.js";
 import axios from "axios";
 
@@ -19,7 +23,7 @@ const formatDate = (dateString) => {
 };
 
 const transformImageUrl = (url) => {
-  const lastSegment = url.split('/').pop();
+  const lastSegment = url.split("/").pop();
   return `https://jz6trd593769.edge.naverncp.com/pqoNDkSvH8/communitythumbnail/${lastSegment}?type=f&w=342&h=180&ttype=jpg`;
 };
 
@@ -28,11 +32,13 @@ const FeedPage = () => {
   const [subscriptions, setSubscriptions] = useState({});
   const [modalMessage, setModalMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(""); // State for search query
 
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    const storedSubscriptions = JSON.parse(localStorage.getItem('subscriptions')) || {};
+    const storedSubscriptions =
+      JSON.parse(localStorage.getItem("subscriptions")) || {};
     setSubscriptions(storedSubscriptions);
 
     const fetchSubscriptionStatus = async () => {
@@ -44,7 +50,7 @@ const FeedPage = () => {
             return acc;
           }, {});
           setSubscriptions(subStatus);
-          localStorage.setItem('subscriptions', JSON.stringify(subStatus));
+          localStorage.setItem("subscriptions", JSON.stringify(subStatus));
         } else {
           console.error("구독 목록이 배열이 아닙니다.");
         }
@@ -72,7 +78,7 @@ const FeedPage = () => {
     };
 
     setSubscriptions(updatedSubscriptions);
-    localStorage.setItem('subscriptions', JSON.stringify(updatedSubscriptions));
+    localStorage.setItem("subscriptions", JSON.stringify(updatedSubscriptions));
 
     // 알림 전송
     try {
@@ -88,7 +94,11 @@ const FeedPage = () => {
     setIsModalOpen(true);
   };
 
-  const { data: postsWithUserDetails, isLoading, isError } = usePostsWithUserDetails();
+  const {
+    data: postsWithUserDetails,
+    isLoading,
+    isError,
+  } = usePostsWithUserDetails();
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -98,14 +108,23 @@ const FeedPage = () => {
     return <div>Error loading posts</div>;
   }
 
-  const safePosts = Array.isArray(postsWithUserDetails) ? postsWithUserDetails : [];
+  const safePosts = Array.isArray(postsWithUserDetails)
+    ? postsWithUserDetails
+    : [];
+
+  // Filter posts based on search query
+  const filteredPosts = safePosts.filter(({ posting }) => {
+    const tags = posting.tags.split(" "); // Split tags based on space
+    return tags.some((tag) => tag.includes(searchQuery.trim())); // Check if any tag includes the search query
+  });
 
   const latestPostsMap = new Map();
 
-  safePosts.forEach(({ posting }) => {
+  filteredPosts.forEach(({ posting }) => {
     if (
       !latestPostsMap.has(posting.userId) ||
-      new Date(posting.writeday) > new Date(latestPostsMap.get(posting.userId).writeday)
+      new Date(posting.writeday) >
+        new Date(latestPostsMap.get(posting.userId).writeday)
     ) {
       latestPostsMap.set(posting.userId, {
         ...posting,
@@ -119,7 +138,7 @@ const FeedPage = () => {
     (a, b) => new Date(b.writeday) - new Date(a.writeday)
   );
 
-  const sortedPosts = safePosts.sort(
+  const sortedPosts = filteredPosts.sort(
     (a, b) => new Date(b.posting.writeday) - new Date(a.posting.writeday)
   );
 
@@ -127,6 +146,14 @@ const FeedPage = () => {
     <main className="flex flex-col items-center px-6 pt-5 pb-20 mx-auto w-full max-w-[390px] h-auto">
       <MenuNavigate option="커뮤니티" previousPage="/" />
       <Profile profiles={sortedProfiles} />
+      {/* Search input for tags */}
+      <input
+        type="text"
+        placeholder="검색할 태그를 입력해주세요."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="mb-4 p-2 border border-gray-300 rounded w-full"
+      />
       {sortedPosts.length > 0 ? (
         sortedPosts.map(({ posting, userProfile, userName }) => (
           <div key={posting.posting_id} className="mb-6">
