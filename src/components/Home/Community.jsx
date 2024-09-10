@@ -16,22 +16,25 @@ const Community = () => {
   // usePostsWithUserDetails 훅을 사용하여 게시물 데이터를 가져옵니다.
   const { data: posts = [], isLoading, isError } = usePostsWithUserDetails();
   const [recommendationData, setRecommendationData] = useState([]); // 추천 데이터를 위한 상태
+  const [hasError, setHasError] = useState(false); // 오류 상태를 관리하는 상태
 
   // 사용자 기반 추천 데이터를 불러오는 useEffect
   useEffect(() => {
     const fetchRecommendations = async () => {
       try {
         const recommendations = await fetchUserRecommendations(userId); // 사용자 추천 데이터를 불러옴
-        setRecommendationData(recommendations); // 추천 데이터를 상태로 저장
+        setRecommendationData(recommendations || []); // 추천 데이터를 상태로 저장
       } catch (error) {
-        console.error("사용자 추천 데이터를 불러오는 중 오류가 발생했습니다:", error);
+        //console.error("사용자 추천 데이터를 불러오는 중 오류가 발생했습니다:", error);
+        setHasError(true); // 오류 발생 시 에러 상태를 true로 설정
       }
     };
+
     if (userId) {
       fetchRecommendations(); // userId가 있을 때만 추천 데이터를 가져옴
     }
   }, [userId]);
-  console.log("recommendationData : ", recommendationData);
+  //console.log("recommendationData : ", recommendationData);
 
   // 데이터 로딩 중이거나 오류 발생 시 처리
   if (isLoading) return <div>Loading...</div>;
@@ -53,6 +56,61 @@ const Community = () => {
     recommendationData.includes(post.posting.postingId)
   );
 
+  //   return (
+  //     <section className="self-stretch h-[350px]">
+  //       <div className="flex gap-5 justify-between whitespace-nowrap">
+  //         <h2 className="text-lg font-semibold tracking-tight text-gray-900">
+  //           오늘 뭐 먹지~?
+  //         </h2>
+  //         <div
+  //           className="text-sm tracking-tight text-neutral-500 underline cursor-pointer"
+  //           onClick={() => navigate("/community/feed")}
+  //         >
+  //           전체보기
+  //         </div>
+  //       </div>
+  //       <div className="mt-4 flex space-x-2 flex w-auto h-max-[340px] mt-1 rounded-lg overflow-x-auto scrollbar-hide">
+  //         {/* {randomPosts.length > 0 ? (
+  //           randomPosts.map(({ posting }) => {
+  //             // Date 객체를 사용하여 날짜 포맷팅
+  //             const date = new Date(posting.writeday);
+  //             const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  //              */}
+  //         {recommendedPosts.length > 0 ? (
+  //           recommendedPosts.map(({ posting }) => {
+  //             const date = new Date(posting.writeday);
+  //             const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+
+  //             return (
+  //               <div className="bg-[#EEEFE5] auto-slide-left rounded-xl">
+  //               <div
+  //                   key={posting.postingId}
+  //                   className="min-w-52 h-100"
+  //                   onClick={() => communityDetail(posting.postingId)}
+  //               >
+  //                 <div className="flex flex-col items-center p-2.5">
+  //                   <img src={posting.thumbnail} className="w-full h-40 rounded-xl"/>
+  //                   <div className="line-clamp-2 pl-2 pr-2 pt-1 font-bold text-[#807D72]">{posting.title}</div>
+  //                   <div className="flex items-start w-full p-2 font-normal text-[12px] text-[#767676]">
+  //                     {formattedDate}
+  //                   </div>
+  //                 </div>
+  //               </div>
+  //               </div>
+  //           );
+  //         })
+  //       ) : hasError || recommendationData.length === 0 ? (
+  //         <div className="flex flex-col items-center mt-12">
+  //           <img src="/assets/basket.png" alt="No Data" className="w-60 h-60" />
+  //         </div>
+  //       ) : (
+  //           <div>No posts available</div>
+  //       )}
+  //       </div>
+  //     </section>
+  //   );
+  // };
+
   return (
     <section className="self-stretch h-[350px]">
       <div className="flex gap-5 justify-between whitespace-nowrap">
@@ -67,38 +125,35 @@ const Community = () => {
         </div>
       </div>
       <div className="mt-4 flex space-x-2 flex w-auto h-max-[340px] mt-1 rounded-lg overflow-x-auto scrollbar-hide">
-        {/* {randomPosts.length > 0 ? (
-          randomPosts.map(({ posting }) => {
-            // Date 객체를 사용하여 날짜 포맷팅
-            const date = new Date(posting.writeday);
-            const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-             */}
         {recommendedPosts.length > 0 ? (
           recommendedPosts.map(({ posting }) => {
             const date = new Date(posting.writeday);
             const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
             return (
-              <div className="bg-[#EEEFE5] auto-slide-left rounded-xl">
-              <div
-                  key={posting.postingId}
+              <div className="bg-[#EEEFE5] auto-slide-left rounded-xl" key={posting.postingId}>
+                <div
                   className="min-w-52 h-100"
                   onClick={() => communityDetail(posting.postingId)}
-              >
-                <div className="flex flex-col items-center p-2.5">
-                  <img src={posting.thumbnail} className="w-full h-40 rounded-xl"/>
-                  <div className="line-clamp-2 pl-2 pr-2 pt-1 font-bold text-[#807D72]">{posting.title}</div>
-                  <div className="flex items-start w-full p-2 font-normal text-[12px] text-[#767676]">
-                    {formattedDate}
+                >
+                  <div className="flex flex-col items-center p-2.5">
+                    <img src={posting.thumbnail} className="w-full h-40 rounded-xl" />
+                    <div className="line-clamp-2 pl-2 pr-2 pt-1 font-bold text-[#807D72]">{posting.title}</div>
+                    <div className="flex items-start w-full p-2 font-normal text-[12px] text-[#767676]">
+                      {formattedDate}
+                    </div>
                   </div>
                 </div>
               </div>
-              </div>
-          );
-        })
-      ) : (
+            );
+          })
+        ) : hasError || recommendationData.length === 0 ? (
+          <div className="flex flex-col items-center mt-12">
+            <img src="/assets/basket.png" alt="No Data" className="w-60 h-60" />
+          </div>
+        ) : (
           <div>No posts available</div>
-      )}
+        )}
       </div>
     </section>
   );

@@ -105,7 +105,7 @@ const FeedMenu = ({ postingId }) => {
       //console.log(encodeURIComponent(authorId));
 
       //알림 전송 //좋아요
-      if (!localFavoriteStatus) {
+      if (!localFavoriteStatus && (userId !== authorId)) {
         try {
           await axios.post(
             `${import.meta.env.VITE_ALERT_IP}/checkLikeNotification`,

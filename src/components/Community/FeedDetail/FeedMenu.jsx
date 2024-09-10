@@ -30,6 +30,7 @@ const FeedMenu = ({ postingId, userName }) => {
 
   const { data: postDetail } = useDetailPost(postingId);
   const authorId = postDetail?.posting?.userId || null;
+  const title = postDetail?.posting?.title || null;
 
   useEffect(() => {
     if (favoriteData !== undefined) {
@@ -48,7 +49,7 @@ const FeedMenu = ({ postingId, userName }) => {
       refetchFavoritesCount();
 
       //알림 전송 //좋아요
-      if (!localFavoriteStatus) {
+      if (!localFavoriteStatus && (userId !== authorId)) {
         try {
           await axios.post(`${import.meta.env.VITE_ALERT_IP}/checkLikeNotification`, {
             sender: encodeURIComponent(userId),
