@@ -6,7 +6,7 @@ const FeedTitle = ({ title, thumbnail }) => {
 
   return (
     <div className="w-[342px] flex flex-col justify-center items-center">
-      <div className="items-centerself-stretch my-[14px] text-[15px] font-medium ">
+      <div className="items-centerself-stretch my-[14px] text-3xl font-bold ">
         {title}
       </div>
       <div className="flex justify-center items-center w-[390px]">
