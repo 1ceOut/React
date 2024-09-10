@@ -79,7 +79,6 @@ const TalkDetail = () => {
         connect();
         fetchMessages();
         fetchAnnouncement(); // 공지사항 불러오기
-        return;
     }, []);
 
     const chatEndRef = useRef(null);
@@ -137,9 +136,20 @@ const TalkDetail = () => {
             withCredentials: true
         })
             .then((response) => {
-                setAnnouncement(response.data.announcement); // 저장된 공지사항 세팅
+                if(response.data.announcement) {
+                    setAnnouncement(response.data.announcement);
+                } else {
+                    setAnnouncement("No announcement yet");
+                }
             })
-            .catch((error) => console.error("Failed to fetch announcement.", error));
+            .catch((error) => {
+                if (error.response && error.response.status === 404) {
+                    console.log("No announcement found.");
+                    setAnnouncement("No announcement yet"); // 공지사항이 없을 때 기본 값 설정
+                } else {
+                    console.error("Failed to fetch announcement.", error);
+                }
+            });
     };
 
 

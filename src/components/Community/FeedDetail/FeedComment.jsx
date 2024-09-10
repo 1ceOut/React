@@ -103,7 +103,12 @@ const FeedComment = ({ postingId }) => {
             className="my-5 cursor-pointer flex justify-start"
             onClick={handleClick}
           >
-            관련성 높은 댓글
+            댓글 필터링 :{" "}
+            {selectedFilter === "latest"
+              ? "최신순"
+              : selectedFilter === "difficulty"
+              ? "난이도순"
+              : "베스트순"}
             <img
               src="/assets/downarrow.png"
               alt="아래방향"

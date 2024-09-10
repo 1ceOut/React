@@ -105,7 +105,7 @@ const FeedMenu = ({ postingId }) => {
       //console.log(encodeURIComponent(authorId));
 
       //알림 전송 //좋아요
-      if (!localFavoriteStatus) {
+      if (!localFavoriteStatus && (userId !== authorId)) {
         try {
           await axios.post(
             `${import.meta.env.VITE_ALERT_IP}/checkLikeNotification`,
@@ -264,7 +264,12 @@ const FeedMenu = ({ postingId }) => {
                 className="my-5 cursor-pointer flex bg-white z-10 w-full px-4"
                 onClick={openFilterModal}
               >
-                관련성 높은 댓글
+                댓글 필터링 :{" "}
+                {selectedFilter === "latest"
+                  ? "최신순"
+                  : selectedFilter === "difficulty"
+                  ? "난이도순"
+                  : "베스트순"}
                 <img
                   src="/assets/downarrow.png"
                   alt="아래방향"
@@ -360,7 +365,7 @@ const FeedMenu = ({ postingId }) => {
               <div className="flex justify-center items-center w-full mb-4">
                 <button
                   onClick={showHidden}
-                  className="px-4 py-2 w-[342px] h-12 bg-gray-300 rounded-lg"
+                  className="px-4 py-2 w-[342px] h-12 bg-blue-500 text-white rounded-lg"
                   disabled={!isLogin}
                 >
                   댓글 달기

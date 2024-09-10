@@ -48,8 +48,8 @@ const store = (set, get) => ({
         set({ foodExpirationNotifications: expirationNotifications });
     },
 
-    AddinfoSuccessStatus : () =>{
-        set({userRole:"ROLE_USER"})
+    AddinfoSuccessStatus: () => {
+        set({ userRole: "ROLE_USER" })
     },
 
     initialize: () => {
@@ -96,7 +96,6 @@ const store = (set, get) => ({
             const hasUnreadResponse = await axios.get(`${import.meta.env.VITE_ALERT_IP}/hasUnread/${encodedUserId}`);
             const notificationsResponse = await axios.get(`${import.meta.env.VITE_ALERT_IP}/getNotification/${encodedUserId}`);
             const foodExpirationNotifications = notificationsResponse.data.filter(n => n.alerttype === '유통기한 임박');
-
 
             set({
                 isLogin: true,

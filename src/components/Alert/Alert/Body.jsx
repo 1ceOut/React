@@ -18,35 +18,41 @@ const Body = () => {
         const fetchUserInfos = async () => {
             const promises = notifications.map(async (notification) => {
                 try {
-                    const decodedSender = decodeURIComponent(notification.sender);  // 디코딩 수행
-                    //console.log("notification.sender : ", notification.sender);
-                    //console.log("decodedSender : ", decodedSender);
-                    const response = await axios.get(
-                        `https://api.icebuckwheat.kro.kr/api/login/getuser`,
-                        {
-                            params: {
-                                //user_id: notification.sender, // notification.sender 값으로 사용자 정보를 요청
-                                user_id: decodedSender, // decodedSender 값으로 사용자 정보를 요청
-                            },
-                        }
-                    );
-                    return { sender: notification.sender, userInfo: response.data };
+                    if (notification.alerttype === '유통기한 임박') {
+                        // 유통기한 임박일 경우 사용자 정보 API 호출을 건너뜀
+                        return { sender: notification.sender, userInfo: null };
+                    } else {
+                        const decodedSender = decodeURIComponent(notification.sender);
+                        const response = await axios.get(
+                            `https://api.icebuckwheat.kro.kr/api/login/getuser`,
+                            {
+                                params: {
+                                    user_id: decodedSender,
+                                },
+                            }
+                        );
+                        return { sender: notification.sender, userInfo: response.data };
+                    }
                 } catch (error) {
-                    console.error(`Failed to fetch user info for sender: ${notification.sender}`, error);
+                    console.error(`Failed to fetch data for sender: ${notification.sender}`, error);
                     return { sender: notification.sender, userInfo: null };
                 }
             });
+    
             const userInfoArray = await Promise.all(promises);
             const newUserInfoMap = userInfoArray.reduce((map, { sender, userInfo }) => {
                 map[sender] = userInfo;
                 return map;
             }, {});
+    
             setUserInfoMap(newUserInfoMap);
         };
+    
         if (notifications.length > 0) {
             fetchUserInfos();
         }
     }, [notifications]);
+    
 
     //알림의 senderrefri 값을 기반으로 냉장고 이름을 API로부터 가져옴
     useEffect(() => {
@@ -98,7 +104,12 @@ const Body = () => {
                                 },
                             }
                         );
-                        return { sender: notification.sender, foodInfo: response.data[0] }; // API 응답에서 첫 번째 데이터 사용
+                        const foodData = response.data[0]; 
+                        return { sender: notification.sender, 
+                            foodInfo: {
+                                productName: foodData.productName, // productName 가져오기
+                                lcategory: foodData.lcategory // lcategory 가져오기
+                            } }; // API 응답에서 첫 번째 데이터 사용
                     } catch (error) {
                         console.error(`Failed to fetch food info for food_id: ${notification.sender}`, error);
                         return { sender: notification.sender, foodInfo: null };
@@ -119,6 +130,7 @@ const Body = () => {
             fetchFoodInfos();
         }
     }, [notifications]);
+    
     const updateHasUnread = (updatedNotifications) => {
         const hasUnread = updatedNotifications.some(notification => !notification.alertcheck);
         setHasUnread(hasUnread);
@@ -233,9 +245,22 @@ const Body = () => {
                 titleText = `${userName}님이 ${refriName}냉장고에 공지를 남겼어요.`;
                 break;
             case '유통기한 임박':
-                imgSrc = getCategoryImage(foodInfo.lcategory);
-                statusText = `D-${notification.memo}`;
-                titleText = `${foodInfo.productName}의 유통기한이 임박했어요.`;
+                if (foodInfo) { // foodInfo가 있는 경우만 처리
+                    imgSrc = getCategoryImage(foodInfo.lcategory); 
+                    // notification.memo가 음수일 경우 "유통기한이 지났어요"로 출력
+                    if (parseInt(notification.memo, 10) < 0) {
+                        statusText = '유통기한이 지났어요';
+                        titleText = `${foodInfo.productName}의 유통기한이 지났어요.`;
+                    } else {
+                        statusText = `D-${notification.memo}`;
+                        titleText = `${foodInfo.productName}의 유통기한이 임박했어요.`;
+                    }
+                } else {
+                    // foodInfo가 없을 때 기본값 설정
+                    imgSrc = getCategoryImage('default');
+                    statusText = '유통기한 정보 없음';
+                    titleText = '알 수 없는 상품의 유통기한이 임박했어요.';
+                }
                 break;
             case '포스팅 작성':
                 imgSrc = userInfo ? userInfo.photo : "default-profile.png";

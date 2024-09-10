@@ -117,39 +117,43 @@ const CreateFeed = () => {
           />
         </label>
       </div>
+      <div className="mb-4 mt-8 font-bold text-xl">제목</div>
       <div className="self-stretch border bg-white rounded-[12px] w-[342px] flex justify-center items-center mt-4">
         <textarea
           id="title"
           name="title"
           type="text"
           placeholder="30글자 이내로 제목을 입력해 주세요"
-          className="block outline-none w-[302px] h-14 text-gray-900 placeholder:text-[#A8A8A8] bg-[]"
+          className="block outline-none w-[302px] h-14 text-gray-900 p-4 placeholder:text-[#A8A8A8] bg-[]"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
       </div>
-      <div className="self-stretch border bg-white rounded-[12px] w-[342px] h-[300px] flex justify-center my-8">
+      <div className="mb-4 mt-8 font-bold text-xl">내용</div>
+      <div className="self-stretch border bg-white rounded-[12px] w-[342px] h-[300px] flex justify-center">
         <textarea
           id="content"
           name="content"
           placeholder="컨텐츠를 적어주세요."
-          className="block outline-none w-[302px] h-[300px] p-4 text-gray-900 placeholder:text-[#A8A8A8] resize-none"
+          className="block outline-none w-[302px] h-[298px] p-4 text-gray-900 placeholder:text-[#A8A8A8] resize-none"
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
       </div>
+      <div className="mb-4 mt-8 font-bold text-xl">태그</div>
       <div className="self-stretch border bg-white rounded-[12px] w-[342px] flex justify-center items-center mt-4">
         <textarea
           id="tag"
           name="tag"
           type="text"
-          placeholder="# 해시테그"
-          className="block outline-none w-[302px] h-14 text-gray-900 placeholder:text-[#A8A8A8]"
+          placeholder="# 해시태그"
+          className="block outline-none w-[302px] h-14 p-4 text-gray-900 placeholder:text-[#A8A8A8]"
           value={tag}
           onChange={(e) => setTag(e.target.value)}
         />
       </div>
-      <div className="self-stretch border bg-white rounded-[12px] w-[342px] p-4 my-8">
+      <div className="mb-4 mt-8 font-bold text-xl">조리 순서</div>
+      <div className="self-stretch border bg-white rounded-[12px] w-[342px] p-4 mb-8">
         <textarea
           id="step-description"
           name="step-description"
@@ -159,24 +163,26 @@ const CreateFeed = () => {
           value={stepDescription}
           onChange={(e) => setStepDescription(e.target.value)}
         />
-        <input
-          id="step-image"
-          name="step-image"
-          type="file"
-          accept="image/*"
-          onChange={handleStepImageChange}
-          className="block mb-4"
-        />
-        {stepImage && (
-          <img
-            src={stepImage}
-            alt="Step Preview"
-            className="w-16 h-16 object-cover mb-2"
+        <div className="flex items-center justify-between mb-4">
+          <input
+            id="step-image"
+            name="step-image"
+            type="file"
+            accept="image/*"
+            onChange={handleStepImageChange}
+            className="mr-4 max-w-[200px]"
           />
-        )}
+          {stepImage && (
+            <img
+              src={stepImage}
+              alt="Step Preview"
+              className="w-16 h-16 object-cover"
+            />
+          )}
+        </div>
         <button
           type="button"
-          className="bg-blue-500 text-white rounded px-4 py-2"
+          className="bg-blue-500 text-white w-full rounded px-4 py-2"
           onClick={handleAddStep}
         >
           Add Step
@@ -184,8 +190,13 @@ const CreateFeed = () => {
         <div className="mt-4">
           {steps.map((s, index) => (
             <div key={index} className="border rounded p-2 mb-2">
-              <div className="flex items-start mb-2">
-                <span className="flex-1">{`Step ${index + 1}: ${s.description}`}</span>
+              <div className="flex justify-center items-end mb-2">
+                <span className="flex-1 text-xl font-bold max-w-5">{`${
+                  index + 1
+                }.`}</span>
+                <span className="flex-1 items-center justify-center">
+                  {s.description}
+                </span>
                 {s.image && (
                   <img
                     src={s.image}
@@ -206,9 +217,8 @@ const CreateFeed = () => {
         </div>
       </div>
       <div
-        className={`flex text-[#868686] rounded-xl self-stretch justify-center items-center w-[342px] mt-5 h-14 cursor-pointer ${
-          isEnabled ? "bg-blue-500 text-white" : "bg-[#D1D1D1]"
-        }`}
+        className={`flex text-[#868686] rounded-xl self-stretch justify-center items-center w-[342px] mt-5 h-14 cursor-pointer ${isEnabled ? "bg-blue-500 text-white" : "bg-[#D1D1D1]"
+          }`}
         onClick={isEnabled ? handleSubmit : undefined}
       >
         게시하기
