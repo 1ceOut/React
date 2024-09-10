@@ -29,8 +29,8 @@ import FoodList from "./Pages/Refrigerator/food/FoodList.jsx";
 import MyFridge from "./Pages/Refrigerator/food/MyFridge.jsx";
 import TalkList from "./Pages/Talk/TalkList.jsx";
 import TalkDetail from "./Pages/Talk/TalkDetail.jsx";
-import ShoppingHome from "./Pages/Shopping/ShoppingHome.jsx";
-import ShoppingDetail from "./Pages/Shopping/ShoppingDetail.jsx";
+import ShoppingHomePage from "./Pages/Shopping/ShoppingHomePage.jsx";
+import ShoppingDetailPage from "./Pages/Shopping/ShoppingDetailPage.jsx";
 import AddFridge from "./Pages/Refrigerator/food/AddFridge.jsx";
 import Barcode from "./Pages/Refrigerator/food/Barocde.jsx";
 import AddInput2 from "./Pages/Refrigerator/food/AddInput2.jsx";
@@ -123,8 +123,8 @@ const Router = () => {
                     <Route path="Talk/TalkDetail" element={<TalkDetail/>}/>
 
                     {/* 쇼핑 */}
-                    <Route path="Shop/home" element={<ShoppingHome/>}/>
-                    <Route path="Shop/detail" element={<ShoppingDetail/>}/>
+                    <Route path="Shop/home" element={<ShoppingHomePage/>}/>
+                    <Route path="Shop/detail" element={<ShoppingDetailPage/>}/>
                     {/* 검색 */}
                     <Route path="search/search" element={<SearchPage/>}/>
 

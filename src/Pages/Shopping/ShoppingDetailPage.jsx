@@ -3,7 +3,7 @@ import BarNavigate from "../../components/Common/BarNavigate";
 import MenuNavigate from "../../components/Common/MenuNavigate";
 import DetailMainContent from "../../components/Shopping/DetailMainContent";
 
-const ShoppingDetail=()=>{
+const ShoppingDetailPage=()=>{
 
     const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -19,7 +19,7 @@ const ShoppingDetail=()=>{
 
     return(
         <main className={`${animationClass} flex flex-col items-center px-6 pt-5 pb-5 mx-auto w-full max-w-[390px] max-h-[844px]`}>
-            <MenuNavigate option={"식재료 추천"} alertPath="/addinfo/habit" />
+            <MenuNavigate option={"식재료 검색"} alertPath="/addinfo/habit" />
             <DetailMainContent setIsModalVisible={setIsModalVisible} />
             <div className={`w-full ${isModalVisible ? 'opacity-0' : ''}`}>
                 <BarNavigate 
@@ -31,4 +31,4 @@ const ShoppingDetail=()=>{
         </main>
     )
 }
-export default ShoppingDetail;
+export default ShoppingDetailPage;

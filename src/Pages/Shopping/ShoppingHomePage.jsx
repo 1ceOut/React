@@ -10,7 +10,7 @@ import LoadingBar from "../../components/Login/LoadingBar.jsx";
 import dummyListData from "../../testdata/shopingdata.json";
 import dummyBannerData from "../../testdata/banner.json";
 
-const ShoppingHome = () => {
+const ShoppingHomePage = () => {
   const {
     data: storedata,
     isLoading,
@@ -22,6 +22,7 @@ const ShoppingHome = () => {
     cacheTime: 86400000,
     refetchOnReconnect: true,
     meta: { persist: true },
+    initialData: dummyListData
   });
 
   const { data: bannerdata } = useQuery({
@@ -31,6 +32,7 @@ const ShoppingHome = () => {
     cacheTime: 86400000,
     refetchOnReconnect: true,
     meta: { persist: true },
+    initialData: dummyBannerData
   });
 
   const [animationClass, setAnimationClass] = useState("animate-slideInUp");
@@ -88,9 +90,6 @@ const ShoppingHome = () => {
       <HomeTopContent
         headerData={bannerdata?.length === 0 ? dummyBannerData : bannerdata}
       />
-      {userName === "" ? null : (
-        <HomeMainContent options={"user"} data={userList.slice(0, 20)} />
-      )}
       <HomeMainContent options={"best"} data={best_list.slice(0, 20)} />
       <HomeMainContent options={"discount"} data={discount_list.slice(0, 20)} />
       <HomeMainContent options={"reviews"} data={review_list.slice(0, 20)} />
@@ -99,4 +98,4 @@ const ShoppingHome = () => {
   );
 };
 
-export default ShoppingHome;
+export default ShoppingHomePage;
