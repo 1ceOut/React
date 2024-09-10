@@ -89,6 +89,12 @@ const CreateFeed = () => {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleAddStep();
+    }
+  };
+
   return (
     <div className="self-stretch">
       <div className="flex justify-center items-center mb-8">
@@ -162,6 +168,7 @@ const CreateFeed = () => {
           className="block outline-none w-full h-12 text-gray-900 placeholder:text-[#A8A8A8] mb-4"
           value={stepDescription}
           onChange={(e) => setStepDescription(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
         <div className="flex items-center justify-between mb-4">
           <input
@@ -190,21 +197,17 @@ const CreateFeed = () => {
         <div className="mt-4">
           {steps.map((s, index) => (
             <div key={index} className="border rounded p-2 mb-2">
-              <div className="flex justify-center items-end mb-2">
-                <span className="flex-1 text-xl font-bold max-w-5">{`${
-                  index + 1
-                }.`}</span>
-                <span className="flex-1 items-center justify-center">
-                  {s.description}
-                </span>
-                {s.image && (
-                  <img
-                    src={s.image}
-                    alt={`Step ${index + 1}`}
-                    className="w-16 h-16 object-cover ml-2"
-                  />
-                )}
+              <div className="flex flex-col items-start mb-2">
+                <span className="text-xl font-bold">{`${index + 1}.`}</span>
+                <span className="mt-2">{s.description}</span>
               </div>
+              {s.image && (
+                <img
+                  src={s.image}
+                  alt={`Step ${index + 1}`}
+                  className="w-16 h-16 object-cover mt-2"
+                />
+              )}
               <button
                 type="button"
                 className="text-red-500 w-full mt-2"
@@ -217,8 +220,9 @@ const CreateFeed = () => {
         </div>
       </div>
       <div
-        className={`flex text-[#868686] rounded-xl self-stretch justify-center items-center w-[342px] mt-5 h-14 cursor-pointer ${isEnabled ? "bg-blue-500 text-white" : "bg-[#D1D1D1]"
-          }`}
+        className={`flex text-[#868686] rounded-xl self-stretch justify-center items-center w-[342px] mt-5 h-14 cursor-pointer ${
+          isEnabled ? "bg-blue-500 text-white" : "bg-[#D1D1D1]"
+        }`}
         onClick={isEnabled ? handleSubmit : undefined}
       >
         게시하기

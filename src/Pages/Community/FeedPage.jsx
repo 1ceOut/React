@@ -13,6 +13,7 @@ import {
 } from "../../query/FeedQuery";
 import useUserStore from "../../store/useUserStore.js";
 import axios from "axios";
+import { FaSearch } from "react-icons/fa";
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -112,10 +113,9 @@ const FeedPage = () => {
     ? postsWithUserDetails
     : [];
 
-  // Filter posts based on search query
   const filteredPosts = safePosts.filter(({ posting }) => {
-    const tags = posting.tags.split(" "); // Split tags based on space
-    return tags.some((tag) => tag.includes(searchQuery.trim())); // Check if any tag includes the search query
+    const tags = posting.tags.split(" ");
+    return tags.some((tag) => tag.includes(searchQuery.trim()));
   });
 
   const latestPostsMap = new Map();
@@ -146,14 +146,17 @@ const FeedPage = () => {
     <main className="flex flex-col items-center px-6 pt-5 pb-20 mx-auto w-full max-w-[390px] h-auto">
       <MenuNavigate option="커뮤니티" previousPage="/" />
       <Profile profiles={sortedProfiles} />
-      {/* Search input for tags */}
-      <input
-        type="text"
-        placeholder="검색할 태그를 입력해주세요."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="mb-4 p-2 border border-gray-300 rounded w-full"
-      />
+      <div className="border border-black w-full p-2 mb-4 rounded flex">
+        <div className="flex justify-center items-center">
+          <FaSearch />
+        </div>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full outline-none ml-2"
+        />
+      </div>
       {sortedPosts.length > 0 ? (
         sortedPosts.map(({ posting, userProfile, userName }) => (
           <div key={posting.posting_id} className="mb-6">
