@@ -22,7 +22,7 @@ const SearchPage = () => {
     <main
       className={`${animationClass} flex flex-col ${
         isCentered ? "justify-center items-center" : ""
-      } px-6 pt-5 pb-32 mx-auto w-full max-w-[390px] min-h-[844px] h-auto relative`}
+      } px-6 pt-5 pb-32 mx-auto w-full max-w-[390px] min-h-[844px] h-auto relative bg-[#EBF9FF]`}
     >
       <SearchForm onSearch={handleSearch} />
       <BarNavigate
