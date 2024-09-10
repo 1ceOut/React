@@ -138,7 +138,7 @@ const Body = () => {
         setHasUnread(hasUnread);
     };
 
-    const handleMarkAsRead = async (alert_id, recipeposting, alerttype, sender) => {
+    const handleMarkAsRead = async (alert_id, recipeposting, alerttype, sender, userName) => {
         const notification = notifications.find(n => n.alert_id === alert_id);
     
         // 이미 읽음 처리된 알림이면 읽기 처리하지 않음
@@ -156,7 +156,7 @@ const Body = () => {
                 navigate('/fridge/fridgemanage');
             } else if (alerttype === '방송 시작') {
                 // 방송 룸으로 이동
-                navigate(`/liveroom/${sender}`);
+                navigate(`/liveroom/${encodeURIComponent(sender)}/${userName}`);
             } else if (alerttype === '유통기한 임박') {
                 try {
                     const response = await axios.get(
@@ -196,7 +196,7 @@ const Body = () => {
                     navigate(`/fridge/fridgemanage/`);
                 } else if (alerttype === '방송 시작') {
                     // 방송 룸으로 이동
-                    navigate(`/liveroom/${sender}/`);
+                    navigate(`/liveroom/${encodeURIComponent(sender)}/${userName}`);
                 } else if (alerttype === '유통기한 임박') {
                     try {
                         const response = await axios.get(
@@ -365,7 +365,7 @@ const Body = () => {
                     </div>
                     <div
                         className={`flex-1 ${notification.alertcheck ? "text-gray-500" : "text-black"}`}
-                        onClick={() => handleMarkAsRead(notification.alert_id, notification.recipeposting, notification.alerttype, notification.sender)}
+                        onClick={() => handleMarkAsRead(notification.alert_id, notification.recipeposting, notification.alerttype, notification.sender, userName)}
                         style={{ cursor: "pointer" }}>
                         <div className="text-xs mb-1">
                             {statusText}
