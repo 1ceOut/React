@@ -98,7 +98,12 @@ const Body = () => {
                                 },
                             }
                         );
-                        return { sender: notification.sender, foodInfo: response.data[0] }; // API 응답에서 첫 번째 데이터 사용
+                        const foodData = response.data[0]; 
+                        return { sender: notification.sender, 
+                            foodInfo: {
+                                productName: foodData.productName, // productName 가져오기
+                                lcategory: foodData.lcategory // lcategory 가져오기
+                            } }; // API 응답에서 첫 번째 데이터 사용
                     } catch (error) {
                         console.error(`Failed to fetch food info for food_id: ${notification.sender}`, error);
                         return { sender: notification.sender, foodInfo: null };
@@ -233,9 +238,19 @@ const Body = () => {
                 titleText = `${userName}님이 ${refriName}냉장고에 공지를 남겼어요.`;
                 break;
             case '유통기한 임박':
-                imgSrc = getCategoryImage(foodInfo.lcategory);
-                statusText = `D-${notification.memo}`;
-                titleText = `${foodInfo.productName}의 유통기한이 임박했어요.`;
+                // imgSrc = getCategoryImage(foodInfo.lcategory);
+                // statusText = `D-${notification.memo}`;
+                // titleText = `${foodInfo.productName}의 유통기한이 임박했어요.`;   
+                if (foodInfo) { // foodInfo가 있는 경우만 처리
+                    imgSrc = getCategoryImage(foodInfo.lcategory);
+                    statusText = `D-${notification.memo}`;
+                    titleText = `${foodInfo.productName}의 유통기한이 임박했어요.`;
+                } else {
+                    // foodInfo가 없을 때 기본값 설정
+                    imgSrc = getCategoryImage('default');
+                    statusText = '유통기한 정보 없음';
+                    titleText = '알 수 없는 상품의 유통기한이 임박했어요.';
+                }
                 break;
             case '포스팅 작성':
                 imgSrc = userInfo ? userInfo.photo : "default-profile.png";

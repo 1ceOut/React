@@ -38,7 +38,7 @@ const AnnouncementModal = ({ onRefri, isOpen, onClose, refreshAnnouncement }) =>
     // 새로운 공지 알림을 전송하는 함수
     const sendNewChattingMasterNotification = async () => {
         try {
-            await axiosApi.post(`${import.meta.env.VITE_ALERT_IP}/api/newChattingMaster`, {
+            await axiosApi.post(`${import.meta.env.VITE_ALERT_IP}/newChattingMaster`, {
                 sender: null,  // 공지사항을 설정한 사용자
                 senderrefri: onRefri, // 현재 냉장고(채팅방) ID
                 memo: newAnnouncement,

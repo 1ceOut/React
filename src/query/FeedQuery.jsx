@@ -229,26 +229,26 @@ export const useDeletePost = () => {
     onSuccess: async (data, variables) => {
       queryClient.invalidateQueries(["postsWithUser"]);
 
-      console.log("userId : ", variables.userId);
-      console.log("encodeURIComponent(userId) : ", encodeURIComponent(variables.userId));
-      console.log("data : ", data);
-      console.log("title : ", variables.title);
-      try {
-        // await axios.post(
-        //   `${import.meta.env.VITE_ALERT_IP}/deletePostingNotifications`,  // 백엔드에서 알림 삭제 처리할 엔드포인트
-        //   {
-        //     recipeposting: variables.postingId,
-        //   },
-        //   {
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     },
-        //   }
-        // );
-        //console.log("알림 삭제 성공");
-      } catch (error) {
-        //console.error("알림 삭제 중 오류 발생:", error);
-      }
+      // console.log("userId : ", variables.userId);
+      // console.log("encodeURIComponent(userId) : ", encodeURIComponent(variables.userId));
+      // console.log("data : ", data);
+      // console.log("title : ", variables.title);
+      // try {
+      // await axios.post(
+      //   `${import.meta.env.VITE_ALERT_IP}/deletePostingNotifications`,  // 백엔드에서 알림 삭제 처리할 엔드포인트
+      //   {
+      //     recipeposting: variables.postingId,
+      //   },
+      //   {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //   }
+      // );
+      //   //console.log("알림 삭제 성공");
+      // } catch (error) {
+      //   //console.error("알림 삭제 중 오류 발생:", error);
+      // }
     },
   });
 };
@@ -266,13 +266,13 @@ export const useUpdatePost = () => {
 //사용자 기반 레시피 추천. -> 이런 레시피는 어때요?
 export const fetchUserRecommendations = async (userId) => {
   try {
-      const response = await axios.post(`${import.meta.env.VITE_ALERT_IP}/matrixFactorizationRecommendations`, { 
-          userId : encodeURIComponent(userId),
-       });
-      return response.data;  // 추천된 postingId 리스트를 반환
+    const response = await axios.post(`${import.meta.env.VITE_ALERT_IP}/matrixFactorizationRecommendations`, {
+      userId: encodeURIComponent(userId),
+    });
+    return response.data;  // 추천된 postingId 리스트를 반환
   } catch (error) {
-      //console.error("추천 목록 요청 중 오류 발생:", error);
-      //throw error; 
+    //console.error("추천 목록 요청 중 오류 발생:", error);
+    //throw error; 
   }
 };
 

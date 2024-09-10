@@ -25,7 +25,7 @@ const HomeMainContent = ({options,data=[]}) => {
                 {
                     data.length===0? (
                         <div className="flex flex-col items-center mt-12 ml-3">
-                            <img style={{ width: 220, height: 220 }} className="ml-12" src='/assets/basket.png' alt='No data' />
+                            <img style={{ width: 220, height: 220 }} className="ml-12" src='/assets/basket.png' alt='No data' /> 
                             <p className="ml-12">추천 데이터가 없습니다.</p>
                         </div>
                     ) : (

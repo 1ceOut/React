@@ -27,7 +27,6 @@ const Community = () => {
         console.error("사용자 추천 데이터를 불러오는 중 오류가 발생했습니다:", error);
       }
     };
-
     if (userId) {
       fetchRecommendations(); // userId가 있을 때만 추천 데이터를 가져옴
     }
@@ -81,25 +80,25 @@ const Community = () => {
 
             return (
               <div className="bg-[#EEEFE5] auto-slide-left rounded-xl">
-                <div
+              <div
                   key={posting.postingId}
                   className="min-w-52 h-100"
                   onClick={() => communityDetail(posting.postingId)}
-                >
-                  <div className="flex flex-col items-center p-2.5">
-                    <img src={posting.thumbnail} className="w-full h-40 rounded-xl" />
-                    <div className="line-clamp-2 pl-2 pr-2 pt-1 font-bold text-[#807D72]">{posting.title}</div>
-                    <div className="flex items-start w-full p-2 font-normal text-[12px] text-[#767676]">
-                      {formattedDate}
-                    </div>
+              >
+                <div className="flex flex-col items-center p-2.5">
+                  <img src={posting.thumbnail} className="w-full h-40 rounded-xl"/>
+                  <div className="line-clamp-2 pl-2 pr-2 pt-1 font-bold text-[#807D72]">{posting.title}</div>
+                  <div className="flex items-start w-full p-2 font-normal text-[12px] text-[#767676]">
+                    {formattedDate}
                   </div>
                 </div>
               </div>
-            );
-          })
-        ) : (
+              </div>
+          );
+        })
+      ) : (
           <div>No posts available</div>
-        )}
+      )}
       </div>
     </section>
   );

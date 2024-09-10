@@ -39,7 +39,7 @@ const ShoppingHome = () => {
         return Number(a.price.replace(/[^\d]+/g, "")) - Number(b.price.replace(/[^\d]+/g, ""));
     }) : [];
 
-     const { userName } = useUserStore();
+    const { userName } = useUserStore();
 
     useEffect(() => {
         setAnimationClass('animate-slideInUp');

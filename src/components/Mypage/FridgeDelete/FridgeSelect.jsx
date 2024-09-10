@@ -30,7 +30,7 @@ const FridgeSelect = () => {
             const refrigeratorName = response.data; // 냉장고 이름
             //console.log(optionId);
             //console.log(refrigeratorName);
-
+            
             //2. 알림 전송 // 냉장고 삭제
             try {
                 await axios.post(`${import.meta.env.VITE_ALERT_IP}/deleteRefrigeratorNotification`, {
