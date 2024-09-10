@@ -58,12 +58,12 @@ const Alert = () => {
           <div className="w-[342px] h-[44px] mt-8">
             <div className="flex justify-between items-center">
               <div
-                className="flex justify-center items-center cursor-pointer"
+                className="flex justify-center items-center cursor-pointer text-sm"
                 onClick={handleClick} // 클릭 이벤트
               >
                 <img src="/assets/alert_icon.png" alt="알림" className="mr-3" />
                 {/* X개의 유통기한이 임박하거나 지난 오늘의 식재료 출력 */}
-                {`${expiredOrImminentCount}개의 유통기한이 임박하거나 지난 식재료가 오늘 있습니다`}
+                {`${expiredOrImminentCount}개의 유통기한에 주의해야 할 식재료가 있습니다.`}
               </div>
             </div>
           </div>
