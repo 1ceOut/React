@@ -49,6 +49,12 @@ const SearchForm = ({ onSearch }) => {
     console.log(response);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   const closePopup = () => {
     setShowPopup(false);
   };
@@ -60,7 +66,7 @@ const SearchForm = ({ onSearch }) => {
       } flex flex-col items-center `}
     >
       <div>
-      <img src="/assets/searchlogo.png"/>
+        <img src="/assets/searchlogo.png" />
       </div>
       <div
         className={`self-stretch h-14 flex justify-center items-center space-x-[14px]`}
@@ -70,6 +76,7 @@ const SearchForm = ({ onSearch }) => {
             type="text"
             value={inputValue}
             onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
             placeholder="검색어를 입력하세요"
             className="flex items-center justify-center rounded-xl px-5 w-full text-gray-900 outline-none"
           />
