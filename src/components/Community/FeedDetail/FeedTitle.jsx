@@ -5,16 +5,12 @@ const FeedTitle = ({ title, thumbnail }) => {
   console.log("FeedTitle Props - Thumbnail:", thumbnail);
 
   return (
-    <div className="w-[390px] flex flex-col justify-center items-center">
+    <div className="w-[342px] flex flex-col justify-center items-center">
       <div className="items-centerself-stretch my-[14px] text-[15px] font-medium ">
         {title}
       </div>
       <div className="flex justify-center items-center w-[390px]">
-        <img
-          src={thumbnail}
-          alt="Thumbnail"
-          className="w-[390px] h-auto"
-        />
+        <img src={thumbnail} alt="Thumbnail" className="w-[390px] h-auto" />
       </div>
     </div>
   );

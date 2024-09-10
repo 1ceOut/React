@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import useUserStore from "./../../store/useUserStore";
 import { Auto_Login } from "../../query/LoginQuery";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { IoChatbubbleSharp } from "react-icons/io5";
+import { IoNotifications } from "react-icons/io5";
 
 const MenuNavigate = ({ option, previousPage }) => {
   const { isLogin, userProfile, LoginSuccessStatus, hasUnread, notifications } =
@@ -23,16 +25,13 @@ const MenuNavigate = ({ option, previousPage }) => {
   const chatNavigation = () => {
     if (!isLogin) {
       navigate("/login");
-    }
-    else
-      navigate("/Talk/TalkList");
+    } else navigate("/Talk/TalkList");
   };
 
   const alertNavigation = () => {
     if (!isLogin) {
-      navigate("/login")
-    }
-    else {
+      navigate("/login");
+    } else {
       if (notifications.length > 0) {
         navigate("/alert/alert");
       } else {
@@ -62,20 +61,18 @@ const MenuNavigate = ({ option, previousPage }) => {
         {option}
       </div>
       <div className="absolute right-0 flex flex-row">
-        <div className="pr-4">
-          <img
-            src="/assets/chat.png"
-            alt="chat"
+        <div className="pr-4 flex justify-center items-center">
+          <IoChatbubbleSharp
+            className="w-5 h-5"
+            color="grey"
             onClick={chatNavigation}
-            className="cursor-pointer"
           />
         </div>
-        <div className="pr-4">
-          <img
-            src={hasUnread ? "/assets/alert2.png" : "/assets/alert.png"}
-            alt="alert"
+        <div className="pr-4 flex justify-center items-center">
+          <IoNotifications
+            className="w-5 h-5"
+            color={hasUnread ? "#F2DC00" : "grey"}
             onClick={alertNavigation}
-            className="cursor-pointer"
           />
         </div>
         <div>
