@@ -176,7 +176,14 @@ const CreateFeed = () => {
             name="step-image"
             accept="image/*"
             onChange={handleStepImageChange}
-            className="mr-4 max-w-[200px]"
+            label="사진 넣기"
+            sx={{
+              height: "40px",
+              "& .MuiInputBase-input": {
+                padding: "8px 12px",
+              },
+            }}
+            className="max-w-[200px]"
           />
           {stepImage && (
             <img
