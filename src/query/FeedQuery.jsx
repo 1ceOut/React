@@ -269,8 +269,8 @@ export const fetchUserRecommendations = async (userId) => {
     const response = await axios.post(`${import.meta.env.VITE_ALERT_IP}/matrixFactorizationRecommendations`, {
       userId: encodeURIComponent(userId),
     });
-    console.log(response);
-    console.log("response.data : ", response.data)
+    //console.log(response);
+    //console.log("response.data : ", response.data)
     return response.data;  // 추천된 postingId 리스트를 반환
   } catch (error) {
     //console.error("추천 목록 요청 중 오류 발생:", error);

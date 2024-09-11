@@ -154,7 +154,7 @@ const Body = () => {
     setHasUnread(hasUnread);
   };
 
-  const handleMarkAsRead = async (alert_id, recipeposting, alerttype, sender, userName, productName) => {
+  const handleMarkAsRead = async (alert_id, recipeposting, alerttype, sender, userName) => {
     const notification = notifications.find(n => n.alert_id === alert_id);
 
     // 이미 읽음 처리된 알림이면 읽기 처리하지 않음
@@ -173,6 +173,8 @@ const Body = () => {
         // 방송 룸으로 이동
         navigate(`/liveroom/${encodeURIComponent(sender)}/${userName}`);
       } else if (alerttype === '유통기한 임박') {
+        const foodInfo = foodInfoMap[sender]; // 음식 정보 매핑
+        const productName = foodInfo.productName;
         const response = await SearchAllFood(userId, productName);
         setResponse(response);
         //console.log("response : ", response);
@@ -219,6 +221,8 @@ const Body = () => {
           // 방송 룸으로 이동
           navigate(`/liveroom/${encodeURIComponent(sender)}/${userName}`);
         } else if (alerttype === '유통기한 임박') {
+          const foodInfo = foodInfoMap[sender]; // 음식 정보 매핑
+          const productName = foodInfo.productName;
           const response = await SearchAllFood(userId, productName);
           setResponse(response);
           //console.log("response : ", response);
@@ -400,9 +404,8 @@ const Body = () => {
             {/* 프로필사진 */}
           </div>
           <div
-            className={`flex-1 ${
-              notification.alertcheck ? "text-gray-500" : "text-black"
-            }`}
+            className={`flex-1 ${notification.alertcheck ? "text-gray-500" : "text-black"
+              }`}
             onClick={() =>
               handleMarkAsRead(
                 notification.alert_id,
@@ -410,7 +413,6 @@ const Body = () => {
                 notification.alerttype,
                 notification.sender,
                 userName,
-                foodInfo.productName,
               )
             }
             style={{ cursor: "pointer" }}
