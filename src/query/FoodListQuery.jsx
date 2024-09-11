@@ -101,7 +101,20 @@ export const SearchAllFood = async (userid, productName) => {
         return [];
     }
 };
-
+export const fetchRecipesByIngredient = async (ingredient) => {
+    try {
+        const response = await axios.get(`${API_URL}/api/food/find/recipes`, {
+            params: {
+                ingredient
+            },
+        });
+        console.log('Recipes response:', response.data);
+        return Array.isArray(response.data) ? response.data : [];
+    } catch (error) {
+        console.error('Error fetching recipes', error);
+        return [];
+    }
+};
 
 
 

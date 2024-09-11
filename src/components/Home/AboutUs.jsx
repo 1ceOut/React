@@ -41,27 +41,34 @@ const AboutUs = () => {
                     </p>
                     <p className="text-base text-gray-700">
                         <span className="font-semibold text-blue-600">우리의 팀원들을 만나보세요:</span>
-                        <br />
+                        <br/>
                         <ul className="list-disc list-inside ml-4 mt-2">
                             <li className="mb-2">
-                                <a href="https://github.com/8282qwe" className="text-blue-500 hover:underline">이장우</a> - <span className="text-gray-500">()</span>
+                                <a href="https://github.com/8282qwe"
+                                   className="text-blue-500 hover:underline">이장우</a> - <span className="text-gray-500">(MSA 구축 / 소셜 로그인)</span>
                             </li>
                             <li className="mb-2">
-                                <a href="https://github.com/HanKyungPark" className="text-blue-500 hover:underline">박한경</a> - <span className="text-gray-500">()</span>
+                                <a href="https://github.com/HanKyungPark"
+                                   className="text-blue-500 hover:underline">박한경</a> - <span className="text-gray-500">(커뮤니티 CRUD)</span>
                             </li>
                             <li className="mb-2">
-                                <a href="https://github.com/JUYONG0133" className="text-blue-500 hover:underline">박주용</a> - <span className="text-gray-500">()</span>
+                                <a href="https://github.com/JUYONG0133"
+                                   className="text-blue-500 hover:underline">박주용</a> - <span className="text-gray-500">(냉장고 CRUD)</span>
                             </li>
                             <li className="mb-2">
-                                <a href="https://github.com/kongbh730" className="text-blue-500 hover:underline">공병현</a> - <span className="text-gray-500">()</span>
+                                <a href="https://github.com/kongbh730"
+                                   className="text-blue-500 hover:underline">공병현</a> - <span className="text-gray-500">(알람 기능)</span>
                             </li>
                             <li className="mb-2">
-                                <a href="https://github.com/LeeGaHyun12" className="text-blue-500 hover:underline">이가현</a> - <span className="text-gray-500">()</span>
+                                <a href="https://github.com/LeeGaHyun12"
+                                   className="text-blue-500 hover:underline">이가현</a> - <span className="text-gray-500">(배포 / 채팅 기능)</span>
                             </li>
                             <li className="mb-2">
-                                <a href="https://github.com/PASTELBOX" className="text-blue-500 hover:underline">민경진</a> - <span className="text-gray-500">()</span>
+                                <a href="https://github.com/PASTELBOX"
+                                   className="text-blue-500 hover:underline">민경진</a> - <span className="text-gray-500">(리액트 개발환경 / 커뮤니티 기능)</span>
                             </li>
                         </ul>
+
                     </p>
                 </div>
             </div>
