@@ -424,7 +424,7 @@ const Body = () => {
             className="text-gray-500 cursor-pointer w-6 h-6 flex justify-center items-center"
             onClick={() => handleDeleteNotification(notification.alert_id)}
           >
-            <IoClose size="w-5 h-5" />
+            <IoClose className="w-5 h-5" />
           </div>
         </div>
       </div>
