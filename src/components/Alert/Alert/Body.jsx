@@ -5,6 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns"; // 날짜 형식화를 위해 사용
 import { getCategoryImage } from "../../Refrigerator/FridgeManage/CategoryImage.jsx"; // 카테고리 이미지 불러오기
+import { SearchAllFood } from "../../../query/FoodListQuery.jsx";
 import { IoClose } from "react-icons/io5";
 
 const Body = () => {
@@ -18,13 +19,14 @@ const Body = () => {
   const [userInfoMap, setUserInfoMap] = useState({}); // 사용자 정보를 저장할 상태
   const [refrigeratorNameMap, setRefrigeratorNameMap] = useState({}); // 냉장고 이름을 저장할 상태
   const [foodInfoMap, setFoodInfoMap] = useState({});
+  const [response, setResponse] = useState([]);
 
   // 알림의 sender 값을 기반으로 사용자 정보를 API로부터 가져옴
   useEffect(() => {
     const fetchUserInfos = async () => {
       const promises = notifications.map(async (notification) => {
         try {
-          if (notification.alerttype === "유통기한 임박") {
+          if (notification.alerttype === '유통기한 임박') {
             // 유통기한 임박일 경우 사용자 정보 API 호출을 건너뜀
             return { sender: notification.sender, userInfo: null };
           } else {
@@ -40,22 +42,16 @@ const Body = () => {
             return { sender: notification.sender, userInfo: response.data };
           }
         } catch (error) {
-          console.error(
-            `Failed to fetch data for sender: ${notification.sender}`,
-            error
-          );
+          console.error(`Failed to fetch data for sender: ${notification.sender}`, error);
           return { sender: notification.sender, userInfo: null };
         }
       });
 
       const userInfoArray = await Promise.all(promises);
-      const newUserInfoMap = userInfoArray.reduce(
-        (map, { sender, userInfo }) => {
-          map[sender] = userInfo;
-          return map;
-        },
-        {}
-      );
+      const newUserInfoMap = userInfoArray.reduce((map, { sender, userInfo }) => {
+        map[sender] = userInfo;
+        return map;
+      }, {});
 
       setUserInfoMap(newUserInfoMap);
     };
@@ -114,7 +110,7 @@ const Body = () => {
   useEffect(() => {
     const fetchFoodInfos = async () => {
       const promises = notifications.map(async (notification) => {
-        if (notification.alerttype === "유통기한 임박") {
+        if (notification.alerttype === '유통기한 임박') {
           try {
             const response = await axios.get(
               `https://api.icebuckwheat.kro.kr/api/food/find/FoodName`,
@@ -129,14 +125,11 @@ const Body = () => {
               sender: notification.sender,
               foodInfo: {
                 productName: foodData.productName, // productName 가져오기
-                lcategory: foodData.lcategory, // lcategory 가져오기
-              },
+                lcategory: foodData.lcategory // lcategory 가져오기
+              }
             }; // API 응답에서 첫 번째 데이터 사용
           } catch (error) {
-            console.error(
-              `Failed to fetch food info for food_id: ${notification.sender}`,
-              error
-            );
+            console.error(`Failed to fetch food info for food_id: ${notification.sender}`, error);
             return { sender: notification.sender, foodInfo: null };
           }
         }
@@ -151,78 +144,59 @@ const Body = () => {
       }, {});
       setFoodInfoMap(newFoodInfoMap); // 상태 업데이트
     };
-    if (
-      notifications.some(
-        (notification) => notification.alerttype === "유통기한 임박"
-      )
-    ) {
+    if (notifications.some(notification => notification.alerttype === '유통기한 임박')) {
       fetchFoodInfos();
     }
   }, [notifications]);
 
   const updateHasUnread = (updatedNotifications) => {
-    const hasUnread = updatedNotifications.some(
-      (notification) => !notification.alertcheck
-    );
+    const hasUnread = updatedNotifications.some(notification => !notification.alertcheck);
     setHasUnread(hasUnread);
   };
 
-  const handleMarkAsRead = async (
-    alert_id,
-    recipeposting,
-    alerttype,
-    sender,
-    userName
-  ) => {
-    const notification = notifications.find((n) => n.alert_id === alert_id);
+  const handleMarkAsRead = async (alert_id, recipeposting, alerttype, sender, userName, productName) => {
+    const notification = notifications.find(n => n.alert_id === alert_id);
 
     // 이미 읽음 처리된 알림이면 읽기 처리하지 않음
     if (notification && notification.alertcheck) {
-      console.log("alerttype : ", alerttype);
-      if (
-        alerttype === "포스팅 작성" ||
-        alerttype === "좋아요" ||
-        alerttype === "댓글 작성"
-      ) {
+      if (alerttype === '포스팅 작성' || alerttype === '좋아요' || alerttype === '댓글 작성') {
         // 포스팅 상세 페이지로 이동
         navigate(`/community/feeddetail/${recipeposting}`);
-      } else if (alerttype === "구독") {
+      } else if (alerttype === '구독') {
         // 구독 관련 페이지로 이동
         navigate(`/community/myfeed/${sender}`);
-      } else if (
-        alerttype === "냉장고 생성" ||
-        alerttype === "냉장고 수정" ||
-        alerttype === "냉장고 등록"
-      ) {
+      } else if (alerttype === '냉장고 생성' || alerttype === '냉장고 수정' || alerttype === '냉장고 등록') {
         console.log(alerttype);
         // 냉장고 관리 페이지로 이동
-        navigate("/fridge/fridgemanage");
-      } else if (alerttype === "방송 시작") {
+        navigate('/fridge/fridgemanage');
+      } else if (alerttype === '방송 시작') {
         // 방송 룸으로 이동
         navigate(`/liveroom/${encodeURIComponent(sender)}/${userName}`);
-      } else if (alerttype === "유통기한 임박") {
-        try {
-          const response = await axios.get(
-            `https://api.icebuckwheat.kro.kr/api/food/find/FoodName`,
-            { params: { food_id: sender } }
-          );
-          const foodData = response.data[0]; // 첫 번째 음식 데이터
-          // FoodDetail 페이지로 이동할 때 음식 데이터를 전달
-          navigate(`/Refrigerator/food/FoodDetail/${sender}`, {
-            state: { foodData },
-          });
-        } catch (error) {
-          //console.error("Failed to fetch food info:", error);
-        }
+      } else if (alerttype === '유통기한 임박') {
+        const response = await SearchAllFood(userId, productName);
+        setResponse(response);
+        //console.log("response : ", response);
+        const foodDetail = response[0];
+        //console.log("foodDetail : ", foodDetail);
+        navigate(`/Refrigerator/food/FoodDetail`, {
+          state: {
+            id: foodDetail.id,
+            count: foodDetail.count,
+            createdDate: foodDetail.createdDate,
+            expiryDate: foodDetail.expiryDate,
+            lcategory: foodDetail.lcategory,
+            productType: foodDetail.productType,
+            refrigeratorName: foodDetail.refrigeratorName,
+            scategory: foodDetail.scategory,
+            barcode: foodDetail.barcode,
+          },
+        });
       }
-
       return;
     }
 
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_ALERT_IP}/markAsRead/${alert_id}`
-      );
+      const response = await axios.post(`${import.meta.env.VITE_ALERT_IP}/markAsRead/${alert_id}`);
       if (response.status === 200) {
         const updatedNotifications = notifications.map((notification) =>
           notification.alert_id === alert_id
@@ -232,40 +206,37 @@ const Body = () => {
         setNotifications(updatedNotifications);
         updateHasUnread(updatedNotifications);
 
-        if (
-          alerttype === "포스팅 작성" ||
-          alerttype === "좋아요" ||
-          alerttype === "댓글 작성"
-        ) {
+        if (alerttype === '포스팅 작성' || alerttype === '좋아요' || alerttype === '댓글 작성') {
           // 포스팅 상세 페이지로 이동
           navigate(`/community/feeddetail/${recipeposting}`);
-        } else if (alerttype === "구독") {
+        } else if (alerttype === '구독') {
           // 구독 관련 페이지로 이동
           navigate(`/community/myfeed/${sender}`);
-        } else if (
-          alerttype === "냉장고 생성" ||
-          alerttype === "냉장고 수정" ||
-          alerttype === "냉장고 등록"
-        ) {
+        } else if (alerttype === '냉장고 생성' || alerttype === '냉장고 수정' || alerttype === '냉장고 등록') {
           // 냉장고 관리 페이지로 이동
           navigate(`/fridge/fridgemanage/`);
-        } else if (alerttype === "방송 시작") {
+        } else if (alerttype === '방송 시작') {
           // 방송 룸으로 이동
           navigate(`/liveroom/${encodeURIComponent(sender)}/${userName}`);
-        } else if (alerttype === "유통기한 임박") {
-          try {
-            const response = await axios.get(
-              `https://api.icebuckwheat.kro.kr/api/food/find/FoodName`,
-              { params: { food_id: sender } }
-            );
-            const foodData = response.data[0]; // 첫 번째 음식 데이터
-            // FoodDetail 페이지로 이동할 때 음식 데이터를 전달
-            navigate(`/Refrigerator/food/FoodDetail/${sender}`, {
-              state: { foodData },
-            });
-          } catch (error) {
-            //console.error("Failed to fetch food info:", error);
-          }
+        } else if (alerttype === '유통기한 임박') {
+          const response = await SearchAllFood(userId, productName);
+          setResponse(response);
+          //console.log("response : ", response);
+          const foodDetail = response[0];
+          //console.log("foodDetail : ", foodDetail);
+          navigate(`/Refrigerator/food/FoodDetail`, {
+            state: {
+              id: foodDetail.id,
+              count: foodDetail.count,
+              createdDate: foodDetail.createdDate,
+              expiryDate: foodDetail.expiryDate,
+              lcategory: foodDetail.lcategory,
+              productType: foodDetail.productType,
+              refrigeratorName: foodDetail.refrigeratorName,
+              scategory: foodDetail.scategory,
+              barcode: foodDetail.barcode,
+            },
+          });
         }
       }
     } catch (error) {
@@ -328,56 +299,55 @@ const Body = () => {
     const foodInfo = foodInfoMap[notification.sender]; // 음식 정보 매핑
 
     switch (notification.alerttype) {
-      case "냉장고 생성":
+      case '냉장고 생성':
         imgSrc = "/assets/refridge.png";
-        statusText = "냉장고를 생성했어요!";
+        statusText = '냉장고를 생성했어요!';
         titleText = `${userName}님이 "${notification.memo}"냉장고를 생성했어요.`;
         break;
-      case "냉장고 수정":
+      case '냉장고 수정':
         imgSrc = "/assets/refridge.png";
-        statusText = "냉장고 이름이 수정됐어요!";
+        statusText = '냉장고 이름이 수정됐어요!';
         titleText = `${userName}님이 "${notification.memo}"냉장고 이름을 ${refriName}로 수정했어요.`;
         break;
-      case "냉장고 등록":
+      case '냉장고 등록':
         imgSrc = userInfo ? userInfo.photo : "default-profile.png";
-        statusText = "냉장고에 참가했어요!";
+        statusText = '냉장고에 참가했어요!';
         titleText = `${userName}님이 "${refriName}"냉장고에 참가했어요.`;
         break;
-      case "냉장고 삭제":
+      case '냉장고 삭제':
         imgSrc = "/assets/refridge.png";
-        statusText = "냉장고가 삭제됐어요!";
+        statusText = '냉장고가 삭제됐어요!';
         titleText = `${userName}님이 "${notification.memo}"냉장고를 삭제했어요.`;
         break;
-      case "구성원 삭제":
+      case '구성원 삭제':
         if (userId === notification.sender) {
           // 현재 사용자 자신이 삭제된 경우
           imgSrc = "/assets/refridge.png";
-          statusText = "냉장고에서 내보내졌어요.";
+          statusText = '냉장고에서 내보내졌어요.';
           titleText = `"${refriName}" 냉장고에서 내보내졌습니다.`;
         } else {
           // 다른 사용자가 삭제된 경우
           imgSrc = userInfo ? userInfo.photo : "default-profile.png";
-          statusText = "구성원을 내보냈어요!";
+          statusText = '구성원을 내보냈어요!';
           titleText = `${userName}님을 "${refriName}" 냉장고에서 내보냈어요.`;
         }
         break;
-      case "채팅":
+      case '채팅':
         imgSrc = userInfo ? userInfo.photo : "default-profile.png";
-        statusText = "채팅을 올라왔어요!";
+        statusText = '채팅을 올라왔어요!';
         titleText = `${userName}님이 채팅을 남겼어요.`;
         break;
-      case "채팅 공지":
+      case '채팅 공지':
         imgSrc = userInfo ? userInfo.photo : "default-profile.png";
-        statusText = "채팅방 공지!";
+        statusText = '채팅방 공지!';
         titleText = `${userName}님이 ${refriName}냉장고에 공지를 남겼어요.`;
         break;
-      case "유통기한 임박":
-        if (foodInfo) {
-          // foodInfo가 있는 경우만 처리
+      case '유통기한 임박':
+        if (foodInfo) { // foodInfo가 있는 경우만 처리
           imgSrc = getCategoryImage(foodInfo.lcategory);
           // notification.memo가 음수일 경우 "유통기한이 지났어요"로 출력
           if (parseInt(notification.memo, 10) < 0) {
-            statusText = "유통기한이 지났어요";
+            statusText = '유통기한이 지났어요';
             titleText = `${foodInfo.productName}의 유통기한이 지났어요.`;
           } else {
             statusText = `D-${notification.memo}`;
@@ -385,39 +355,39 @@ const Body = () => {
           }
         } else {
           // foodInfo가 없을 때 기본값 설정
-          imgSrc = getCategoryImage("default");
-          statusText = "유통기한 정보 없음";
-          titleText = "알 수 없는 상품의 유통기한이 임박했어요.";
+          imgSrc = getCategoryImage('default');
+          statusText = '유통기한 정보 없음';
+          titleText = '알 수 없는 상품의 유통기한이 임박했어요.';
         }
         break;
-      case "포스팅 작성":
+      case '포스팅 작성':
         imgSrc = userInfo ? userInfo.photo : "default-profile.png";
-        statusText = "레시피 등록!";
+        statusText = '레시피 등록!';
         titleText = `${userName}님이 "${notification.memo}" 레시피를 작성했어요.`;
         break;
-      case "좋아요":
+      case '좋아요':
         imgSrc = userInfo ? userInfo.photo : "default-profile.png";
-        statusText = "좋아요를 받았어요!";
+        statusText = '좋아요를 받았어요!';
         titleText = `${userName}님이 좋아요를 눌렀어요.`;
         break;
-      case "댓글 작성":
+      case '댓글 작성':
         imgSrc = userInfo ? userInfo.photo : "default-profile.png";
-        statusText = "새 댓글이 달렸어요!";
+        statusText = '새 댓글이 달렸어요!';
         titleText = `${userName}님이 댓글을 남겼어요.`;
         break;
-      case "구독":
+      case '구독':
         imgSrc = userInfo ? userInfo.photo : "default-profile.png";
-        statusText = "새로운 구독자!";
+        statusText = '새로운 구독자!';
         titleText = `${userName}님이 구독했어요.`;
         break;
-      case "방송 시작":
+      case '방송 시작':
         imgSrc = userInfo ? userInfo.photo : "default-profile.png";
-        statusText = "방송이 시작됐어요!";
+        statusText = '방송이 시작됐어요!';
         titleText = `${userName}님이 방송을 시작했어요.`;
         break;
       default:
         imgSrc = userInfo ? userInfo.photo : "default-profile.png";
-        statusText = "새로운 알림이 있습니다!";
+        statusText = '새로운 알림이 있습니다!';
         titleText = `${userName}님이 알림을 보냈습니다.`;
         break;
     }
@@ -439,7 +409,8 @@ const Body = () => {
                 notification.recipeposting,
                 notification.alerttype,
                 notification.sender,
-                userName
+                userName,
+                foodInfo.productName,
               )
             }
             style={{ cursor: "pointer" }}
