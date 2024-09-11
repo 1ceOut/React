@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { format } from "date-fns"; // 날짜 형식화를 위해 사용
 import { getCategoryImage } from "../../Refrigerator/FridgeManage/CategoryImage.jsx"; // 카테고리 이미지 불러오기
 import { SearchAllFood } from "../../../query/FoodListQuery.jsx";
+import { IoClose } from "react-icons/io5";
 
 const Body = () => {
   const {
@@ -158,7 +159,6 @@ const Body = () => {
 
     // 이미 읽음 처리된 알림이면 읽기 처리하지 않음
     if (notification && notification.alertcheck) {
-      console.log("alerttype : ", alerttype);
       if (alerttype === '포스팅 작성' || alerttype === '좋아요' || alerttype === '댓글 작성') {
         // 포스팅 상세 페이지로 이동
         navigate(`/community/feeddetail/${recipeposting}`);
@@ -175,9 +175,23 @@ const Body = () => {
       } else if (alerttype === '유통기한 임박') {
         const response = await SearchAllFood(userId, productName);
         setResponse(response);
-        console.log("response : ", response);
+        //console.log("response : ", response);
+        const foodDetail = response[0];
+        //console.log("foodDetail : ", foodDetail);
+        navigate(`/Refrigerator/food/FoodDetail`, {
+          state: {
+            id: foodDetail.id,
+            count: foodDetail.count,
+            createdDate: foodDetail.createdDate,
+            expiryDate: foodDetail.expiryDate,
+            lcategory: foodDetail.lcategory,
+            productType: foodDetail.productType,
+            refrigeratorName: foodDetail.refrigeratorName,
+            scategory: foodDetail.scategory,
+            barcode: foodDetail.barcode,
+          },
+        });
       }
-
       return;
     }
 
@@ -207,8 +221,22 @@ const Body = () => {
         } else if (alerttype === '유통기한 임박') {
           const response = await SearchAllFood(userId, productName);
           setResponse(response);
-          console.log("response : ", response);
-          
+          //console.log("response : ", response);
+          const foodDetail = response[0];
+          //console.log("foodDetail : ", foodDetail);
+          navigate(`/Refrigerator/food/FoodDetail`, {
+            state: {
+              id: foodDetail.id,
+              count: foodDetail.count,
+              createdDate: foodDetail.createdDate,
+              expiryDate: foodDetail.expiryDate,
+              lcategory: foodDetail.lcategory,
+              productType: foodDetail.productType,
+              refrigeratorName: foodDetail.refrigeratorName,
+              scategory: foodDetail.scategory,
+              barcode: foodDetail.barcode,
+            },
+          });
         }
       }
     } catch (error) {
@@ -368,24 +396,33 @@ const Body = () => {
       <div key={notification.alert_id} className="mb-6">
         <div className="flex items-center bg-white p-4 rounded-lg mb-2 shadow-sm">
           <div className="w-10 h-10 flex items-center justify-center text-2xl mr-4">
-            <img src={imgSrc} alt='' className="w-50 h-50 object-contain" />{/* 프로필사진 */}
+            <img src={imgSrc} alt="" className="w-50 h-50 object-contain" />
+            {/* 프로필사진 */}
           </div>
           <div
-            className={`flex-1 ${notification.alertcheck ? "text-gray-500" : "text-black"}`}
-            onClick={() => handleMarkAsRead(notification.alert_id, notification.recipeposting, notification.alerttype, notification.sender, userName, foodInfo.productName)}
-            style={{ cursor: "pointer" }}>
-            <div className="text-xs mb-1">
-              {statusText}
-            </div>
-            <div className="text-sm">
-              {titleText}
-            </div>
+            className={`flex-1 ${
+              notification.alertcheck ? "text-gray-500" : "text-black"
+            }`}
+            onClick={() =>
+              handleMarkAsRead(
+                notification.alert_id,
+                notification.recipeposting,
+                notification.alerttype,
+                notification.sender,
+                userName,
+                foodInfo.productName,
+              )
+            }
+            style={{ cursor: "pointer" }}
+          >
+            <div className="text-xs mb-1">{statusText}</div>
+            <div className="text-sm">{titleText}</div>
           </div>
           <div
-            className="text-gray-500 cursor-pointer"
+            className="text-gray-500 cursor-pointer w-6 h-6 flex justify-center items-center"
             onClick={() => handleDeleteNotification(notification.alert_id)}
           >
-            X
+            <IoClose size="w-5 h-5" />
           </div>
         </div>
       </div>

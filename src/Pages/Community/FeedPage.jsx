@@ -33,7 +33,7 @@ const FeedPage = () => {
   const [subscriptions, setSubscriptions] = useState({});
   const [modalMessage, setModalMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(""); // State for search query
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -145,18 +145,19 @@ const FeedPage = () => {
   return (
     <main className="flex flex-col items-center px-6 pt-5 pb-20 mx-auto w-full max-w-[390px] h-auto">
       <MenuNavigate option="커뮤니티" previousPage="/" />
-      <Profile profiles={sortedProfiles} />
-      <div className="border border-black w-full p-2 mb-4 rounded flex">
+      <div className="border border-black w-full p-2 rounded flex">
         <div className="flex justify-center items-center">
           <FaSearch />
         </div>
         <input
           type="text"
           value={searchQuery}
+          placeholder="검색"
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full outline-none ml-2"
         />
       </div>
+      <Profile profiles={sortedProfiles} />
       {sortedPosts.length > 0 ? (
         sortedPosts.map(({ posting, userProfile, userName }) => (
           <div key={posting.posting_id} className="mb-6">
@@ -179,7 +180,7 @@ const FeedPage = () => {
           </div>
         ))
       ) : (
-        <div>No posts available</div>
+        <div>검색된 게시글이 없습니다.</div>
       )}
       <BarNavigate
         shoppingsrc="/assets/shopping.png"

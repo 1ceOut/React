@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 import axiosApi from "../../Pages/Talk/axiosApi.js";
+import useUserStore from "../../store/useUserStore.js";
 
 const AnnouncementModal = ({ onRefri, isOpen, onClose, refreshAnnouncement }) => {
     const [announcement, setAnnouncement] = useState("");
     const [newAnnouncement, setNewAnnouncement] = useState("");
     const api_server = import.meta.env.VITE_API_IP;
     const chatroomSeq = onRefri;
+    //const { userId } = useUserStore();
 
     // 공지사항 업데이트 후 확인 및 처리
     const handleConfirmClick = () => {
@@ -36,18 +38,18 @@ const AnnouncementModal = ({ onRefri, isOpen, onClose, refreshAnnouncement }) =>
     };
 
     // 새로운 공지 알림을 전송하는 함수
-    const sendNewChattingMasterNotification = async () => {
-        try {
-            await axiosApi.post(`${import.meta.env.VITE_ALERT_IP}/newChattingMaster`, {
-                sender: null,  // 공지사항을 설정한 사용자
-                senderrefri: onRefri, // 현재 냉장고(채팅방) ID
-                memo: newAnnouncement,
-            });
-            //console.log("공지 알림이 성공적으로 전송되었습니다.");
-        } catch (error) {
-            //console.error("공지 알림 전송 중 오류 발생:", error);
-        }
-    };
+    // const sendNewChattingMasterNotification = async () => {
+    //     try {
+    //         await axiosApi.post(`${import.meta.env.VITE_ALERT_IP}/newChattingMaster`, {
+    //             sender: encodeURIComponent(userId),  // 공지사항을 설정한 사용자
+    //             senderrefri: chatroomSeq, // 현재 냉장고(채팅방) ID
+    //             memo: newAnnouncement,
+    //         });
+    //         //console.log("공지 알림이 성공적으로 전송되었습니다.");
+    //     } catch (error) {
+    //         //console.error("공지 알림 전송 중 오류 발생:", error);
+    //     }
+    // };
 
     // 모달이 열리면 해당 냉장고의 유저 목록을 가져오는 함수
     useEffect(() => {
