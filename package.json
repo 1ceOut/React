@@ -34,6 +34,7 @@
     "emoji-picker-react": "^4.11.1",
     "hangul-search": "^1.4.2",
     "livekit-client": "^2.5.1",
+    "mui-file-input": "^6.0.0",
     "pretendard": "^1.3.9",
     "prop-types": "^15.8.1",
     "qs": "^6.13.0",
