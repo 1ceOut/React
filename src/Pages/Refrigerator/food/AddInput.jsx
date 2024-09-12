@@ -118,7 +118,7 @@ const AddInput = () => {
           id="expiryDate"
           value={expiryDate}
           onChange={(e) => setExpiryDate(e.target.value)}
-          placeholder="유통기한을 적어주세요"
+          placeholder="소비기한을 적어주세요"
           className="w-full h-[56px] p-2.5 rounded-xl border border-[#E1E1E1] bg-white text-[15px] text-[#767676]"
         />
       </div>
