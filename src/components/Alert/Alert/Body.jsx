@@ -443,7 +443,7 @@ const Body = () => {
             <img
               src={imgSrc}
               alt=""
-              className="w-[40px] h-[40px] rounded-full object-contain"
+              className="w-[40px] h-[40px] object-cover rounded-full object-contain"
             />
             {/* 프로필사진 */}
           </div>
