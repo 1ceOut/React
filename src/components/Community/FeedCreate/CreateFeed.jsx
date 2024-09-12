@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useAddPost, uploadImage } from "../../../query/FeedQuery"; // React Query 훅 import
 import useUserStore from "../../../store/useUserStore"; // Zustand store import
-import axios from "axios";
+import { MuiFileInput } from "mui-file-input";
 
 const CreateFeed = () => {
   const [selectedImage, setSelectedImage] = useState(null); // 썸네일 이미지 상태
@@ -39,8 +39,7 @@ const CreateFeed = () => {
     }
   };
 
-  const handleStepImageChange = async (event) => {
-    const file = event.target.files[0];
+  const handleStepImageChange = async (file) => {
     if (file) {
       try {
         const imageUrl = await uploadImage(file);
@@ -171,13 +170,20 @@ const CreateFeed = () => {
           onKeyDown={handleKeyDown}
         />
         <div className="flex items-center justify-between mb-4">
-          <input
+          <MuiFileInput
             id="step-image"
+            value={null}
             name="step-image"
-            type="file"
             accept="image/*"
             onChange={handleStepImageChange}
-            className="mr-4 max-w-[200px]"
+            label="사진 넣기"
+            sx={{
+              height: "40px",
+              "& .MuiInputBase-input": {
+                padding: "8px 12px",
+              },
+            }}
+            className="max-w-[200px]"
           />
           {stepImage && (
             <img
