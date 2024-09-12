@@ -63,7 +63,7 @@ const Alert = () => {
               >
                 <img src="/assets/alert_icon.png" alt="알림" className="mr-3" />
                 {/* X개의 유통기한이 임박하거나 지난 오늘의 식재료 출력 */}
-                {`${expiredOrImminentCount}개의 유통기한에 주의해야 할 식재료가 있습니다.`}
+                {`${expiredOrImminentCount}개의 소비기한에 주의해야 할 식재료가 있습니다.`}
               </div>
             </div>
           </div>
@@ -76,7 +76,7 @@ const Alert = () => {
           <div className="flex justify-between items-center">
             <div className="flex justify-center items-center">
               <img src="/assets/alert_icon.png" alt="알림" className="mr-3" />
-              오늘 유통기한 임박 또는 경과한 알림이 없습니다
+              오늘 소비기한 임박 또는 경과한 알림이 없습니다
             </div>
           </div>
           <div className="mt-[10px] mb-[20px]">
