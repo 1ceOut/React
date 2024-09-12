@@ -61,12 +61,14 @@ const MyFeedPage = () => {
   const handleSubscribeClick = async () => {
     try {
       if (!paramUserId) return;
-
+  
       if (!isSubscribed) {
+        // 구독을 추가하는 경우에만 알림을 전송
         await usercreatesub(paramUserId, userId);
         setModalMessage("구독 되었습니다!");
-
+  
         try {
+          // 구독 알림 전송
           await axios.post(`${import.meta.env.VITE_ALERT_IP}/subscribeUser`, {
             sender: encodeURIComponent(userId),
             receiver: encodeURIComponent(paramUserId),
@@ -77,13 +79,14 @@ const MyFeedPage = () => {
           alert("알림을 전송하는 중 오류가 발생했습니다. 관리자에게 문의하세요.");
         }
       } else {
+        // 구독을 취소하는 경우에는 알림 전송을 생략
         await userdelete(paramUserId, userId);
         setModalMessage("구독 취소되었습니다!");
       }
-
-      setIsSubscribed(prevState => !prevState);
+  
+      setIsSubscribed((prevState) => !prevState);
       setIsModalOpen(true);
-
+  
       // 구독 상태 변경 후 사용자 수 업데이트
       const followerData = await subUserListFollow(paramUserId);
       const followingData = await subUserListFollowing(paramUserId);
