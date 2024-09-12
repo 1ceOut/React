@@ -14,12 +14,15 @@ const Body = () => {
     setNotifications,
     setHasUnread,
     userId,
+    userName,
   } = useUserStore();
   const navigate = useNavigate();
   const [userInfoMap, setUserInfoMap] = useState({}); // 사용자 정보를 저장할 상태
   const [refrigeratorNameMap, setRefrigeratorNameMap] = useState({}); // 냉장고 이름을 저장할 상태
   const [foodInfoMap, setFoodInfoMap] = useState({});
   const [response, setResponse] = useState([]);
+  const myName = userName; 
+  //console.log("myName : ", myName);
 
   // 알림의 sender 값을 기반으로 사용자 정보를 API로부터 가져옴
   useEffect(() => {
@@ -39,6 +42,7 @@ const Body = () => {
                 },
               }
             );
+            //console.log("response : ", response);
             return { sender: notification.sender, userInfo: response.data };
           }
         } catch (error) {
@@ -173,8 +177,7 @@ const Body = () => {
     alert_id,
     recipeposting,
     alerttype,
-    sender,
-    userName
+    sender
   ) => {
     const notification = notifications.find((n) => n.alert_id === alert_id);
 
@@ -195,12 +198,12 @@ const Body = () => {
         alerttype === "냉장고 수정" ||
         alerttype === "냉장고 등록"
       ) {
-        console.log(alerttype);
+        //console.log(alerttype);
         // 냉장고 관리 페이지로 이동
         navigate("/fridge/fridgemanage");
       } else if (alerttype === "방송 시작") {
         // 방송 룸으로 이동
-        navigate(`/liveroom/${encodeURIComponent(sender)}/${userName}`);
+        navigate(`/liveroom/${encodeURIComponent(sender)}/${myName}`);
       } else if (alerttype === "유통기한 임박") {
         const foodInfo = foodInfoMap[sender]; // 음식 정보 매핑
         const productName = foodInfo.productName;
@@ -258,7 +261,7 @@ const Body = () => {
           navigate(`/fridge/fridgemanage/`);
         } else if (alerttype === "방송 시작") {
           // 방송 룸으로 이동
-          navigate(`/liveroom/${encodeURIComponent(sender)}/${userName}`);
+          navigate(`/liveroom/${encodeURIComponent(sender)}/${myName}`);
         } else if (alerttype === "유통기한 임박") {
           const foodInfo = foodInfoMap[sender]; // 음식 정보 매핑
           const productName = foodInfo.productName;
@@ -336,10 +339,11 @@ const Body = () => {
     let statusText = "";
     let titleText = "";
     const userInfo = userInfoMap[notification.sender]; // 사용자 정보 매핑
-    const userName = userInfo ? userInfo.name : notification.sender; // 사용자 이름 또는 sender ID
+    const userName = userInfo ? userInfo.name : notification.sender; // 알림을 보낸 사람 이름 또는 sender ID
     let imgSrc = ""; // 사용자 이미지 또는 기본 이미지
     const refriName = refrigeratorNameMap[notification.senderrefri]; // 냉장고 이름 매핑
     const foodInfo = foodInfoMap[notification.sender]; // 음식 정보 매핑
+    //console.log("userName : ", userName);
 
     switch (notification.alerttype) {
       case "냉장고 생성":
@@ -457,7 +461,6 @@ const Body = () => {
                 notification.recipeposting,
                 notification.alerttype,
                 notification.sender,
-                userName
               )
             }
             style={{ cursor: "pointer" }}
