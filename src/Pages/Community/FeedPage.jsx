@@ -71,26 +71,25 @@ const FeedPage = () => {
     } else {
       await usercreatesub(postingUserId, userId);
       setModalMessage("구독 되었습니다!");
+
+      // 알림 전송
+      try {
+        await axios.post(`${import.meta.env.VITE_ALERT_IP}/subscribeUser`, {
+          sender: encodeURIComponent(userId),
+          receiver: encodeURIComponent(postingUserId),
+          memo: "",
+        });
+      } catch (error) {
+        console.error("알림 전송 중 오류 발생:", error);
+      }
     }
 
     const updatedSubscriptions = {
       ...subscriptions,
       [postingUserId]: !isSubscribed,
     };
-
     setSubscriptions(updatedSubscriptions);
     localStorage.setItem("subscriptions", JSON.stringify(updatedSubscriptions));
-
-    // 알림 전송
-    try {
-      await axios.post(`${import.meta.env.VITE_ALERT_IP}/subscribeUser`, {
-        sender: encodeURIComponent(userId),
-        receiver: encodeURIComponent(postingUserId),
-        memo: "",
-      });
-    } catch (error) {
-      console.error("알림 전송 중 오류 발생:", error);
-    }
 
     setIsModalOpen(true);
   };
@@ -124,7 +123,7 @@ const FeedPage = () => {
     if (
       !latestPostsMap.has(posting.userId) ||
       new Date(posting.writeday) >
-        new Date(latestPostsMap.get(posting.userId).writeday)
+      new Date(latestPostsMap.get(posting.userId).writeday)
     ) {
       latestPostsMap.set(posting.userId, {
         ...posting,
