@@ -6,9 +6,10 @@ import {
   DialogTitle,
   Button,
   TextField,
+  CircularProgress,
 } from "@mui/material";
 import MenuNavigate from "../../../components/Common/MenuNavigate.jsx";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { uploadImageToNCP } from "../../../logic/bucket.js";
 import {
   recognizeTextWithUrl,
@@ -21,7 +22,6 @@ const Barcode = () => {
   const navigate = useNavigate();
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
-
   const [capturedImage, setCapturedImage] = useState(null);
   const [ocrResult, setOcrResult] = useState("");
   const [inferTexts, setInferTexts] = useState([]);
@@ -35,22 +35,38 @@ const Barcode = () => {
     productType: "",
   });
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [cameraStream, setCameraStream] = useState(null);
 
   useEffect(() => {
     const initCamera = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-        });
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        setCameraStream(stream);
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
       } catch (error) {
-        console.error("Error accessing the camera: ", error);
+        console.error("카메라 접근 오류: ", error);
       }
     };
+
     initCamera();
+
+    // 컴포넌트 언마운트 시 카메라 끄기
+    return () => {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+      }
+    };
   }, []);
+
+  const handleNavigation = (path) => {
+    if (cameraStream) {
+      cameraStream.getTracks().forEach(track => track.stop());
+    }
+    navigate(path);
+  };
 
   useEffect(() => {
     if (concatenatedText) {
@@ -102,19 +118,17 @@ const Barcode = () => {
   };
 
   const recognizeText = async () => {
+    setLoading(true);
     const image = captureImage();
-    if (!image) return;
+    if (!image) {
+      setLoading(false);
+      return;
+    }
     try {
-      // 이미지 업로드
       const imageUrl = await uploadImageToNCP(image);
-      console.log("Image URL:", imageUrl);
-
-      // 전체 URL 생성
       const baseUrl = import.meta.env.VITE_APP_BASE_URL;
       const fullImageUrl = `${baseUrl}${imageUrl}`;
-      console.log("Full image URL for OCR:", fullImageUrl);
 
-      // OCR 인식 요청
       const ocrResponse = await recognizeTextWithUrl(fullImageUrl);
       if (
           !ocrResponse ||
@@ -122,13 +136,17 @@ const Barcode = () => {
           ocrResponse.images[0].fields.length === 0
       ) {
         alert("텍스트를 인식하지 못했습니다. 다시 시도해 주세요.");
+        setLoading(false);
+        window.location.reload();
         return;
       }
 
       setOcrResult(ocrResponse);
       extractInferTexts(ocrResponse);
     } catch (error) {
-      console.error("Error recognizing text:", error);
+      console.error("텍스트 인식 오류:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -144,13 +162,11 @@ const Barcode = () => {
         concatenatedText += filteredText;
       });
 
-      // 유효한 바코드 검증: 12 또는 13자리의 바코드만 포함
       if (concatenatedText.length === 12 || concatenatedText.length === 13) {
         texts.push(concatenatedText);
       }
     });
 
-    // 중복 및 유사도 비교를 통해 최적의 바코드 선택
     if (texts.length > 0) {
       const uniqueTexts = [...new Set(texts)];
       uniqueTexts.forEach((text) => {
@@ -182,16 +198,12 @@ const Barcode = () => {
     setModalIsOpen(false);
   };
 
+  const handleRetake = () => {
+    window.location.reload();
+  };
+
   const goToAddInput = () => {
-    navigate("/Refrigerator/food/AddInput2", {
-      state: {
-        barcode: additionalInfo.barcode,
-        productName: additionalInfo.productName,
-        expiryDate: additionalInfo.expiryDate,
-        refrigeratorName: refrigeratorName,
-      },
-    });
-    closeModal();
+    handleNavigation("/Refrigerator/food/AddInput2");
   };
 
   return (
@@ -206,18 +218,25 @@ const Barcode = () => {
             <br />
           </p>
         </div>
-        <video ref={videoRef} autoPlay playsInline className="w-full h-auto" />
-        <canvas ref={canvasRef} className="hidden" />
 
-        <div className="w-[342px] h-[56px] rounded-xl border border-[#E1E1E1] flex items-center justify-center mt-8 cursor-pointer">
-          <button
-              onClick={recognizeText}
-              className="w-full h-full bg-blue-500 text-white rounded-xl"
-          >
-            바코드 인식
-          </button>
-        </div>
-
+        {loading ? (
+            <div className="flex items-center justify-center w-full h-auto mt-8">
+              <CircularProgress />
+            </div>
+        ) : (
+            <>
+              <video ref={videoRef} autoPlay playsInline className="w-full h-auto" />
+              <canvas ref={canvasRef} className="hidden" />
+              <div className="w-[342px] h-[56px] rounded-xl border border-[#E1E1E1] flex items-center justify-center mt-8 cursor-pointer">
+                <button
+                    onClick={recognizeText}
+                    className="w-full h-full bg-blue-500 text-white rounded-xl"
+                >
+                  바코드 인식
+                </button>
+              </div>
+            </>
+        )}
 
         <Dialog open={modalIsOpen} onClose={closeModal} maxWidth="sm" fullWidth>
           <DialogTitle>바코드 정보</DialogTitle>
@@ -238,7 +257,7 @@ const Barcode = () => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={closeModal} color="primary">
+            <Button onClick={handleRetake} color="primary">
               다시 찍기
             </Button>
             <Button onClick={goToAddInput} color="primary">
